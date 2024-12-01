@@ -29,3 +29,21 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+
+
+.bg-primary {
+  background-color: #002B5B;
+}
+.bg-gris {
+  background-color: #D1D5DB;
+}
+
+
+.text-primary {
+  color: #002B5B;
+}
+
+
+.bg-sidebar{
+  background-color: #002B5B !important;
+}
