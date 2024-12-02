@@ -5,21 +5,39 @@ import Header from "@/components/Header"
 export default function Layout({ children }: { children: React.ReactNode }) {
     const data = [
         {
-            title: "Les abonnes",
-            url: "/Agent_guiche/Les_abonnes",
-            icon: "Home",
-            RoleName:{
-                Prefix:"Agent",
-                Suffix:"Guiche"
+            title: "List Boit postal",
+            url: "/Agent_commercial/Liste_Boite_postal",
+            icon: "Cuboid",
+            RoleName: {
+                Prefix: "Agent",
+                Suffix: "Commercial"
             }
         },
         {
-            title: "Nouveau client",
-            url: "/Agent_guiche/Nouveau_client",
+            title: "Changement Nom",
+            url: "/Agent_commercial/Changement_Nom",
             icon: "Inbox",
-            RoleName:{
-                Prefix:"Agent",
-                Suffix:"Guiche"
+            RoleName: {
+                Prefix: "Agent",
+                Suffix: "Commercial"
+            }
+        },
+        {
+            title: "Resiliation",
+            url: "/Agent_commercial/Resiliation",
+            icon: "Inbox",
+            RoleName: {
+                Prefix: "Agent",
+                Suffix: "Commercial"
+            }
+        },
+        {
+            title: "Les abonnes",
+            url: "/Agent_commercial/Les_abonnes",
+            icon: "Inbox",
+            RoleName: {
+                Prefix: "Agent",
+                Suffix: "Commercial"
             }
         },
     ]
