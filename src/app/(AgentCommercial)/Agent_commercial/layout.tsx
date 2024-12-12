@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {
             title: "Changement Nom",
             url: "/Agent_commercial/Changement_Nom",
-            icon: "Inbox",
+            icon: "FolderPen",
             RoleName: {
                 Prefix: "Agent",
                 Suffix: "Commercial"
@@ -25,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {
             title: "Resiliation",
             url: "/Agent_commercial/Resiliation",
-            icon: "Inbox",
+            icon: "UserX",
             RoleName: {
                 Prefix: "Agent",
                 Suffix: "Commercial"
@@ -34,7 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {
             title: "Les abonnes",
             url: "/Agent_commercial/Les_abonnes",
-            icon: "Inbox",
+            icon: "Clipboard",
             RoleName: {
                 Prefix: "Agent",
                 Suffix: "Commercial"
@@ -50,7 +50,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <AppSidebar menuData={data} />
             <SidebarInset className="">
                 <Header />
-                <main className="w-[99%] bg-gris h-[88vh] rounded-lg overflow-hidden">
+                <main className="w-[99%] bg-gris min-h-[calc(100vh-4.6rem)] rounded-lg overflow-hidden">
                     <ScrollArea className="h-full w-full p-4">
                         {children}
                     </ScrollArea>

@@ -5,8 +5,8 @@ import Header from "@/components/Header"
 export default function Layout({ children }: { children: React.ReactNode }) {
     const data = [
         {
-            title: "Les abonnes",
-            url: "/Agent_guiche/Les_abonnes",
+            title: "Rechercher",
+            url: "/Agent_guiche/Rechercher",
             icon: "Home",
             RoleName:{
                 Prefix:"Agent",
@@ -15,8 +15,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         },
         {
             title: "Nouveau client",
-            url: "/Agent_guiche/Nouveau_client",
             icon: "Inbox",
+            RoleName:{
+                Prefix:"Agent",
+                Suffix:"Guiche"
+            },
+            submenu: [
+                { title: "Nouveau client", url: "/Agent_guiche/Nouveau_client" },
+                { title: "Modification Nom", url: "/Agent_guiche/Changer_nom" },
+                { title: "acheter un cle ", url: "/Agent_guiche/Achat_cle" },
+                { title: "Ajouter un sous couvert", url: "/Agent_guiche/Ajout_sous_couverte" },
+                { title: "Ajouter une demande livraison", url: "/Agent_guiche/Ajout_livraison" },
+                { title: "Ajouter une collection", url: "/Agent_guiche/Ajout_collection" },
+              ],
+        },
+        {
+            title: "paiement",
+            url: "/Agent_guiche/Paiement",
+            icon: "HandCoins",
             RoleName:{
                 Prefix:"Agent",
                 Suffix:"Guiche"

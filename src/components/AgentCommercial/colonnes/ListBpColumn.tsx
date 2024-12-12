@@ -5,25 +5,16 @@ import { ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-
-import { PaymentForm } from "../components/PaiementForm"
-import { useState } from "react"
-
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Les_abonnes = {
+export type ListBp = {
     id: string;
-    Nom: string;
     NBp: string;
     Etat: string;
-    Telephone: string;
-    Redevance: string;
-    sous_couvert: string;
-    Domocile: string;
-    Date_abonnement: string;
+    Type: string;
 };
 
-export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
+export const ListBpColumns: ColumnDef<ListBp>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -47,45 +38,25 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "Nom",
+        accessorKey: "NBp",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Nom
+                    Numero Boite postale
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
-        accessorKey: "NBp",
-        header: "N°Boite Postal",
-    },
-    {
         accessorKey: "Etat",
         header: "Etat",
     },
     {
-        accessorKey: "Telephone",
-        header: "Telephone",
-    },
-    {
-        accessorKey: "Redevance",
-        header: "Redevance",
-    },
-    {
-        accessorKey: "sous_couvert",
-        header: "sous couvert",
-    },
-    {
-        accessorKey: "Domocile",
-        header: "Livraison à Domocile",
-    },
-    {
-        accessorKey: "Date_abonnement",
-        header: "Date abonnement",
+        accessorKey: "Type",
+        header: "Type",
     },
 ]

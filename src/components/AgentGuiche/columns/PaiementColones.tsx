@@ -11,7 +11,7 @@ import { useState } from "react"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Les_abonnes = {
+export type Le_Paiement = {
     id: string;
     Nom: string;
     NBp: string;
@@ -23,7 +23,7 @@ export type Les_abonnes = {
     Date_abonnement: string;
 };
 
-export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
+export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -88,4 +88,21 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
         accessorKey: "Date_abonnement",
         header: "Date abonnement",
     },
+    {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => {
+            const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+            return (
+                <div>
+                    <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
+                        Paiement
+                    </Button>
+                    <PaymentForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+                </div>
+            );
+        },
+    }
+
 ]

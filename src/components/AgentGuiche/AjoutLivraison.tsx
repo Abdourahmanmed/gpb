@@ -1,7 +1,7 @@
-"use client"
-import { useEffect, useState } from 'react'
+"use client";
+import React, { useEffect, useState } from 'react'
 import { DataTable } from '../Tables/DataTables'
-import { Les_abonneColumns, Les_abonnes } from './columns/Les_abonnesTables'
+import { LivraisonDomicil, LivraisonDomicilCoulmns } from './columns/LivraisonDColumn';
 
 const data = [
     {
@@ -40,17 +40,15 @@ const data = [
 
 ]
 
-const Les_Abonnes = () => {
+const AjoutLivraison = () => {
+    const [AjoutLivraison, SetAjoutLivraison] = useState<LivraisonDomicil[]>([])
 
-    const [Abones, SetAbonne] = useState<Les_abonnes[]>([])
-
-    useEffect(() =>{
-        SetAbonne(data);
-    },[])
-
+    useEffect(() => {
+        SetAjoutLivraison(data);
+    }, [])
     return (
-        <DataTable data={Abones} columns={Les_abonneColumns} typeName="Nom" />
+        <DataTable data={AjoutLivraison} columns={LivraisonDomicilCoulmns} typeName="Nom" />
     )
 }
 
-export default Les_Abonnes
+export default AjoutLivraison

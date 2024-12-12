@@ -1,7 +1,7 @@
-"use client"
-import { useEffect, useState } from 'react'
+"use client";
+import React, { useEffect, useState } from 'react'
 import { DataTable } from '../Tables/DataTables'
-import { Les_abonneColumns, Les_abonnes } from './columns/Les_abonnesTables'
+import { Le_Paiement, Le_PaiementColumns } from './columns/PaiementColones'
 
 const data = [
     {
@@ -40,17 +40,15 @@ const data = [
 
 ]
 
-const Les_Abonnes = () => {
+const Paiement = () => {
+    const [Payement, SetPayement] = useState<Le_Paiement[]>([])
 
-    const [Abones, SetAbonne] = useState<Les_abonnes[]>([])
-
-    useEffect(() =>{
-        SetAbonne(data);
-    },[])
-
+    useEffect(() => {
+        SetPayement(data);
+    }, [])
     return (
-        <DataTable data={Abones} columns={Les_abonneColumns} typeName="Nom" />
+        <DataTable data={Payement} columns={Le_PaiementColumns} typeName="Nom" />
     )
 }
 
-export default Les_Abonnes
+export default Paiement

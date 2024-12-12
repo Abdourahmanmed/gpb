@@ -1,27 +1,52 @@
-"use client"
-import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+"use client";
+
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarGroup,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar";
 import { ScrollArea } from "./ui/scroll-area";
 import Image from "next/image";
 import Link from "next/link";
-import { Home, Inbox,Cuboid } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Home, Inbox, Cuboid, Clipboard, UserX, FolderPen, HandCoins, ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-// Typage correct des icônes pour s'assurer qu'elles acceptent className
+// Typage des icônes
 const iconMapper: { [key: string]: React.FC<React.SVGProps<SVGSVGElement>> } = {
     Home,
     Inbox,
     Cuboid,
+    FolderPen,
+    UserX,
+    Clipboard,
+    HandCoins,
 };
+
+interface SubmenuItem {
+    title: string;
+    url: string;
+}
 
 interface SidebarMenuItemProps {
     title: string;
-    url: string;
-    icon: keyof typeof iconMapper; // Clé valide pour les icônes
-    RoleName: {
+    url?: string; // L'URL peut être facultative pour les menus avec des sous-menus
+    icon: keyof typeof iconMapper;
+    RoleName?: {
         Prefix: string;
         Suffix: string;
-    }; // Nouveau champ pour RoleName
+    };
+    submenu?: SubmenuItem[]; // Sous-menu dynamique
 }
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -30,6 +55,12 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
     const pathname = usePathname();
+
+    // Fonction pour vérifier si un sous-menu est actif
+    const isSubmenuActive = (submenu?: SubmenuItem[]) => {
+        if (!submenu) return false;
+        return submenu.some((subItem) => pathname === subItem.url);
+    };
 
     return (
         <Sidebar variant="floating" {...props} className="text-white">
@@ -41,9 +72,9 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                                     <Image src="/logoposte.png" alt="photo lateral" width={50} height={50} />
                                 </div>
-                                <div className="flex  gap-2 leading-none">
-                                    <span className="font-semibold text-xl">{menuData[0].RoleName.Prefix}</span>
-                                    <span className="font-semibold text-xl">{menuData[0].RoleName.Suffix}</span>
+                                <div className="flex gap-2 leading-none">
+                                    <span className="font-semibold text-xl">{menuData[0]?.RoleName?.Prefix}</span>
+                                    <span className="font-semibold text-xl">{menuData[0]?.RoleName?.Suffix}</span>
                                 </div>
                             </a>
                         </SidebarMenuButton>
@@ -57,18 +88,54 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
                         <SidebarMenu className="gap-2">
                             {menuData.map((item) => (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton
-                                        asChild
-                                        className={pathname === item.url ? "bg-sidebar-accent text-primary" : "text-gray-300"}
-                                    >
-                                        <Link href={item.url}>
-                                            {iconMapper[item.icon] &&
-                                                React.createElement(iconMapper[item.icon]!, {
-                                                    className: "mr-2",
-                                                })}
-                                            <span>{item.title}</span>
-                                        </Link>
-                                    </SidebarMenuButton>
+                                    {item.submenu && item.submenu.length > 0 ? (
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <SidebarMenuButton
+                                                    className={`flex justify-between items-center ${isSubmenuActive(item.submenu)
+                                                            ? "bg-sidebar-accent text-primary"
+                                                            : "text-gray-300"
+                                                        }`}
+                                                >
+                                                    {iconMapper[item.icon] &&
+                                                        React.createElement(iconMapper[item.icon]!, {
+                                                            className: "mr-2",
+                                                        })}
+                                                    <span>{item.title}</span>
+                                                    <ChevronDown className="ml-auto" />
+                                                </SidebarMenuButton>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent className="w-full">
+                                                {item.submenu.map((subItem) => (
+                                                    <DropdownMenuItem key={subItem.title} asChild>
+                                                        <Link
+                                                            href={subItem.url}
+                                                            className={`${pathname === subItem.url
+                                                                    ? "bg-sidebar-accent text-primary"
+                                                                    : "text-gray-800"
+                                                                }`}
+                                                        >
+                                                            {subItem.title}
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    ) : (
+                                        <SidebarMenuButton
+                                            asChild
+                                            className={`${pathname === item.url ? "bg-sidebar-accent text-primary" : "text-gray-300"
+                                                }`}
+                                        >
+                                            <Link href={item.url || "#"}>
+                                                {iconMapper[item.icon] &&
+                                                    React.createElement(iconMapper[item.icon]!, {
+                                                        className: "mr-2",
+                                                    })}
+                                                <span>{item.title}</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    )}
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>

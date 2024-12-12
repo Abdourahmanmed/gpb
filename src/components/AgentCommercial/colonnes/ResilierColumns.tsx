@@ -5,25 +5,20 @@ import { ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-
-import { PaymentForm } from "../components/PaiementForm"
 import { useState } from "react"
+import { ResilierForm } from "@/components/AgentGuiche/components/ResilierDialog"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Les_abonnes = {
+export type ResilierClient = {
     id: string;
     Nom: string;
     NBp: string;
     Etat: string;
-    Telephone: string;
-    Redevance: string;
-    sous_couvert: string;
-    Domocile: string;
-    Date_abonnement: string;
+    Type: string;
 };
 
-export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
+export const ResilierClientColumns: ColumnDef<ResilierClient>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -54,7 +49,7 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Nom
+                    Nom Du client
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -66,26 +61,28 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
     },
     {
         accessorKey: "Etat",
-        header: "Etat",
+        header: "Etat Boite Postal",
     },
     {
-        accessorKey: "Telephone",
-        header: "Telephone",
+        accessorKey: "Type",
+        header: "Type Bp",
     },
+    
     {
-        accessorKey: "Redevance",
-        header: "Redevance",
-    },
-    {
-        accessorKey: "sous_couvert",
-        header: "sous couvert",
-    },
-    {
-        accessorKey: "Domocile",
-        header: "Livraison à Domocile",
-    },
-    {
-        accessorKey: "Date_abonnement",
-        header: "Date abonnement",
-    },
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => {
+            const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+            return (
+                <div>
+                    <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
+                        Resilier
+                    </Button>
+                    <ResilierForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+                </div>
+            );
+        },
+    }
+
 ]

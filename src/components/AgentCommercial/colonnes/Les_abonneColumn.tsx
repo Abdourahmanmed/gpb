@@ -6,12 +6,9 @@ import { ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 
-import { PaymentForm } from "../components/PaiementForm"
-import { useState } from "react"
-
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Les_abonnes = {
+export type Les_abonnesCommerce = {
     id: string;
     Nom: string;
     NBp: string;
@@ -23,7 +20,7 @@ export type Les_abonnes = {
     Date_abonnement: string;
 };
 
-export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
+export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -88,4 +85,5 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
         accessorKey: "Date_abonnement",
         header: "Date abonnement",
     },
+
 ]

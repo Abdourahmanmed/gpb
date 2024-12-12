@@ -1,7 +1,7 @@
-"use client"
-import { useEffect, useState } from 'react'
+"use client";
+import React, { useEffect, useState } from 'react'
 import { DataTable } from '../Tables/DataTables'
-import { Les_abonneColumns, Les_abonnes } from './columns/Les_abonnesTables'
+import { Achat_Cle, Achat_CleColumns } from './columns/AchatClecloumns';
 
 const data = [
     {
@@ -40,17 +40,15 @@ const data = [
 
 ]
 
-const Les_Abonnes = () => {
+const ChangementCle = () => {
+    const [ChnageCle, SetChnageCle] = useState<Achat_Cle[]>([])
 
-    const [Abones, SetAbonne] = useState<Les_abonnes[]>([])
-
-    useEffect(() =>{
-        SetAbonne(data);
-    },[])
-
+    useEffect(() => {
+        SetChnageCle(data);
+    }, [])
     return (
-        <DataTable data={Abones} columns={Les_abonneColumns} typeName="Nom" />
+        <DataTable data={ChnageCle} columns={Achat_CleColumns} typeName="Nom" />
     )
 }
 
-export default Les_Abonnes
+export default ChangementCle

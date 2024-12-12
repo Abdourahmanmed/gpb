@@ -1,16 +1,20 @@
-"use client"
-import React from 'react'
-import { SidebarSeparator, SidebarTrigger } from './ui/sidebar'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from './ui/breadcrumb'
-import { usePathname } from 'next/navigation'
-import { Input } from './ui/input'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { Search } from 'lucide-react'
-import { Button } from './ui/button'
+"use client";
+import React from 'react';
+import { SidebarSeparator, SidebarTrigger } from './ui/sidebar';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from './ui/breadcrumb';
+import { usePathname } from 'next/navigation';
+import { Input } from './ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Search } from 'lucide-react';
+import { Button } from './ui/button';
 
 const Header = () => {
     const path = usePathname();
-    const lastSegment = path.split('/').filter(Boolean).pop();
+
+    // Extraire et formater les segments
+    const segments = path.split('/').filter(Boolean);
+    const firstSegment = segments[0]?.replace(/_/g, ' ') || 'Accueil';
+    const lastSegment = segments.pop()?.replace(/_/g, ' ') || 'Page';
 
     return (
         <header className="flex sticky top-0 bg-white h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -21,7 +25,7 @@ const Header = () => {
                     <BreadcrumbList>
                         <BreadcrumbItem className="hidden md:block">
                             <BreadcrumbLink href="#">
-                                Agent guiche
+                                {firstSegment}
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator className="hidden md:block" />
@@ -41,10 +45,9 @@ const Header = () => {
                     </Avatar>
                     <span className='text-primary'>Abdourahman moussa ali</span>
                 </div>
-
             </div>
         </header>
-    )
+    );
 }
 
-export default Header
+export default Header;

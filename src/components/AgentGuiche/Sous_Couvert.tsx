@@ -1,7 +1,7 @@
-"use client"
-import { useEffect, useState } from 'react'
+"use client";
+import React, { useEffect, useState } from 'react'
 import { DataTable } from '../Tables/DataTables'
-import { Les_abonneColumns, Les_abonnes } from './columns/Les_abonnesTables'
+import { AjoutSousCouvert, AjoutSousCouvertColumns } from './columns/AjoutSousCouvColumns';
 
 const data = [
     {
@@ -40,17 +40,15 @@ const data = [
 
 ]
 
-const Les_Abonnes = () => {
+const Sous_Couvert = () => {
+    const [SousCouVert, SetSousCouVert] = useState<AjoutSousCouvert[]>([])
 
-    const [Abones, SetAbonne] = useState<Les_abonnes[]>([])
-
-    useEffect(() =>{
-        SetAbonne(data);
-    },[])
-
+    useEffect(() => {
+        SetSousCouVert(data);
+    }, [])
     return (
-        <DataTable data={Abones} columns={Les_abonneColumns} typeName="Nom" />
+        <DataTable data={SousCouVert} columns={AjoutSousCouvertColumns} typeName="Nom" />
     )
 }
 
-export default Les_Abonnes
+export default Sous_Couvert
