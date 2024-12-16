@@ -23,7 +23,7 @@ import Imprimery from "./Imprimery";
 
 // Typages
 type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
-type WalletOptions = "cac_pay" | "waafi" | "d_money";
+type WalletOptions = "cac_pay" | "waafi" | "d_money"| "sabapay" | "dahabplaces";
 
 
 
@@ -60,6 +60,8 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen })
     const handleNewRecue = () => {
         setCurrentNumber((prev) => prev + 1);
     };
+
+
     const form = useForm<PaiementFormValues>({
         resolver: zodResolver(PaiementSchema),
         defaultValues: {
@@ -260,10 +262,10 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen })
 
                         {/* Section à imprimer */}
                         <div id="print-area" className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
-                           <HeaderImprimary />
+                            <HeaderImprimary />
 
                             {donnees && (
-                               <Imprimery donnees={donnees} recueNumber={recueNumber} NomRecue="Achat cle" /> 
+                                <Imprimery donnees={donnees} recueNumber={recueNumber} NomRecue="Achat cle" />
                             )}
                         </div>
 

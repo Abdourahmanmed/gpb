@@ -18,6 +18,8 @@ import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import printJS from "print-js";
 import Image from "next/image";
+import Imprimery from "./Imprimery";
+import HeaderImprimary from "./HeaderImprimary";
 
 interface ChangeNameFormProps {
     isOpen: boolean;
@@ -60,6 +62,9 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen }
             Montant: 5000,
             Methode_de_paiement: undefined,
             Wallet: undefined,
+            Numero_wallet: "",
+            Numero_cheque: "",
+            Nom_Banque: "",
         },
     });
 
@@ -151,7 +156,6 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen }
                                                         <SelectValue placeholder="Choisissez une méthode de paiement" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="credit">Par Crédit</SelectItem>
                                                         <SelectItem value="cheque">Par Chèque</SelectItem>
                                                         <SelectItem value="cash">Par Cash</SelectItem>
                                                         <SelectItem value="wallet">Par Wallet</SelectItem>
@@ -163,31 +167,76 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen }
                                     )}
                                 />
                                 {selectedPaymentMethod === "wallet" && (
-                                    <FormField
-                                        control={form.control}
-                                        name="Wallet"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Choisissez un wallet</FormLabel>
-                                                <FormControl>
-                                                    <Select
-                                                        onValueChange={(value) => field.onChange(value as WalletOptions)}
-                                                        value={field.value}
-                                                    >
-                                                        <SelectTrigger className="w-full">
-                                                            <SelectValue placeholder="Sélectionnez un wallet" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="cac_pay">CAC Pay</SelectItem>
-                                                            <SelectItem value="waafi">Waafi</SelectItem>
-                                                            <SelectItem value="d_money">D-Money</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                    <>
+                                        <FormField
+                                            control={form.control}
+                                            name="Wallet"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Choisissez un wallet</FormLabel>
+                                                    <FormControl>
+                                                        <Select
+                                                            onValueChange={(value) => field.onChange(value as WalletOptions)}
+                                                            value={field.value}
+                                                        >
+                                                            <SelectTrigger className="w-full">
+                                                                <SelectValue placeholder="Sélectionnez un wallet" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="cac_pay">CAC Pay</SelectItem>
+                                                                <SelectItem value="waafi">Waafi</SelectItem>
+                                                                <SelectItem value="d_money">D-Money</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="Numero_wallet"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Numero wallet</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} placeholder="Exemple: 77 20 21 10" />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </>
+                                )}
+                                {selectedPaymentMethod === "cheque" && (
+                                    <>
+                                        <FormField
+                                            control={form.control}
+                                            name="Numero_cheque"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Numero du cheque</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} placeholder="Entre le numero cheque .." />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="Nom_Banque"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Nom du banque</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} placeholder="Entre le nom du banque..." />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </>
                                 )}
                                 <div className="flex justify-end gap-3">
                                     <Button
@@ -198,7 +247,7 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen }
                                         Annuler
                                     </Button>
                                     <Button type="submit" className="bg-primary text-white">
-                                        Ajouter
+                                        Next
                                     </Button>
                                 </div>
                             </form>
@@ -217,71 +266,9 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen }
 
                         {/* Section à imprimer */}
                         <div id="print-area" className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
-                            <div className="flex items-center gap">
-                                {/* Logo à gauche */}
-                                <div className="w-max h-max rounded-full flex items-center justify-center overflow-hidden">
-                                    <Image
-                                        src="/logoposte.png"
-                                        alt="Logo"
-                                        width={100} // Largeur de 64px
-                                        height={100} // Hauteur de 64px
-                                        className="object-cover"
-                                    />
-                                </div>
-
-                                {/* Texte principal */}
-                                <div className="flex-1 text-center">
-                                    <div className="text-lg font-bold">
-                                        REPUBLIQUE DE DJIBOUTI
-                                    </div>
-                                    <div className="text-sm italic my-1">
-                                        Unité - Égalité - Paix
-                                    </div>
-                                    <div className="text-sm uppercase my-1">
-                                        MINISTÈRE DE LA COMMUNICATION, CHARGÉ DES POSTES ET DES TÉLÉCOMMUNICATIONS
-                                    </div>
-                                    <div className="text-blue-500 font-bold mt-4 text-lg">
-                                        LA POSTE DE DJIBOUTI S.A
-                                    </div>
-                                    <div className="text-sm uppercase">
-                                        DIRECTION COMMERCIALE
-                                    </div>
-                                </div>
-                            </div>
+                            <HeaderImprimary />
                             {donnees && (
-                                <div className="h-max w-full p-4 ">
-                                    <h1 className="text-2xl font-bold text-gray-800 mb-4">Reçue du paiement Livraison à domicile</h1>
-                                    {/* Numéro de reçu */}
-                                    <div className="mt-4 text-xl py-4 font-semibold">
-                                        <span>Numéro de reçu : </span>
-                                        <span className="text-blue-700">{recueNumber}</span>
-                                    </div>
-                                    <div className="space-y-6">
-                                        {/* Méthode de Paiement */}
-                                        <div className="space-y-2">
-                                            <div className="text-lg font-semibold text-gray-700">
-                                                <strong>L' (es) Adresse(s) Livraison(s) :</strong> {donnees.Adresse_Livraison_Domicile} <br /> <br />
-                                                <strong>Méthode de paiement :</strong> {donnees.Methode_de_paiement}
-                                            </div>
-                                            {donnees.Wallet ? (
-                                                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-md">
-                                                    <div className="text-sm text-gray-800">
-                                                        <strong>Wallet :</strong> {donnees.Wallet}
-                                                    </div>
-                                                    <div className="text-sm text-gray-800">
-                                                        <strong>Montant :</strong> {donnees.Montant}  Djf
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-md">
-                                                    <div className="text-sm text-gray-800">
-                                                        <strong>Montant :</strong> {donnees.Montant} Djf
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
+                                <Imprimery donnees={donnees} recueNumber={recueNumber} NomRecue="Collection" />
                             )}
                         </div>
 

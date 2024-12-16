@@ -31,6 +31,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MontantSaiasiSchema, SousCouvertSchema } from "@/Schema/schema";
 import printJS from "print-js";
 import Image from "next/image";
+import HeaderImprimary from "./HeaderImprimary";
+import Imprimery from "./Imprimery";
 
 type SousCouvertFormValues = z.infer<typeof SousCouvertSchema>;
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
@@ -76,8 +78,11 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
             sousCouvertures: [
                 { societe: "", personne: "", adresse: "", telephone: "" },
             ],
-            methodePaiement: "",
+            Methode_de_paiement: "",
             wallet: undefined,
+            Numero_wallet: "",
+            Numero_cheque: "",
+            Nom_Banque: "",
         },
     });
 
@@ -230,7 +235,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
 
                                 <FormField
                                     control={form.control}
-                                    name="methodePaiement"
+                                    name="Methode_de_paiement"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Méthode de paiement</FormLabel>
@@ -255,32 +260,77 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                                     )}
                                 />
 
-                                {form.getValues("methodePaiement") === "wallet" && (
-                                    <FormField
-                                        control={form.control}
-                                        name="wallet"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Choisir un Wallet</FormLabel>
-                                                <FormControl>
-                                                    <Select
-                                                        onValueChange={(value) => field.onChange(value)}
-                                                        value={field.value}
-                                                    >
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Choisissez un wallet" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="cac pay">CAC Pay</SelectItem>
-                                                            <SelectItem value="d-money">D-Money</SelectItem>
-                                                            <SelectItem value="waafi">Waafi</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                {form.getValues("Methode_de_paiement") === "wallet" && (
+                                    <>
+                                        <FormField
+                                            control={form.control}
+                                            name="wallet"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Choisir un Wallet</FormLabel>
+                                                    <FormControl>
+                                                        <Select
+                                                            onValueChange={(value) => field.onChange(value)}
+                                                            value={field.value}
+                                                        >
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Choisissez un wallet" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="cac pay">CAC Pay</SelectItem>
+                                                                <SelectItem value="d-money">D-Money</SelectItem>
+                                                                <SelectItem value="waafi">Waafi</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="Numero_wallet"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Numero wallet</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} placeholder="Exemple: 77 20 21 10" />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </>
+                                )}
+                                {form.getValues("Methode_de_paiement") === "cheque" && (
+                                    <>
+                                        <FormField
+                                            control={form.control}
+                                            name="Numero_cheque"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Numero du cheque</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} placeholder="Entre le numero cheque .." />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="Nom_Banque"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Nom du banque</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} placeholder="Entre le nom du banque..." />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </>
                                 )}
 
                                 <div className="text-lg font-semibold text-right">
@@ -297,7 +347,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                                         Annuler
                                     </Button>
                                     <Button type="submit" className="bg-primary text-white">
-                                        Enregistrer
+                                        Next
                                     </Button>
                                 </div>
                             </form>
@@ -316,93 +366,9 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
 
                         {/* Section à imprimer */}
                         <div id="print-area" className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
-                            <div className="flex items-center gap">
-                                {/* Logo à gauche */}
-                                <div className="w-max h-max rounded-full flex items-center justify-center overflow-hidden">
-                                    <Image
-                                        src="/logoposte.png"
-                                        alt="Logo"
-                                        width={100} // Largeur de 64px
-                                        height={100} // Hauteur de 64px
-                                        className="object-cover"
-                                    />
-                                </div>
-
-                                {/* Texte principal */}
-                                <div className="flex-1 text-center">
-                                    <div className="text-lg font-bold">
-                                        REPUBLIQUE DE DJIBOUTI
-                                    </div>
-                                    <div className="text-sm italic my-1">
-                                        Unité - Égalité - Paix
-                                    </div>
-                                    <div className="text-sm uppercase my-1">
-                                        MINISTÈRE DE LA COMMUNICATION, CHARGÉ DES POSTES ET DES TÉLÉCOMMUNICATIONS
-                                    </div>
-                                    <div className="text-blue-500 font-bold mt-4 text-lg">
-                                        LA POSTE DE DJIBOUTI S.A
-                                    </div>
-                                    <div className="text-sm uppercase">
-                                        DIRECTION COMMERCIALE
-                                    </div>
-                                </div>
-                            </div>
+                            <HeaderImprimary />
                             {donnees && (
-                                <div className="h-max w-full p-4 ">
-                                    <h1 className="text-2xl font-bold text-gray-800 mb-4">Reçue du paiement sous couverte</h1>
-                                    {/* Numéro de reçu */}
-                                    <div className="mt-4 text-xl py-4 font-semibold">
-                                        <span>Numéro de reçu : </span>
-                                        <span className="text-blue-700">{recueNumber}</span>
-                                    </div>
-                                    <div className="space-y-6">
-                                        {/* Section des Sous-Couvertures */}
-                                        <div className="space-y-4">
-                                            <h3 className="text-xl font-semibold text-gray-700">Sous-Couvertures</h3>
-                                            <ul className="list-disc pl-5 space-y-3">
-                                                {donnees.sousCouvertures.map((item, index) => (
-                                                    <li key={index} className="text-gray-600">
-                                                        <div>
-                                                            <strong className="text-gray-800">Société :</strong> <span>{item.societe}</span>
-                                                        </div>
-                                                        <div>
-                                                            <strong className="text-gray-800">Personne :</strong> <span>{item.personne}</span>
-                                                        </div>
-                                                        <div>
-                                                            <strong className="text-gray-800">Adresse :</strong> <span>{item.adresse}</span>
-                                                        </div>
-                                                        <div>
-                                                            <strong className="text-gray-800">Téléphone :</strong> <span>{item.telephone}</span>
-                                                        </div>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-
-                                        {/* Méthode de Paiement */}
-                                        <div className="space-y-2">
-                                            <div className="text-lg font-semibold text-gray-700">
-                                                <strong>Méthode de paiement :</strong> {donnees.methodePaiement}
-                                            </div>
-                                            {donnees.wallet ? (
-                                                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-md">
-                                                    <div className="text-sm text-gray-800">
-                                                        <strong>Wallet :</strong> {donnees.wallet}
-                                                    </div>
-                                                    <div className="text-sm text-gray-800">
-                                                        <strong>Montant :</strong> {totalMontant}  Djf
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-md">
-                                                    <div className="text-sm text-gray-800">
-                                                        <strong>Montant :</strong> {totalMontant} Djf
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
+                                <Imprimery donnees={donnees} recueNumber={recueNumber} NomRecue="Sous couverte" totalMontant={totalMontant} />
                             )}
                         </div>
 
