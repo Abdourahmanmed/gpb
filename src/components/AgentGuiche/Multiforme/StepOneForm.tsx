@@ -8,23 +8,25 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
-import { Input } from '../ui/input';
+import { Input } from '../../ui/input';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '../ui/select';
-import { Button } from '../ui/button';
+} from '../../ui/select';
+import { Button } from '../../ui/button';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { NouveauClientSchema } from '@/Schema/schema';
+import { NouveauClientSchemaStepOne } from '@/Schema/schema';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
-const NouveauClient = () => {
-    const form = useForm<z.infer<typeof NouveauClientSchema>>({
-        resolver: zodResolver(NouveauClientSchema),
+const StepOneForm = () => {
+    const router = useRouter();
+    const form = useForm<z.infer<typeof NouveauClientSchemaStepOne>>({
+        resolver: zodResolver(NouveauClientSchemaStepOne),
         defaultValues: {
             BoitePostale: '',
             Nom: '',
@@ -35,8 +37,9 @@ const NouveauClient = () => {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof NouveauClientSchema>) => {
+    const onSubmit = (values: z.infer<typeof NouveauClientSchemaStepOne>) => {
         console.log(values); // Remplacez par votre logique
+        router.push("/Agent_guiche/Nouveau_client/StepTwoForm");
     };
 
     return (
@@ -168,7 +171,7 @@ const NouveauClient = () => {
                     {/* Bouton */}
                     <div className="col-span-2">
                         <Button type="submit" className="w-full bg-blue-900 text-white">
-                            Enregistrer
+                            Continuer
                         </Button>
                     </div>
                 </form>
@@ -177,4 +180,4 @@ const NouveauClient = () => {
     );
 };
 
-export default NouveauClient;
+export default StepOneForm;

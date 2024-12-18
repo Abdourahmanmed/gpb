@@ -31,13 +31,35 @@ export const RegisterSchema = z.object({
 });
 
 // schema pour le ajouter un nouveau client
-export const NouveauClientSchema = z.object({
+export const NouveauClientSchemaStepOne = z.object({
     BoitePostale: z.string().min(1, { message: "Le numéro de boîte postale est obligatoire." }),
     Nom: z.string().min(1, { message: "Le nom est obligatoire." }),
     Email: z.string().email({ message: "L'email est obligatoire." }),
     Telephone: z.string().min(1, { message: "Le téléphone est obligatoire." }),
     Adresse: z.string().min(1, { message: "L'adresse est obligatoire." }),
     Role: z.string().min(1, { message: "Choisir un type de client." }),
+});
+
+// Schéma pour ajouter un nouveau client avec des fichiers scannés
+export const NouveauClientSchemaStepTwo = z.object({
+    Abonnement: z
+        .any()
+        .refine(
+            (file) => file instanceof File || (file && typeof file === "object"),
+            { message: "Le fichier d'abonnement scanné est obligatoire." }
+        ),
+    patent_quitance: z
+        .any()
+        .refine(
+            (file) => file instanceof File || (file && typeof file === "object"),
+            { message: "Le fichier de la quittance patente scannée est obligatoire." }
+        ),
+    Identiter: z
+        .any()
+        .refine(
+            (file) => file instanceof File || (file && typeof file === "object"),
+            { message: "Le fichier d'identité scanné est obligatoire." }
+        ),
 });
 
 //schema pour le changement du nom

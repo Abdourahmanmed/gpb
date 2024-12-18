@@ -21,7 +21,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Suffix:"Guiche"
             },
             submenu: [
-                { title: "Nouveau client", url: "/Agent_guiche/Nouveau_client" },
+                { title: "Nouveau client", url: "/Agent_guiche/Nouveau_client/StepOneForm" },
                 { title: "Modification Nom", url: "/Agent_guiche/Changer_nom" },
                 { title: "acheter un cle ", url: "/Agent_guiche/Achat_cle" },
                 { title: "Ajouter un sous couvert", url: "/Agent_guiche/Ajout_sous_couverte" },
