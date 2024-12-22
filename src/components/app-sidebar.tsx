@@ -18,7 +18,16 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { Home, Inbox, Cuboid, Clipboard, UserX, FolderPen, HandCoins, ChevronDown } from "lucide-react";
+import {
+    Home,
+    Inbox,
+    Cuboid,
+    Clipboard,
+    UserX,
+    FolderPen,
+    HandCoins,
+    ChevronDown,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
 
@@ -70,11 +79,20 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
                         <SidebarMenuButton size="lg" asChild>
                             <a href="#">
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                                    <Image src="/logoposte.png" alt="photo lateral" width={50} height={50} />
+                                    <Image
+                                        src="/logoposte.png"
+                                        alt="photo lateral"
+                                        width={50}
+                                        height={50}
+                                    />
                                 </div>
                                 <div className="flex gap-2 leading-none">
-                                    <span className="font-semibold text-xl">{menuData[0]?.RoleName?.Prefix}</span>
-                                    <span className="font-semibold text-xl">{menuData[0]?.RoleName?.Suffix}</span>
+                                    <span className="font-semibold text-xl">
+                                        {menuData[0]?.RoleName?.Prefix}
+                                    </span>
+                                    <span className="font-semibold text-xl">
+                                        {menuData[0]?.RoleName?.Suffix}
+                                    </span>
                                 </div>
                             </a>
                         </SidebarMenuButton>
@@ -106,25 +124,39 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
                                                 </SidebarMenuButton>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent className="w-full">
-                                                {item.submenu.map((subItem) => (
-                                                    <DropdownMenuItem key={subItem.title} asChild>
-                                                        <Link
-                                                            href={subItem.url}
-                                                            className={`${pathname === subItem.url
-                                                                    ? "bg-sidebar-accent text-primary"
-                                                                    : "text-gray-800"
-                                                                }`}
+                                                {item.submenu
+                                                    .filter(
+                                                        (subItem) =>
+                                                            ![
+                                                                "/Agent_guiche/Nouveau_client/StepTwoForm",
+                                                                "/Agent_guiche/Nouveau_client/StepThreeForm",
+                                                                "/Agent_guiche/Nouveau_client/StepFourForm",
+                                                            ].includes(subItem.url)
+                                                    )
+                                                    .map((subItem) => (
+                                                        <DropdownMenuItem
+                                                            key={subItem.title}
+                                                            asChild
                                                         >
-                                                            {subItem.title}
-                                                        </Link>
-                                                    </DropdownMenuItem>
-                                                ))}
+                                                            <Link
+                                                                href={subItem.url}
+                                                                className={`${pathname === subItem.url
+                                                                        ? "bg-sidebar-accent text-primary"
+                                                                        : "text-gray-800"
+                                                                    }`}
+                                                            >
+                                                                {subItem.title}
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                    ))}
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     ) : (
                                         <SidebarMenuButton
                                             asChild
-                                            className={`${pathname === item.url ? "bg-sidebar-accent text-primary" : "text-gray-300"
+                                            className={`${pathname === item.url
+                                                    ? "bg-sidebar-accent text-primary"
+                                                    : "text-gray-300"
                                                 }`}
                                         >
                                             <Link href={item.url || "#"}>

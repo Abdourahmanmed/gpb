@@ -1,15 +1,27 @@
 "use client";
-import React, { useState } from 'react';
+import React from "react";
+import { useRouter, usePathname } from "next/navigation";
+
+const PATH = [
+    "Agent_guiche/Nouveau_client/StepOneForm",
+    "Agent_guiche/Nouveau_client/StepTwoForm",
+    "Agent_guiche/Nouveau_client/StepThreeForm",
+    "Agent_guiche/Nouveau_client/StepFourForm",
+];
 
 const LinksDecoration: React.FC = () => {
-    const [currentStep, setCurrentStep] = useState<'StepOne' | 'StepTwo' | 'StepThree'>('StepOne');
+    const router = useRouter();
+    const currentPath = usePathname();
 
-    // Définition des étapes avec des types spécifiques
-    const steps: { id: 'StepOne' | 'StepTwo' | 'StepThree'; label: string }[] = [
-        { id: 'StepOne', label: '1' },
-        { id: 'StepTwo', label: '2' },
-        { id: 'StepThree', label: '3' },
-    ];
+    // Identifier l'étape active en fonction du chemin actuel
+    const currentStepIndex = PATH.findIndex((path) => currentPath.includes(path));
+
+    // Étapes avec leur label et index
+    const steps = PATH.map((path, index) => ({
+        id: path,
+        label: (index + 1).toString(),
+        active: currentStepIndex === index,
+    }));
 
     return (
         <div className="flex flex-col items-center p-4">
@@ -17,14 +29,17 @@ const LinksDecoration: React.FC = () => {
                 {steps.map((step, index) => (
                     <React.Fragment key={step.id}>
                         <button
-                            className={`w-[5rem] h-[5rem] flex items-center justify-center border rounded-full ${currentStep === step.id ? 'bg-blue-500 text-white' : 'border-blue-800 text-gray-700'} hover:bg-blue-400 hover:text-white transition-all`}
-                            onClick={() => setCurrentStep(step.id)}
+                            className={`w-[5rem] h-[5rem] flex items-center justify-center border rounded-full ${step.active
+                                    ? "bg-blue-500 text-white"
+                                    : "border-blue-800 text-gray-700"
+                                } hover:bg-blue-400 hover:text-white transition-all`}
+                            onClick={() => router.push(`/${step.id}`)}
                         >
                             {step.label}
                         </button>
-                        {/* Ajouter la ligne entre les boutons sauf après le dernier */}
+                        {/* Ajouter une ligne entre les étapes sauf après la dernière */}
                         {index < steps.length - 1 && (
-                            <span className="w-[15rem] h-[1px] bg-blue-700 self-center"></span>
+                            <span className="w-[10rem] h-[1px] bg-blue-700 self-center"></span>
                         )}
                     </React.Fragment>
                 ))}
