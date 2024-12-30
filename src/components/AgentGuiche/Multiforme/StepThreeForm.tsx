@@ -8,28 +8,40 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { NouveauClientSchemaStepTwo } from '@/Schema/schema';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/Store/store';
+import { nextStep, updateField } from '@/Store/Slices/Multi-formSlice';
+import { Input } from '@/components/ui/input';
+import { NouveauClientSchemaStepTwo } from '@/Schema/schema';
+import { Button } from '@/components/ui/button';
 
 const StepThreeForm = () => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const multiFormState = useSelector((state: RootState) => state.multiForm);
+
   const form = useForm<z.infer<typeof NouveauClientSchemaStepTwo>>({
     resolver: zodResolver(NouveauClientSchemaStepTwo),
-    defaultValues: {
-      Abonnement: '',
-      patent_quitance: '',
-      Identiter: ''
-    },
+    defaultValues: multiFormState,
   });
 
   const onSubmit = (values: z.infer<typeof NouveauClientSchemaStepTwo>) => {
-    console.log(values); // Remplacez par votre logique
-    router.push("/Agent_guiche/Nouveau_client/StepTwoForm");
+    // Mise à jour des champs dans Redux
+    Object.entries(values).forEach(([field, value]) => {
+      dispatch(updateField({ field, value }));
+    });
+    console.log(values);
+
+    dispatch(nextStep()); // Passer à l'étape suivante
+  };
+
+  const handleFileChange = (field: any) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null;
+    field.onChange(file); // Mise à jour de la valeur du fichier
   };
 
   return (
@@ -51,9 +63,10 @@ const StepThreeForm = () => {
                 <FormLabel>Abonnement :</FormLabel>
                 <FormControl>
                   <Input
-                    {...field}
-                    type='file'
-                    placeholder="Choisir une adresse..."
+                    type="file"
+                    name={field.name}
+                    onChange={handleFileChange(field)} // Gestion du changement de fichier
+                    onBlur={field.onBlur} // OnBlur pour la validation
                   />
                 </FormControl>
                 <FormMessage />
@@ -69,7 +82,12 @@ const StepThreeForm = () => {
               <FormItem>
                 <FormLabel>patent/quittance:</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Exemple : Fatouma" type='file' />
+                  <Input
+                    type="file"
+                    name={field.name}
+                    onChange={handleFileChange(field)} // Gestion du changement de fichier
+                    onBlur={field.onBlur} // OnBlur pour la validation
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -84,12 +102,18 @@ const StepThreeForm = () => {
               <FormItem>
                 <FormLabel>Identiter :</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Exemple : 77101010" type='file' />
+                  <Input
+                    type="file"
+                    name={field.name}
+                    onChange={handleFileChange(field)} // Gestion du changement de fichier
+                    onBlur={field.onBlur} // OnBlur pour la validation
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           {/* Bouton */}
           <div className="col-span-2">
             <Button type="submit" className="w-full bg-blue-900 text-white">
@@ -99,7 +123,7 @@ const StepThreeForm = () => {
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default StepThreeForm
+export default StepThreeForm;

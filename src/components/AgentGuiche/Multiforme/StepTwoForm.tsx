@@ -1,57 +1,57 @@
-"use client"
+"use client";
+
 import { useRouter } from 'next/navigation';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { useForm, useFieldArray } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { SousCouvertSchema } from "@/Schema/schema";
 import { ScrollArea } from '@/components/ui/scroll-area';
-
-// Typages
-type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
-type WalletOptions = "cac_pay" | "waafi" | "d_money";
-
-
-// Schéma de validation avec zod
-const PaiementSchema = z.object({
-    Montant: z.literal(40000),
-    Methode_de_paiement: z.enum(["credit", "cheque", "cash", "wallet"], {
-        required_error: "Veuillez sélectionner une méthode de paiement.",
-    }),
-    Wallet: z.enum(["cac_pay", "waafi", "d_money"]).optional(),
-});
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/Store/store';
+import { nextStep, updateField } from '@/Store/Slices/Multi-formSlice';
+import { SousCouvertSchema } from '@/Schema/schema';
 
 type SousCouvertFormValues = z.infer<typeof SousCouvertSchema>;
+type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
+type WalletOptions = "cac_pay" | "waafi" | "d_money" | "sabapay" | "dahabplaces";
 
 const StepTwoForm = () => {
     const montantParSousCouverture = 30000;
     const [totalMontant, setTotalMontant] = useState(montantParSousCouverture);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<MethodePaiement | undefined>(undefined);
+
+    const dispatch = useDispatch<AppDispatch>();
+    const multiFormState = useSelector((state: RootState) => state.multiForm);
 
     const form = useForm<SousCouvertFormValues>({
         resolver: zodResolver(SousCouvertSchema),
-        defaultValues: {
-            sousCouvertures: [
-                { societe: "", personne: "", adresse: "", telephone: "" },
-            ],
-            Methode_de_paiement: "",
-            wallet: undefined,
-            Numero_wallet: "",
-            Numero_cheque: "",
-            Nom_Banque: "",
-        },
+        defaultValues: multiFormState,
     });
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
-        name: "sousCouvertures",
+        name: 'sousCouvertures',
     });
 
     const handleAdd = () => {
-        append({ societe: "", personne: "", adresse: "", telephone: "" });
+        append({ societe: '', personne: '', adresse: '', telephone: '' });
         setTotalMontant((prev) => prev + montantParSousCouverture);
     };
 
@@ -61,12 +61,20 @@ const StepTwoForm = () => {
             setTotalMontant((prev) => prev - montantParSousCouverture);
         }
     };
-    const onSubmit = (values: SousCouvertFormValues) => {
+
+    const onSubmit = (values: z.infer<typeof SousCouvertSchema>) => {
+        // Mise à jour des champs dans Redux
+        Object.entries(values).forEach(([field, value]) => {
+            dispatch(updateField({ field, value }));
+        });
         console.log(values);
+
+        dispatch(nextStep()); // Passer à l'étape suivante
+        // router.push("/Agent_guiche/Nouveau_client/StepTwoForm"); // Naviguer vers la prochaine étape
     };
+
     return (
         <div className="bg-gray-100 p-6 rounded-lg shadow-md max-w-7xl mx-auto">
-
             <h2 className="text-xl font-bold text-center text-blue-900 mb-6">
                 Enregistrement d'un nouveau client
             </h2>
@@ -114,10 +122,7 @@ const StepTwoForm = () => {
                                         <FormItem>
                                             <FormLabel>Adresse</FormLabel>
                                             <FormControl>
-                                                <Input
-                                                    placeholder="Exemple: 123 rue Principale"
-                                                    {...field}
-                                                />
+                                                <Input placeholder="Exemple: 123 rue Principale" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -131,10 +136,7 @@ const StepTwoForm = () => {
                                         <FormItem>
                                             <FormLabel>Numéro de téléphone</FormLabel>
                                             <FormControl>
-                                                <Input
-                                                    placeholder="Exemple: 0123456789"
-                                                    {...field}
-                                                />
+                                                <Input placeholder="Exemple: 0123456789" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -167,17 +169,19 @@ const StepTwoForm = () => {
                                     <FormLabel>Méthode de paiement</FormLabel>
                                     <FormControl>
                                         <Select
-                                            onValueChange={(value) => field.onChange(value)}
+                                            onValueChange={(value) => {
+                                                field.onChange(value as MethodePaiement);
+                                                setSelectedPaymentMethod(value as MethodePaiement);
+                                            }}
                                             value={field.value}
                                         >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Choisissez une méthode" />
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Choisissez une méthode de paiement" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="credit">Crédit</SelectItem>
-                                                <SelectItem value="cheque">Chèque</SelectItem>
-                                                <SelectItem value="cash">Cash</SelectItem>
-                                                <SelectItem value="wallet">Wallet</SelectItem>
+                                                <SelectItem value="cheque">Par Chèque</SelectItem>
+                                                <SelectItem value="cash">Par Cash</SelectItem>
+                                                <SelectItem value="wallet">Par Wallet</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </FormControl>
@@ -186,26 +190,28 @@ const StepTwoForm = () => {
                             )}
                         />
 
-                        {form.getValues("Methode_de_paiement") === "wallet" && (
+                        {selectedPaymentMethod === "wallet" && (
                             <>
                                 <FormField
                                     control={form.control}
                                     name="wallet"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Choisir un Wallet</FormLabel>
+                                            <FormLabel>Choisissez un wallet</FormLabel>
                                             <FormControl>
                                                 <Select
-                                                    onValueChange={(value) => field.onChange(value)}
+                                                    onValueChange={(value) => field.onChange(value as WalletOptions)}
                                                     value={field.value}
                                                 >
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Choisissez un wallet" />
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder="Sélectionnez un wallet" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="cac pay">CAC Pay</SelectItem>
-                                                        <SelectItem value="d-money">D-Money</SelectItem>
+                                                        <SelectItem value="cac_pay">CAC Pay</SelectItem>
                                                         <SelectItem value="waafi">Waafi</SelectItem>
+                                                        <SelectItem value="d_money">D-Money</SelectItem>
+                                                        <SelectItem value="sabapay">Saba-paye</SelectItem>
+                                                        <SelectItem value="dahabplaces">Dahab-Places</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </FormControl>
@@ -218,7 +224,7 @@ const StepTwoForm = () => {
                                     name="Numero_wallet"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Numero wallet</FormLabel>
+                                            <FormLabel>Numéro wallet</FormLabel>
                                             <FormControl>
                                                 <Input {...field} placeholder="Exemple: 77 20 21 10" />
                                             </FormControl>
@@ -228,16 +234,17 @@ const StepTwoForm = () => {
                                 />
                             </>
                         )}
-                        {form.getValues("Methode_de_paiement") === "cheque" && (
+
+                        {selectedPaymentMethod === "cheque" && (
                             <>
                                 <FormField
                                     control={form.control}
                                     name="Numero_cheque"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Numero du cheque</FormLabel>
+                                            <FormLabel>Numéro du chèque</FormLabel>
                                             <FormControl>
-                                                <Input {...field} placeholder="Entre le numero cheque .." />
+                                                <Input {...field} placeholder="Entrez le numéro du chèque" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -248,9 +255,9 @@ const StepTwoForm = () => {
                                     name="Nom_Banque"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Nom du banque</FormLabel>
+                                            <FormLabel>Nom de la banque</FormLabel>
                                             <FormControl>
-                                                <Input {...field} placeholder="Entre le nom du banque..." />
+                                                <Input {...field} placeholder="Entrez le nom de la banque" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -258,23 +265,31 @@ const StepTwoForm = () => {
                                 />
                             </>
                         )}
-
+                        <FormField
+                            control={form.control}
+                            name='totalMontant'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Le montant total</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Exemple: 123 rue Principale" {...field} value={totalMontant} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                         <div className="text-lg font-semibold text-right">
-                            Montant Total :{" "}
-                            <span>{totalMontant.toLocaleString()} DJF</span>
+                            Montant Total : <span>{totalMontant.toLocaleString()} DJF</span>
                         </div>
 
-                        {/* Bouton */}
-                        <div className="col-span-2">
-                            <Button type="submit" className="w-full bg-blue-900 text-white">
-                                Continuer
-                            </Button>
-                        </div>
+                        <Button type="submit" className="w-full bg-blue-900 text-white">
+                            Continuer
+                        </Button>
                     </form>
                 </Form>
             </ScrollArea>
         </div>
-    )
-}
+    );
+};
 
-export default StepTwoForm
+export default StepTwoForm;

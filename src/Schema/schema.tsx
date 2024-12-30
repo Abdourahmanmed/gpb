@@ -41,27 +41,56 @@ export const NouveauClientSchemaStepOne = z.object({
 });
 
 // Schéma pour ajouter un nouveau client avec des fichiers scannés
+
+const allowedExtensions = ["pdf", "jpg", "jpeg", "png"];
+const minFileSize = 10 * 1024; // 10 KB;
+
+
+
 export const NouveauClientSchemaStepTwo = z.object({
     Abonnement: z
-        .any()
+        .instanceof(File)
         .refine(
-            (file) => file instanceof File || (file && typeof file === "object"),
-            { message: "Le fichier d'abonnement scanné est obligatoire." }
+            (file) => {
+                const fileName = file.name || "";
+                const fileExtension = fileName.split('.').pop()?.toLowerCase();
+                return (
+                    allowedExtensions.includes(fileExtension || "") && file.size >= minFileSize
+                );
+            },
+            {
+                message: "Le fichier d'abonnement doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
+            }
         ),
     patent_quitance: z
-        .any()
+        .instanceof(File)
         .refine(
-            (file) => file instanceof File || (file && typeof file === "object"),
-            { message: "Le fichier de la quittance patente scannée est obligatoire." }
+            (file) => {
+                const fileName = file.name || "";
+                const fileExtension = fileName.split('.').pop()?.toLowerCase();
+                return (
+                    allowedExtensions.includes(fileExtension || "") && file.size >= minFileSize
+                );
+            },
+            {
+                message: "Le fichier de quittance patente doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
+            }
         ),
     Identiter: z
-        .any()
+        .instanceof(File)
         .refine(
-            (file) => file instanceof File || (file && typeof file === "object"),
-            { message: "Le fichier d'identité scanné est obligatoire." }
+            (file) => {
+                const fileName = file.name || "";
+                const fileExtension = fileName.split('.').pop()?.toLowerCase();
+                return (
+                    allowedExtensions.includes(fileExtension || "") && file.size >= minFileSize
+                );
+            },
+            {
+                message: "Le fichier d'identité doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
+            }
         ),
 });
-
 //schema pour le changement du nom
 export const ChangeNameSchema = z.object({
     Nom: z.string().min(1, { message: "Le nom est obligatoire." }),
@@ -103,22 +132,24 @@ export const CollectionSchema = z.object({
 
 
 // Schéma de validation du formulaire de saisi de sous couverte
+// Schéma de validation pour les sous-couvertures
 export const SousCouvertSchema = z.object({
     sousCouvertures: z
         .array(
             z.object({
-                societe: z.string().min(1, "Nom de société requis"),
-                personne: z.string().min(1, "Nom de la personne requis"),
-                adresse: z.string().min(1, "Adresse requise"),
-                telephone: z.string().min(10, "Numéro de téléphone invalide"),
+                societe: z.string().min(1, { message: "Nom de société requis." }),
+                personne: z.string().min(1, { message: "Nom de la personne requis." }),
+                adresse: z.string().min(1, { message: "Adresse requise." }),
+                telephone: z.string().min(10, { message: "Numéro de téléphone invalide." }),
             })
         )
-        .max(5, "Vous ne pouvez pas ajouter plus de 5 sous-couvertures."),
-    Methode_de_paiement: z.string().min(1, "Méthode de paiement requise"),
+        .max(5, { message: "Vous ne pouvez pas ajouter plus de 5 sous-couvertures." }),
+    Methode_de_paiement: z.string().min(1, { message: "Méthode de paiement requise." }),
     wallet: z.string().optional(),
     Numero_wallet: z.string().optional(),
     Numero_cheque: z.string().optional(),
     Nom_Banque: z.string().optional(),
+    totalMontant: z.string().min(1, { message: "Le numéro de l'étape est requis." }),
 });
 
 //schema pour verification le montant saisi et le montant gener
@@ -138,4 +169,14 @@ export const PaiementSchema = z.object({
     Numero_cheque: z.string().optional(),
     Nom_Banque: z.string().optional(),
 });
+
+
+
+// Schéma global pour le formulaire multi-étapes
+export const MultiFormeSchema = NouveauClientSchemaStepOne
+    .merge(SousCouvertSchema)
+    .merge(NouveauClientSchemaStepTwo)
+    .extend({
+        step: z.number().min(1, { message: "Le numéro de l'étape est requis." }),
+    });
 

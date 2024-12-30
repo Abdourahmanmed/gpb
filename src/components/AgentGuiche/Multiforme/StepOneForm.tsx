@@ -1,45 +1,39 @@
-"use client"
+"use client";
 import React from 'react';
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form';
-import { Input } from '../../ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '../../ui/select';
-import { Button } from '../../ui/button';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { NouveauClientSchemaStepOne } from '@/Schema/schema';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 
+
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/Store/store';
+import { updateField, nextStep } from '@/Store/Slices/Multi-formSlice';
+import { NouveauClientSchemaStepOne } from '@/Schema/schema';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+
 const StepOneForm = () => {
     const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
+    const multiFormState = useSelector((state: RootState) => state.multiForm);
+
     const form = useForm<z.infer<typeof NouveauClientSchemaStepOne>>({
         resolver: zodResolver(NouveauClientSchemaStepOne),
-        defaultValues: {
-            BoitePostale: '',
-            Nom: '',
-            Email: '',
-            Telephone: '',
-            Adresse: '',
-            Role: '',
-        },
+        defaultValues: multiFormState, // Charger les valeurs initiales depuis Redux
     });
 
     const onSubmit = (values: z.infer<typeof NouveauClientSchemaStepOne>) => {
-        console.log(values); // Remplacez par votre logique
-        router.push("/Agent_guiche/Nouveau_client/StepTwoForm");
+        // Mise à jour des champs dans Redux
+        Object.entries(values).forEach(([field, value]) => {
+            dispatch(updateField({ field, value }));
+        });
+        console.log(values);
+
+        dispatch(nextStep()); // Passer à l'étape suivante
+        // router.push("/Agent_guiche/Nouveau_client/StepTwoForm"); // Naviguer vers la prochaine étape
     };
 
     return (

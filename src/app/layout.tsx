@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Providers from "@/Providers/Providers";
 
+// Charger les polices localement
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
-  weight: "100 900",
+  display: "swap", // Ajout pour éviter des erreurs de FOUT
 });
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
-  weight: "100 900",
+  display: "swap", // Idem pour la deuxième police
 });
 
 export const metadata: Metadata = {
   title: "Gestion Boite Postale",
-  description: "le GBP est une app qui gérer efficacement les opérations liées aux boîtes postales",
+  description:
+    "le GBP est une app qui gère efficacement les opérations liées aux boîtes postales",
 };
 
 export default function RootLayout({
@@ -28,7 +31,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

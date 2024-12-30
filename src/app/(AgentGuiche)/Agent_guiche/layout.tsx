@@ -21,10 +21,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Suffix: "Guiche"
             },
             submenu: [
-                { title: "Formulaire D'enregistrement", url: "/Agent_guiche/Nouveau_client/StepOneForm" },
-                { title: "StepTwoForm", url: "/Agent_guiche/Nouveau_client/StepTwoForm" },
-                { title: "StepThreeForm", url: "/Agent_guiche/Nouveau_client/StepThreeForm" },
-                { title: "StepFourForm", url: "/Agent_guiche/Nouveau_client/StepFourForm" },
+                { title: "Formulaire D'enregistrement", url: "/Agent_guiche/Nouveau_client/Multi-Form" },
                 { title: "Modification Nom", url: "/Agent_guiche/Changer_nom" },
                 { title: "acheter un cle ", url: "/Agent_guiche/Achat_cle" },
                 { title: "Ajouter un sous couvert", url: "/Agent_guiche/Ajout_sous_couverte" },
