@@ -45,52 +45,108 @@ export const NouveauClientSchemaStepOne = z.object({
 const allowedExtensions = ["pdf", "jpg", "jpeg", "png"];
 const minFileSize = 10 * 1024; // 10 KB;
 
+export const NouveauClientSchemaStepTwo = z.discriminatedUnion("TypeClient", [
+    // Schéma pour les clients "entreprise"
+    z.object({
+        TypeClient: z.literal(true),
+        Abonnement: z
+            .instanceof(File)
+            .refine(
+                (file) => {
+                    const fileName = file.name || "";
+                    const fileExtension = fileName.split(".").pop()?.toLowerCase();
+                    return (
+                        allowedExtensions.includes(fileExtension || "") &&
+                        file.size >= minFileSize
+                    );
+                },
+                {
+                    message:
+                        "Le fichier d'abonnement doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
+                }
+            ),
+        patent_quitance: z
+            .instanceof(File)
+            .refine(
+                (file) => {
+                    const fileName = file.name || "";
+                    const fileExtension = fileName.split(".").pop()?.toLowerCase();
+                    return (
+                        allowedExtensions.includes(fileExtension || "") &&
+                        file.size >= minFileSize
+                    );
+                },
+                {
+                    message:
+                        "Le fichier de quittance patente doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
+                }
+            ),
+        Identiter: z
+            .instanceof(File)
+            .refine(
+                (file) => {
+                    const fileName = file.name || "";
+                    const fileExtension = fileName.split(".").pop()?.toLowerCase();
+                    return (
+                        allowedExtensions.includes(fileExtension || "") &&
+                        file.size >= minFileSize
+                    );
+                },
+                {
+                    message:
+                        "Le fichier d'identité doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
+                }
+            ),
+        Methode_de_paiement: z.string().min(1, { message: "Méthode de paiement requise." }),
+        wallet: z.string().optional(),
+        Numero_wallet: z.string().min(1, "Le Numero wallet est obligatoire."),
+        Numero_cheque: z.string().min(1, "Le Numero cheque est obligatoire."),
+        Nom_Banque: z.string().min(1, "Le Nom du banque est obligatoire."),
+    }),
 
+    // Schéma pour les clients "particulier"
+    z.object({
+        TypeClient: z.literal(false),
+        Abonnement: z
+            .instanceof(File)
+            .refine(
+                (file) => {
+                    const fileName = file.name || "";
+                    const fileExtension = fileName.split(".").pop()?.toLowerCase();
+                    return (
+                        allowedExtensions.includes(fileExtension || "") &&
+                        file.size >= minFileSize
+                    );
+                },
+                {
+                    message:
+                        "Le fichier d'abonnement doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
+                }
+            ),
+        Identiter: z
+            .instanceof(File)
+            .refine(
+                (file) => {
+                    const fileName = file.name || "";
+                    const fileExtension = fileName.split(".").pop()?.toLowerCase();
+                    return (
+                        allowedExtensions.includes(fileExtension || "") &&
+                        file.size >= minFileSize
+                    );
+                },
+                {
+                    message:
+                        "Le fichier d'identité doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
+                }
+            ),
+        Methode_de_paiement: z.string().min(1, { message: "Méthode de paiement requise." }),
+        wallet: z.string().optional(),
+        Numero_wallet: z.string().min(1, "Le Numero wallet est obligatoire."),
+        Numero_cheque: z.string().min(1, "Le Numero cheque est obligatoire."),
+        Nom_Banque: z.string().min(1, "Le Nom du banque est obligatoire."),
+    }),
+]);
 
-export const NouveauClientSchemaStepTwo = z.object({
-    Abonnement: z
-        .instanceof(File)
-        .refine(
-            (file) => {
-                const fileName = file.name || "";
-                const fileExtension = fileName.split('.').pop()?.toLowerCase();
-                return (
-                    allowedExtensions.includes(fileExtension || "") && file.size >= minFileSize
-                );
-            },
-            {
-                message: "Le fichier d'abonnement doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
-            }
-        ),
-    patent_quitance: z
-        .instanceof(File)
-        .refine(
-            (file) => {
-                const fileName = file.name || "";
-                const fileExtension = fileName.split('.').pop()?.toLowerCase();
-                return (
-                    allowedExtensions.includes(fileExtension || "") && file.size >= minFileSize
-                );
-            },
-            {
-                message: "Le fichier de quittance patente doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
-            }
-        ),
-    Identiter: z
-        .instanceof(File)
-        .refine(
-            (file) => {
-                const fileName = file.name || "";
-                const fileExtension = fileName.split('.').pop()?.toLowerCase();
-                return (
-                    allowedExtensions.includes(fileExtension || "") && file.size >= minFileSize
-                );
-            },
-            {
-                message: "Le fichier d'identité doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
-            }
-        ),
-});
 //schema pour le changement du nom
 export const ChangeNameSchema = z.object({
     Nom: z.string().min(1, { message: "Le nom est obligatoire." }),
@@ -106,7 +162,7 @@ export const ChangeNameSchema = z.object({
 
 //schema pour la livraison a domicile
 export const LivreDoSchema = z.object({
-    Adresse_Livraison_Domicile: z.string().min(1, { message: "Le nom est obligatoire." }),
+    Adresse_Livraison_Domicile: z.string().min(1, { message: "L'adresse est obligatoire." }),
     Montant: z.literal(5000),
     Methode_de_paiement: z.enum(["cheque", "cash", "wallet"], {
         required_error: "Veuillez sélectionner une méthode de paiement.",
@@ -119,7 +175,7 @@ export const LivreDoSchema = z.object({
 
 //schema pour la collections 
 export const CollectionSchema = z.object({
-    Adresse_collection: z.string().min(1, { message: "Le nom est obligatoire." }),
+    Adresse_collection: z.string().min(1, { message: "L'adresse est obligatoire." }),
     Montant: z.literal(5000),
     Methode_de_paiement: z.enum(["cheque", "cash", "wallet"], {
         required_error: "Veuillez sélectionner une méthode de paiement.",
@@ -170,13 +226,66 @@ export const PaiementSchema = z.object({
     Nom_Banque: z.string().optional(),
 });
 
+// Schéma global avec condition (sans utiliser refine directement) pour la collection
+const DynamicSchemaCll = z.discriminatedUnion("Have_cll", [
+    z.object({
+        Have_cll: z.literal(true),
+        Adresse_collection: z.string().min(1, { message: "L'adresse est obligatoire." }),
+    }),
+    z.object({
+        Have_cll: z.literal(false),
+    })
+]);
+
+
+
+
+// Schéma global avec condition (sans utiliser refine directement) pour livraison a domicile
+const DynamicSchemaLd = z.discriminatedUnion("Have_ld", [
+    z.object({
+        Have_ld: z.literal(true), // Discriminant avec la valeur `true`
+        Adresse_Livraison_Domicile: z.string().min(1, { message: "L'adresse est obligatoire." }),
+    }),
+    z.object({
+        Have_ld: z.literal(false), // Discriminant avec la valeur `false`
+    }),
+]);
+
+
+// Schéma global avec condition (sans utiliser refine directement)
+export const DynamicSchema = z.discriminatedUnion("Have_sous_couvert_ld_cll", [
+    z.object({
+        Have_sous_couvert_ld_cll: z.literal(true), // Discriminant avec la valeur `true`
+        sousCouvertures: z
+            .array(
+                z.object({
+                    societe: z.string().min(1, { message: "Nom de société requis." }),
+                    personne: z.string().min(1, { message: "Nom de la personne requis." }),
+                    adresse: z.string().min(1, { message: "Adresse requise." }),
+                    telephone: z.string().min(10, { message: "Numéro de téléphone invalide." }),
+                })
+            )
+            .max(5, { message: "Vous ne pouvez pas ajouter plus de 5 sous-couvertures." }),
+        // totalMontant: z.string().min(1, { message: "Le montant total est requis." }),
+    }),
+    z.object({
+        Have_sous_couvert_ld_cll: z.literal(false), // Discriminant avec la valeur `false`
+    }),
+]).and(DynamicSchemaLd).and(DynamicSchemaCll);
+
+
+
+
 
 
 // Schéma global pour le formulaire multi-étapes
-export const MultiFormeSchema = NouveauClientSchemaStepOne
-    .merge(SousCouvertSchema)
-    .merge(NouveauClientSchemaStepTwo)
-    .extend({
-        step: z.number().min(1, { message: "Le numéro de l'étape est requis." }),
-    });
+export const MultiFormeSchema = z.object({
+    ...NouveauClientSchemaStepOne.shape,
+    step: z.number().min(1, { message: "Le numéro de l'étape est requis." }),
+    Adresse_Livraison_Domicile: z.string().min(1, { message: "L'adresse est obligatoire." }),
+    Adresse_collection: z.string().min(1, { message: "L'adresse est obligatoire." }),
+}).and(DynamicSchema).and(NouveauClientSchemaStepTwo);
+
+
+
 

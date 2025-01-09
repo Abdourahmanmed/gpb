@@ -8,12 +8,13 @@ import { useRouter } from 'next/navigation';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/Store/store';
-import { updateField, nextStep } from '@/Store/Slices/Multi-formSlice';
+import { updateField, nextStep, setTypeClient } from '@/Store/Slices/Multi-formSlice';
 import { NouveauClientSchemaStepOne } from '@/Schema/schema';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+
 
 const StepOneForm = () => {
     const router = useRouter();
@@ -41,6 +42,8 @@ const StepOneForm = () => {
             <h2 className="text-xl font-bold text-center text-blue-900 mb-6">
                 Enregistrement d'un nouveau client
             </h2>
+
+            {/*  formulaire pour ajouter  */}
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -145,14 +148,17 @@ const StepOneForm = () => {
                                 <FormLabel>Type client :</FormLabel>
                                 <FormControl>
                                     <Select
-                                        onValueChange={field.onChange}
+                                        onValueChange={(value) => {
+                                            field.onChange(value);
+                                            dispatch(setTypeClient(value === "entreprise"));
+                                        }}
                                         value={field.value}
                                     >
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Choisir un type" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="particulier">Particulier</SelectItem>
+                                            <SelectItem value="particulier" >Particulier</SelectItem>
                                             <SelectItem value="entreprise">Entreprise</SelectItem>
                                         </SelectContent>
                                     </Select>
@@ -170,6 +176,8 @@ const StepOneForm = () => {
                     </div>
                 </form>
             </Form>
+
+
         </div>
     );
 };

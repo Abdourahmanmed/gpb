@@ -49,8 +49,8 @@ const LinksDecoration: React.FC = () => {
                 ))}
             </div>
 
-            <div className="flex justify-between w-full mt-6">
-                {/* Boutons pour naviguer entre les étapes */}
+            {/* <div className="flex justify-between w-full mt-6">
+                
                 <button
                     onClick={() => dispatch(previousStep())}
                     className="px-4 py-2 border rounded bg-gray-300 hover:bg-gray-400"
@@ -65,7 +65,8 @@ const LinksDecoration: React.FC = () => {
                 >
                     Suivant
                 </button>
-            </div>
+            </div> */}
+            
         </div>
     );
 };

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import HeaderImprimary from "../components/HeaderImprimary";
-import { LivreDoSchema, MontantSaiasiSchema } from "@/Schema/schema";
+import { MontantSaiasiSchema } from "@/Schema/schema";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -17,8 +17,8 @@ type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 const StepFourForme = () => {
     const [recueNumber, setRecueNumber] = useState(""); // Ceci peut être utilisé pour afficher le numéro de reçu plus tard
     const donnees = useSelector((state: RootState) => state.multiForm); // Vérifiez la structure de 'multiForm' dans Redux
-    // État pour gérer l'incrément du numéro
-    const [currentNumber, setCurrentNumber] = useState(1);
+    const [currentNumber, setCurrentNumber] = useState(1); // État pour gérer l'incrément du numéro
+
     const formMontantSaisi = useForm<MontantSaisi>({
         resolver: zodResolver(MontantSaiasiSchema),
         defaultValues: { montantSaisi: "" },
@@ -27,16 +27,15 @@ const StepFourForme = () => {
     useEffect(() => {
         // Générer la date actuelle
         const currentDate = new Date();
-        const formattedDate = currentDate.toISOString().split('T')[0]; // Format AAAA-MM-JJ
+        const formattedDate = currentDate.toISOString().split("T")[0]; // Format AAAA-MM-JJ
 
         // Générer le numéro de reçu
-        const paddedNumber = String(currentNumber).padStart(5, '0'); // Ajoute des zéros à gauche pour atteindre 5 chiffres
+        const paddedNumber = String(currentNumber).padStart(5, "0"); // Ajoute des zéros à gauche pour atteindre 5 chiffres
         const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
 
         setRecueNumber(newRecueNumber);
     }, [currentNumber]);
 
-    // Fonction de gestion du paiement et de l'impression
     const handlePayer = (value: MontantSaisi) => {
         const printArea = document.getElementById("print-area");
         if (!printArea) return;
@@ -59,35 +58,83 @@ const StepFourForme = () => {
             <div id="print-area" className="rounded-md border border-gray-300 p-4 flex flex-col items-center w-full">
                 <HeaderImprimary />
                 {donnees && (
-                    <div className="p-6 bg-gray-100 rounded-md shadow-md space-y-6 w-full">
-
-                        <div className="mt-4 text-xl py-4 font-semibold flex justify-between">
-                            <h2 className="text-xl font-bold text-gray-800">Étape 4 : Résumé</h2>
-                            <div className="">
-                                <span>Numéro de reçu : </span>
-                                <span className="text-blue-700">{recueNumber}</span>
+                    <div className="p-6 space-y-6 w-full">
+                        <div className="mt-4 text-xl py-4 font-semibold flex justify-between items-center border-b">
+                            <h2 className="text-2xl font-bold text-gray-800">Résumé</h2>
+                            <div>
+                                <span className="text-gray-600">Numéro de reçu :</span>
+                                <span className="text-blue-700 font-medium ml-2">{recueNumber}</span>
                             </div>
                         </div>
-                        <div className="space-y-4">
-                            {/* Affichage des données provenant de 'donnees' */}
-                            {Object.entries(donnees).map(([key, value], index) => (
-                                <div key={index} className="border-b pb-2">
-                                    <strong className="capitalize">{key.replace(/_/g, " ")} :</strong>{" "}
-                                    {Array.isArray(value) ? (
-                                        <ul className="pl-4 list-disc">
-                                            {value.map((item, idx) => (
-                                                <li key={idx}>{JSON.stringify(item, null, 2)}</li>
-                                            ))}
-                                        </ul>
-                                    ) : typeof value === "object" && value !== null ? (
-                                        <pre className="pl-4 bg-gray-50 p-2 rounded">
-                                            {JSON.stringify(value, null, 2)}
-                                        </pre>
-                                    ) : (
-                                        <span>{value ? value.toString() : "Aucune donnée"}</span>
-                                    )}
-                                </div>
-                            ))}
+
+                        {/* Tableau pour afficher les données */}
+                        <div className="">
+                            <table className="min-w-full border-collapse border border-gray-300 rounded-md">
+                                <thead className="bg-blue-50">
+                                    <tr>
+                                        <th className="text-left px-4 py-2 font-semibold text-gray-700 border-b border-gray-300">Champ</th>
+                                        <th className="text-left px-4 py-2 font-semibold text-gray-700 border-b border-gray-300">Valeur</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(donnees)
+                                        .filter(([key, value]) => {
+                                            // Ignorer les champs inutiles comme 'step'
+                                            if (key === "step") return false;
+
+                                            // Vérifier les objets pour des données valides
+                                            if (typeof value === "object" && value !== null) {
+                                                return Object.values(value).some(
+                                                    (v) => v && v.toString().trim() !== ""
+                                                );
+                                            }
+
+                                            // Vérifier les chaînes non vides
+                                            if (typeof value === "string") {
+                                                return value.trim() !== "";
+                                            }
+
+                                            // Vérifier les tableaux non vides
+                                            if (Array.isArray(value)) {
+                                                return value.length > 0;
+                                            }
+
+                                            return false; // Ignorer tout autre type de données
+                                        })
+                                        .map(([key, value], index) => (
+                                            <tr key={index} className="even:bg-gray-50">
+                                                <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                                    {key.replace(/_/g, " ")}
+                                                </td>
+                                                <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                                    {Array.isArray(value) ? (
+                                                        <ul className="pl-4 list-disc">
+                                                            {value.map((item, idx) => (
+                                                                <li key={idx} className="text-sm text-gray-600">
+                                                                    {JSON.stringify(item, null, 2)}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    ) : typeof value === "object" && value !== null ? (
+                                                        <pre className="bg-gray-100 p-2 rounded text-sm">
+                                                            {JSON.stringify(
+                                                                Object.fromEntries(
+                                                                    Object.entries(value).filter(
+                                                                        ([, v]) => v && v.toString().trim() !== ""
+                                                                    )
+                                                                ),
+                                                                null,
+                                                                2
+                                                            )}
+                                                        </pre>
+                                                    ) : (
+                                                        <span>{value}</span>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 )}
@@ -95,7 +142,10 @@ const StepFourForme = () => {
 
             {/* Formulaire de Paiement */}
             <Form {...formMontantSaisi}>
-                <form onSubmit={formMontantSaisi.handleSubmit(handlePayer)} className="mt-6 flex gap-8 flex-col">
+                <form
+                    onSubmit={formMontantSaisi.handleSubmit(handlePayer)}
+                    className="mt-6 flex gap-8 flex-col"
+                >
                     <FormField
                         control={formMontantSaisi.control}
                         name="montantSaisi"
@@ -115,7 +165,18 @@ const StepFourForme = () => {
                     />
                     <Button
                         type="submit"
-                        className="w-full bg-primary hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-primary transition duration-300"
+                        disabled={!donnees || !Object.entries(donnees).some(([key, value]) => {
+                            if (key === "step") return false;
+                            if (typeof value === "object" && value !== null) {
+                                return Object.values(value).some(
+                                    (v) => v && v.toString().trim() !== ""
+                                );
+                            }
+                            if (typeof value === "string") return value.trim() !== "";
+                            if (Array.isArray(value)) return value.length > 0;
+                            return false;
+                        })}
+                        className="w-full bg-blue-900 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-primary transition duration-300"
                     >
                         Payer et Imprimer
                     </Button>

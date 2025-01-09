@@ -1,5 +1,5 @@
-"use client"
-import React from 'react';
+"use client";
+import React from "react";
 import {
   Form,
   FormControl,
@@ -7,41 +7,54 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@/Store/store';
-import { nextStep, updateField } from '@/Store/Slices/Multi-formSlice';
-import { Input } from '@/components/ui/input';
-import { NouveauClientSchemaStepTwo } from '@/Schema/schema';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/Store/store";
+import { nextStep, updateField } from "@/Store/Slices/Multi-formSlice";
+import { Input } from "@/components/ui/input";
+import { NouveauClientSchemaStepTwo } from "@/Schema/schema";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+
+type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
 
 const StepThreeForm = () => {
-  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const multiFormState = useSelector((state: RootState) => state.multiForm);
 
   const form = useForm<z.infer<typeof NouveauClientSchemaStepTwo>>({
     resolver: zodResolver(NouveauClientSchemaStepTwo),
-    defaultValues: multiFormState,
+    defaultValues: {
+      Abonnement: multiFormState.Abonnement,
+      ...(multiFormState.TypeClient && {
+        patent_quitance: multiFormState.patent_quitance,
+      }), // Inclut uniquement si TypeClient est true
+      Identiter: multiFormState.Identiter,
+      TypeClient: multiFormState.TypeClient ?? false, // Définit false comme valeur par défaut
+    },
   });
 
   const onSubmit = (values: z.infer<typeof NouveauClientSchemaStepTwo>) => {
-    // Mise à jour des champs dans Redux
     Object.entries(values).forEach(([field, value]) => {
       dispatch(updateField({ field, value }));
     });
-    console.log(values);
 
-    dispatch(nextStep()); // Passer à l'étape suivante
+    dispatch(nextStep());
   };
 
   const handleFileChange = (field: any) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
-    field.onChange(file); // Mise à jour de la valeur du fichier
+    field.onChange(file);
   };
 
   return (
@@ -50,80 +63,164 @@ const StepThreeForm = () => {
         Enregistrement d'un nouveau client
       </h2>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-2 gap-4"
-        >
-          {/* Abonnement */}
-          <FormField
-            control={form.control}
-            name="Abonnement"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Abonnement :</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    name={field.name}
-                    onChange={handleFileChange(field)} // Gestion du changement de fichier
-                    onBlur={field.onBlur} // OnBlur pour la validation
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          {/* Champs pour "entreprise" */}
+          <div className="grid grid-cols-2 gap-4 w-full mb-4">
+            <FormField
+              control={form.control}
+              name="Abonnement"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Abonnement :</FormLabel>
+                  <FormControl>
+                    <Input type="file" onChange={handleFileChange(field)} onBlur={field.onBlur} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {form.watch("TypeClient") === true && (
+              <FormField
+                control={form.control}
+                name="patent_quitance"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Patent/Quittance :</FormLabel>
+                    <FormControl>
+                      <Input type="file" onChange={handleFileChange(field)} onBlur={field.onBlur} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {/* Nom */}
-          <FormField
-            control={form.control}
-            name="patent_quitance"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>patent/quittance:</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    name={field.name}
-                    onChange={handleFileChange(field)} // Gestion du changement de fichier
-                    onBlur={field.onBlur} // OnBlur pour la validation
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
             )}
-          />
+            <FormField
+              control={form.control}
+              name="Identiter"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Identité :</FormLabel>
+                  <FormControl>
+                    <Input type="file" onChange={handleFileChange(field)} onBlur={field.onBlur} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* Méthode de paiement */}
+            <FormField
+              control={form.control}
+              name="Methode_de_paiement"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Méthode de paiement</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => field.onChange(value)}
+                      value={field.value}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Choisissez une méthode" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cheque">Par Chèque</SelectItem>
+                        <SelectItem value="cash">Par Cash</SelectItem>
+                        <SelectItem value="wallet">Par Wallet</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Téléphone */}
-          <FormField
-            control={form.control}
-            name="Identiter"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Identiter :</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    name={field.name}
-                    onChange={handleFileChange(field)} // Gestion du changement de fichier
-                    onBlur={field.onBlur} // OnBlur pour la validation
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+            {/* Informations spécifiques à chaque méthode de paiement */}
+            {form.watch('Methode_de_paiement') === 'wallet' && (
+              <div className="space-y-2">
+                <FormField
+                  control={form.control}
+                  name="wallet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Choisissez un wallet</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => field.onChange(value)}
+                          value={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Sélectionnez un wallet" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="cac_pay">CAC Pay</SelectItem>
+                            <SelectItem value="waafi">Waafi</SelectItem>
+                            <SelectItem value="d_money">D-Money</SelectItem>
+                            <SelectItem value="sabapay">Saba-paye</SelectItem>
+                            <SelectItem value="dahabplaces">Dahab-Places</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="Numero_wallet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Numéro wallet</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="77 20 21 10" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             )}
-          />
-
-          {/* Bouton */}
-          <div className="col-span-2">
-            <Button type="submit" className="w-full bg-blue-900 text-white">
-              Continuer
-            </Button>
+            {form.watch('Methode_de_paiement') === 'cheque' && (
+              <div className="space-y-2">
+                <FormField
+                  control={form.control}
+                  name="Numero_cheque"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Numéro du chèque</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Numéro du chèque" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="Nom_Banque"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom de la banque</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Nom de la banque" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
           </div>
+
+
+          <Button type="submit" className="w-full bg-blue-900 text-white">
+            Continuer
+          </Button>
         </form>
       </Form>
     </div>
   );
 };
+
 
 export default StepThreeForm;
