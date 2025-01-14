@@ -9,7 +9,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +23,7 @@ import Imprimery from "./Imprimery";
 
 // Typages
 type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
-type WalletOptions = "cac_pay" | "waafi" | "d_money"| "sabapay" | "dahabplaces";
+type WalletOptions = "cac_pay" | "waafi" | "d_money" | "sabapay" | "dahabplaces";
 
 
 
@@ -44,6 +44,9 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen })
     const [currentNumber, setCurrentNumber] = useState(1);
     const [recueNumber, setRecueNumber] = useState('');
 
+    const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
+    const printAreaRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         // Générer la date actuelle
         const currentDate = new Date();
@@ -55,6 +58,15 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen })
 
         setRecueNumber(newRecueNumber);
     }, [currentNumber]);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            // Importer printJS uniquement côté client
+            import("print-js").then((module) => {
+                setPrintJS(() => module.default);
+            });
+        }
+    }, []);
 
     // Fonction pour incrémenter le numéro de reçu
     const handleNewRecue = () => {
@@ -92,14 +104,14 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen })
             return;
         }
 
-        const printArea = document.getElementById("print-area");
-        if (!printArea) return;
+        if (PrintJS && printAreaRef.current) { // Vérification que PrintJS est chargé et que le DOM est prêt
+            PrintJS({
+                printable: printAreaRef.current,
+                type: "html",
+                targetStyles: ["*"],
+            });
+        }
 
-        printJS({
-            printable: "print-area",
-            type: "html",
-            targetStyles: ["*"],
-        });
 
         setIsSummaryOpen(false);
         form.reset();
@@ -261,7 +273,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen })
                         </DialogHeader>
 
                         {/* Section à imprimer */}
-                        <div id="print-area" className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
+                        <div id="print-area" ref={printAreaRef} className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
                             <HeaderImprimary />
 
                             {donnees && (

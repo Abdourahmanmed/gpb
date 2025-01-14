@@ -14,10 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CollectionSchema, MontantSaiasiSchema } from "@/Schema/schema";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import printJS from "print-js";
-import Image from "next/image";
 import HeaderImprimary from "./HeaderImprimary";
 import Imprimery from "./Imprimery";
 
@@ -38,6 +36,9 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen }
     const [currentNumber, setCurrentNumber] = useState(1);
     const [recueNumber, setRecueNumber] = useState('');
 
+    const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
+    const printAreaRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         // Générer la date actuelle
         const currentDate = new Date();
@@ -49,6 +50,17 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen }
 
         setRecueNumber(newRecueNumber);
     }, [currentNumber]);
+
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            // Importer printJS uniquement côté client
+            import("print-js").then((module) => {
+                setPrintJS(() => module.default);
+            });
+        }
+    }, []);
+
 
     // Fonction pour incrémenter le numéro de reçu
     const handleNewRecue = () => {
@@ -87,14 +99,13 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen }
             return;
         }
 
-        const printArea = document.getElementById("print-area");
-        if (!printArea) return;
-
-        printJS({
-            printable: "print-area",
-            type: "html",
-            targetStyles: ["*"],
-        });
+        if (PrintJS && printAreaRef.current) { // Vérification que PrintJS est chargé et que le DOM est prêt
+            PrintJS({
+                printable: printAreaRef.current,
+                type: "html",
+                targetStyles: ["*"],
+            });
+        }
 
         setIsSummaryOpen(false);
         form.reset();
@@ -267,7 +278,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen }
                         </DialogHeader>
 
                         {/* Section à imprimer */}
-                        <div id="print-area" className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
+                        <div id="print-area" ref={printAreaRef} className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
                             <HeaderImprimary />
                             {donnees && (
                                 <Imprimery donnees={donnees} recueNumber={recueNumber} NomRecue="Collection" />

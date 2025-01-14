@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -47,13 +47,16 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
     setIsOpen,
 }) => {
     const montantParSousCouverture = 30000;
-    const [totalMontant, setTotalMontant] = useState(montantParSousCouverture);
+    const [TotalMontant, setTotalMontant] = useState(montantParSousCouverture);
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
     const [donnees, setDonnees] = useState<SousCouvertFormValues | null>(null);
 
     // État pour gérer l'incrément du numéro
     const [currentNumber, setCurrentNumber] = useState(1);
     const [recueNumber, setRecueNumber] = useState('');
+
+    const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
+    const printAreaRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         // Générer la date actuelle
@@ -67,6 +70,16 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
         setRecueNumber(newRecueNumber);
     }, [currentNumber]);
 
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            // Importer printJS uniquement côté client
+            import("print-js").then((module) => {
+                setPrintJS(() => module.default);
+            });
+        }
+    }, []);
+
     // Fonction pour incrémenter le numéro de reçu
     const handleNewRecue = () => {
         setCurrentNumber((prev) => prev + 1);
@@ -79,10 +92,11 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                 { societe: "", personne: "", adresse: "", telephone: "" },
             ],
             Methode_de_paiement: "",
-            wallet: undefined,
+            Wallet: undefined,
             Numero_wallet: "",
             Numero_cheque: "",
             Nom_Banque: "",
+            totalMontant:TotalMontant
         },
     });
 
@@ -109,26 +123,25 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
     };
 
     const onSubmit = (values: SousCouvertFormValues) => {
+        console.log(values);
         setDonnees(values);
         setIsOpen(false);
         setIsSummaryOpen(true);
     };
 
     const handlePayer = (value: MontantSaisi) => {
-        if (parseInt(value.montantSaisi) !== totalMontant) {
-            alert(`Le montant saisi doit être exactement ${totalMontant} DJF.`);
+        if (parseInt(value.montantSaisi) !== TotalMontant) {
+            alert(`Le montant saisi doit être exactement ${TotalMontant} DJF.`);
             return;
         }
 
-        const printArea = document.getElementById("print-area");
-        if (!printArea) return;
-
-        printJS({
-            printable: "print-area",
-            type: "html",
-            targetStyles: ["*"],
-        });
-
+        if (PrintJS && printAreaRef.current) { // Vérification que PrintJS est chargé et que le DOM est prêt
+            PrintJS({
+                printable: printAreaRef.current,
+                type: "html",
+                targetStyles: ["*"],
+            });
+        }
         setIsSummaryOpen(false);
         form.reset();
         setTotalMontant(30000);
@@ -248,7 +261,6 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                                                         <SelectValue placeholder="Choisissez une méthode" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="credit">Crédit</SelectItem>
                                                         <SelectItem value="cheque">Chèque</SelectItem>
                                                         <SelectItem value="cash">Cash</SelectItem>
                                                         <SelectItem value="wallet">Wallet</SelectItem>
@@ -264,7 +276,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                                     <>
                                         <FormField
                                             control={form.control}
-                                            name="wallet"
+                                            name="Wallet"
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>Choisir un Wallet</FormLabel>
@@ -335,7 +347,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
 
                                 <div className="text-lg font-semibold text-right">
                                     Montant Total :{" "}
-                                    <span>{totalMontant.toLocaleString()} DJF</span>
+                                    <span>{TotalMontant.toLocaleString()} DJF</span>
                                 </div>
 
                                 <div className="flex justify-end gap-3 mt-4">
@@ -365,10 +377,10 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                         </DialogHeader>
 
                         {/* Section à imprimer */}
-                        <div id="print-area" className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
+                        <div id="print-area" ref={printAreaRef} className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
                             <HeaderImprimary />
                             {donnees && (
-                                <Imprimery donnees={donnees} recueNumber={recueNumber} NomRecue="Sous couverte" totalMontant={totalMontant} />
+                                <Imprimery donnees={donnees} recueNumber={recueNumber} NomRecue="Sous couverte" totalMontant={TotalMontant} />
                             )}
                         </div>
 

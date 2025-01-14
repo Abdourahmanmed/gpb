@@ -22,8 +22,8 @@ interface MultiFormState {
   Adresse: string;
   Role: string;
   sousCouvertures: SousCouverture[];
-  Methode_de_paiement: string;
-  wallet: undefined | string;
+  Methode_de_paiement: "cheque" | "cash" | "wallet" | undefined;
+  wallet: "cac_pay" | "waafi" | "d_money" | "sabapay" | "dahabplaces" | undefined;
   Numero_wallet: string;
   Numero_cheque: string;
   Nom_Banque: string;
@@ -35,6 +35,10 @@ interface MultiFormState {
   Adresse_Livraison_Domicile: string;
   Adresse_collection: string;
   TypeClient: boolean;
+  montantRd: number,
+  montantLd: number,
+  montantCll: number,
+  montantSC: number,
 }
 
 const initialState: MultiFormState = {
@@ -52,7 +56,7 @@ const initialState: MultiFormState = {
       telephone: "",
     },
   ],
-  Methode_de_paiement: "",
+  Methode_de_paiement: undefined,
   wallet: undefined,
   Numero_wallet: "",
   Numero_cheque: "",
@@ -65,6 +69,10 @@ const initialState: MultiFormState = {
   Adresse_Livraison_Domicile: "",
   Adresse_collection: "",
   TypeClient: false,
+  montantRd: 0,
+  montantLd: 0,
+  montantCll: 0,
+  montantSC: 0,
 };
 
 // Fonction utilitaire pour sauvegarder dans le localStorage
@@ -127,6 +135,30 @@ const MultiFormSlice = createSlice({
       state.TypeClient = action.payload ?? false; // Prend la valeur donnée ou utilise "true" par défaut
       saveToLocalStorage("multiFormData", state); // Sauvegarde dans localStorage
     },
+    addAmount(state, action) {
+      const { field, amount } = action.payload;
+
+      // Vérifie si "field" est une clé valide de "MultiFormState"
+      if (field in state && typeof state[field as keyof MultiFormState] === "number") {
+        (state[field as keyof MultiFormState] as number) += amount;
+        saveToLocalStorage("multiFormData", state);
+      } else {
+        console.error(`Le champ ${field} n'est pas valide ou n'est pas un nombre.`);
+      }
+    },
+
+    removeAmount(state, action) {
+      const { field, amount } = action.payload;
+
+      // Vérifie si "field" est une clé valide de "MultiFormState"
+      if (field in state && typeof state[field as keyof MultiFormState] === "number") {
+        (state[field as keyof MultiFormState] as number) -= amount;
+        saveToLocalStorage("multiFormData", state);
+      } else {
+        console.error(`Le champ ${field} n'est pas valide ou n'est pas un nombre.`);
+      }
+    },
+
   },
 });
 
@@ -137,6 +169,8 @@ export const {
   previousStep,
   loadFromStorage,
   setTypeClient, // Nouvelle action
+  addAmount, // Ajouter un montant
+  removeAmount, // Retirer un montant
 } = MultiFormSlice.actions;
 
 export default MultiFormSlice.reducer;

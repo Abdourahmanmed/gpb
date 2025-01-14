@@ -35,12 +35,18 @@ const StepThreeForm = () => {
   const form = useForm<z.infer<typeof NouveauClientSchemaStepTwo>>({
     resolver: zodResolver(NouveauClientSchemaStepTwo),
     defaultValues: {
-      Abonnement: multiFormState.Abonnement,
-      ...(multiFormState.TypeClient && {
-        patent_quitance: multiFormState.patent_quitance,
-      }), // Inclut uniquement si TypeClient est true
-      Identiter: multiFormState.Identiter,
+      // Définir des valeurs par défaut explicites pour tous les champs requis
+      Abonnement: multiFormState.Abonnement || undefined, // Définit undefined si non présent
+      patent_quitance: multiFormState.TypeClient
+        ? multiFormState.patent_quitance || undefined // Définit uniquement si TypeClient est true
+        : undefined,
+      Identiter: multiFormState.Identiter || undefined, // Définit undefined si non présent
       TypeClient: multiFormState.TypeClient ?? false, // Définit false comme valeur par défaut
+      Methode_de_paiement: multiFormState.Methode_de_paiement, // Définit une chaîne vide par défaut
+      wallet: multiFormState.wallet || undefined, // Définit undefined si non présent
+      Numero_wallet: multiFormState.Numero_wallet || "", // Définit une chaîne vide par défaut
+      Numero_cheque: multiFormState.Numero_cheque || "", // Définit une chaîne vide par défaut
+      Nom_Banque: multiFormState.Nom_Banque || "", // Définit une chaîne vide par défaut
     },
   });
 

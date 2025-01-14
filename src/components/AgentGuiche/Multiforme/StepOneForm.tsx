@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 
 const StepOneForm = () => {
@@ -23,7 +24,10 @@ const StepOneForm = () => {
 
     const form = useForm<z.infer<typeof NouveauClientSchemaStepOne>>({
         resolver: zodResolver(NouveauClientSchemaStepOne),
-        defaultValues: multiFormState, // Charger les valeurs initiales depuis Redux
+        defaultValues: {
+            ...multiFormState,
+            montantRd: 40000,
+        } // Charger les valeurs initiales depuis Redux
     });
 
     const onSubmit = (values: z.infer<typeof NouveauClientSchemaStepOne>) => {
@@ -167,7 +171,10 @@ const StepOneForm = () => {
                             </FormItem>
                         )}
                     />
-
+                    {/* montant du inscriptions  */}
+                    <div className="flex justify-end mr-10 col-span-2">
+                        <Badge variant="outline">Montant:{form.getValues('montantRd')} fdj </Badge>
+                    </div>
                     {/* Bouton */}
                     <div className="col-span-2">
                         <Button type="submit" className="w-full bg-blue-900 text-white">

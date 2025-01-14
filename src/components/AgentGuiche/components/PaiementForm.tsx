@@ -9,14 +9,13 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MontantSaiasiSchema } from "@/Schema/schema";
-import printJS from "print-js";
 import Image from "next/image";
 
 // Typages
@@ -44,6 +43,8 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen }) =
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<MethodePaiement | undefined>(undefined);
     const [donnees, setDonnees] = useState<PaiementFormValues | null>(null);
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+    const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
+    const printAreaRef = useRef<HTMLDivElement>(null);
 
     // État pour gérer l'incrément du numéro
     const [currentNumber, setCurrentNumber] = useState(1);
@@ -61,6 +62,14 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen }) =
         setRecueNumber(newRecueNumber);
     }, [currentNumber]);
 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            // Importer printJS uniquement côté client
+            import("print-js").then((module) => {
+                setPrintJS(() => module.default);
+            });
+        }
+    }, []);
     // Fonction pour incrémenter le numéro de reçu
     const handleNewRecue = () => {
         setCurrentNumber((prev) => prev + 1);
@@ -91,14 +100,13 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen }) =
             return;
         }
 
-        const printArea = document.getElementById("print-area");
-        if (!printArea) return;
-
-        printJS({
-            printable: "print-area",
-            type: "html",
-            targetStyles: ["*"],
-        });
+        if (PrintJS && printAreaRef.current) { // Vérification que PrintJS est chargé et que le DOM est prêt
+            PrintJS({
+                printable: printAreaRef.current,
+                type: "html",
+                targetStyles: ["*"],
+            });
+        }
 
         setIsSummaryOpen(false);
         form.reset();
@@ -214,7 +222,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen }) =
                         </DialogHeader>
 
                         {/* Section à imprimer */}
-                        <div id="print-area" className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
+                        <div id="print-area" ref={printAreaRef} className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
                             <div className="flex items-center gap">
                                 {/* Logo à gauche */}
                                 <div className="w-max h-max rounded-full flex items-center justify-center overflow-hidden">

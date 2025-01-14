@@ -13,30 +13,69 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 import { DynamicSchema } from "@/Schema/schema";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/Store/store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { nextStep, updateField } from "@/Store/Slices/Multi-formSlice";
+import { Badge } from "@/components/ui/badge";
 
 type SousCouvertFormValues = z.infer<typeof DynamicSchema>;
+
+const montantBaseLd = 3000;
+const montantBaseCll = 4000;
+const montantBaseSc = 20000;
 
 const FormSousCOptonal = () => {
     const dispatch = useDispatch<AppDispatch>();
     const multiFormState = useSelector((state: RootState) => state.multiForm);
-    const montantParSousCouverture = 30000;
-    const [totalMontant, setTotalMontant] = useState(montantParSousCouverture);
+    const [montantTotal, setMontantTotal] = useState(0);
 
     const form = useForm<SousCouvertFormValues>({
         resolver: zodResolver(DynamicSchema),
-        defaultValues: multiFormState,
+        defaultValues: {
+            ...multiFormState,
+            MontantSC: 0,
+            montantCll: 0,
+            montantLd: 0,
+            Have_sous_couvert_ld_cll: false,
+            Have_ld: false,
+            Have_cll: false,
+        },
     });
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: "sousCouvertures",
     });
+
+    const watchedFields = useWatch({
+        control: form.control,
+        name: ["Have_sous_couvert_ld_cll", "Have_ld", "Have_cll", "sousCouvertures"],
+    });
+
+    useEffect(() => {
+        const [haveSousCouvert, haveLd, haveCll, sousCouvertures] = watchedFields;
+
+        let total = 0;
+
+        if (haveSousCouvert) {
+            total += montantBaseSc * (sousCouvertures?.length || 0);
+        }
+        if (haveLd) {
+            total += montantBaseLd;
+        }
+        if (haveCll) {
+            total += montantBaseCll;
+        }
+
+        setMontantTotal(total);
+
+        form.setValue("montantSC", montantBaseSc * (sousCouvertures?.length || 0));
+        form.setValue("montantLd", haveLd ? montantBaseLd : 0);
+        form.setValue("montantCll", haveCll ? montantBaseCll : 0);
+    }, [watchedFields]);
 
     const onSubmit = (values: SousCouvertFormValues) => {
         console.log("Form Values: ", values);
@@ -56,14 +95,12 @@ const FormSousCOptonal = () => {
                 adresse: "",
                 telephone: "",
             });
-            setTotalMontant((prev) => prev + montantParSousCouverture);
         }
     };
 
     const handleRemove = (index: number) => {
         if (fields.length > 1) {
             remove(index);
-            setTotalMontant((prev) => prev - montantParSousCouverture);
         }
     };
 
@@ -71,7 +108,7 @@ const FormSousCOptonal = () => {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <div className="flex justify-around w-full">
-                    {/* Section Sous-Couvertures */}
+                    {/* Sous-Couvertures */}
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
@@ -97,7 +134,7 @@ const FormSousCOptonal = () => {
                                 </FormItem>
                             )}
                         />
-                        {form.watch("Have_sous_couvert_ld_cll") === true && (
+                        {form.watch("Have_sous_couvert_ld_cll") && (
                             <div className="space-y-4">
                                 {fields.map((field, index) => (
                                     <div key={field.id} className="space-y-4 border-b pb-4">
@@ -124,7 +161,7 @@ const FormSousCOptonal = () => {
                                                 <FormItem>
                                                     <FormLabel>Nom de la personne</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="John Doe" {...field} />
+                                                        <Input placeholder="personne X" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -135,12 +172,9 @@ const FormSousCOptonal = () => {
                                             name={`sousCouvertures.${index}.adresse`}
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Adresse</FormLabel>
+                                                    <FormLabel>adresse</FormLabel>
                                                     <FormControl>
-                                                        <Input
-                                                            placeholder="123 rue Principale"
-                                                            {...field}
-                                                        />
+                                                        <Input placeholder="adresse X" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -151,9 +185,9 @@ const FormSousCOptonal = () => {
                                             name={`sousCouvertures.${index}.telephone`}
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Téléphone</FormLabel>
+                                                    <FormLabel>telephone</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="0123456789" {...field} />
+                                                        <Input placeholder="telephone X" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -178,7 +212,7 @@ const FormSousCOptonal = () => {
                             </div>
                         )}
                     </div>
-                    {/* Livraison Section */}
+                    {/* Livraison */}
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
@@ -204,16 +238,16 @@ const FormSousCOptonal = () => {
                                 </FormItem>
                             )}
                         />
-                        {form.watch("Have_ld") === true && (
-                            <div className="space-y-2">
+                        {form.watch("Have_ld") && (
+                            <div className="space-y-4">
                                 <FormField
                                     control={form.control}
                                     name={`Adresse_Livraison_Domicile`}
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Adresse de livraison</FormLabel>
+                                            <FormLabel>Adresse Livraison à Domicile</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Les adresses" {...field} />
+                                                <Input placeholder="Adresse X" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -222,7 +256,7 @@ const FormSousCOptonal = () => {
                             </div>
                         )}
                     </div>
-                    {/* Collection Section */}
+                    {/* Collection */}
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
@@ -248,8 +282,8 @@ const FormSousCOptonal = () => {
                                 </FormItem>
                             )}
                         />
-                        {form.watch("Have_cll") === true && (
-                            <div className="space-y-2">
+                        {form.watch("Have_cll") && (
+                            <div className="space-y-4">
                                 <FormField
                                     control={form.control}
                                     name={`Adresse_collection`}
@@ -257,7 +291,7 @@ const FormSousCOptonal = () => {
                                         <FormItem>
                                             <FormLabel>Adresse de collection</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Les adresses" {...field} />
+                                                <Input placeholder="Adresse collection X" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -266,6 +300,10 @@ const FormSousCOptonal = () => {
                             </div>
                         )}
                     </div>
+                </div>
+                {/* montant du inscriptions  */}
+                <div className="flex justify-end mr-10">
+                    <Badge variant="outline">Montant Total: {montantTotal} fdj </Badge>
                 </div>
                 <div className="mt-6">
                     <Button type="submit" className="w-full bg-blue-900">

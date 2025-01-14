@@ -38,7 +38,38 @@ export const NouveauClientSchemaStepOne = z.object({
     Telephone: z.string().min(1, { message: "Le téléphone est obligatoire." }),
     Adresse: z.string().min(1, { message: "L'adresse est obligatoire." }),
     Role: z.string().min(1, { message: "Choisir un type de client." }),
+    montantRd: z.number().optional(),
 });
+
+
+//schema pour le ajouter un nouveau client 
+
+
+// Schéma pour les différentes méthodes de paiement
+const TypeMethodePaiement = z.discriminatedUnion("Methode_de_paiement", [
+    // Méthode par chèque
+    z.object({
+        Methode_de_paiement: z.literal("cheque"),
+        Numero_cheque: z.string().min(1, "Le numéro du chèque est requis."),
+        Nom_Banque: z.string().min(1, "Le nom de la banque est requis."),
+    }),
+    // Méthode par cash
+    z.object({
+        Methode_de_paiement: z.literal("cash"),
+    }),
+    // Méthode par wallet
+    z.object({
+        Methode_de_paiement: z.literal("wallet"),
+        wallet: z.enum(["cac_pay", "waafi", "d_money", "sabapay", "dahabplaces"]),
+        Numero_wallet: z
+            .string()
+            .min(1, "Le numéro de wallet est requis.")
+            .regex(
+                /^[0-9\s]+$/,
+                "Le numéro de wallet doit contenir uniquement des chiffres."
+            ),
+    }),
+]);
 
 // Schéma pour ajouter un nouveau client avec des fichiers scannés
 
@@ -97,11 +128,6 @@ export const NouveauClientSchemaStepTwo = z.discriminatedUnion("TypeClient", [
                         "Le fichier d'identité doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
                 }
             ),
-        Methode_de_paiement: z.string().min(1, { message: "Méthode de paiement requise." }),
-        wallet: z.string().optional(),
-        Numero_wallet: z.string().min(1, "Le Numero wallet est obligatoire."),
-        Numero_cheque: z.string().min(1, "Le Numero cheque est obligatoire."),
-        Nom_Banque: z.string().min(1, "Le Nom du banque est obligatoire."),
     }),
 
     // Schéma pour les clients "particulier"
@@ -139,13 +165,8 @@ export const NouveauClientSchemaStepTwo = z.discriminatedUnion("TypeClient", [
                         "Le fichier d'identité doit être un PDF, JPG ou PNG et supérieur à 10 KB.",
                 }
             ),
-        Methode_de_paiement: z.string().min(1, { message: "Méthode de paiement requise." }),
-        wallet: z.string().optional(),
-        Numero_wallet: z.string().min(1, "Le Numero wallet est obligatoire."),
-        Numero_cheque: z.string().min(1, "Le Numero cheque est obligatoire."),
-        Nom_Banque: z.string().min(1, "Le Nom du banque est obligatoire."),
     }),
-]);
+]).and(TypeMethodePaiement);
 
 //schema pour le changement du nom
 export const ChangeNameSchema = z.object({
@@ -201,11 +222,11 @@ export const SousCouvertSchema = z.object({
         )
         .max(5, { message: "Vous ne pouvez pas ajouter plus de 5 sous-couvertures." }),
     Methode_de_paiement: z.string().min(1, { message: "Méthode de paiement requise." }),
-    wallet: z.string().optional(),
+    Wallet: z.string().optional(),
     Numero_wallet: z.string().optional(),
     Numero_cheque: z.string().optional(),
     Nom_Banque: z.string().optional(),
-    totalMontant: z.string().min(1, { message: "Le numéro de l'étape est requis." }),
+    totalMontant: z.number(),
 });
 
 //schema pour verification le montant saisi et le montant gener
@@ -231,6 +252,7 @@ const DynamicSchemaCll = z.discriminatedUnion("Have_cll", [
     z.object({
         Have_cll: z.literal(true),
         Adresse_collection: z.string().min(1, { message: "L'adresse est obligatoire." }),
+        montantCll: z.number(),
     }),
     z.object({
         Have_cll: z.literal(false),
@@ -245,6 +267,7 @@ const DynamicSchemaLd = z.discriminatedUnion("Have_ld", [
     z.object({
         Have_ld: z.literal(true), // Discriminant avec la valeur `true`
         Adresse_Livraison_Domicile: z.string().min(1, { message: "L'adresse est obligatoire." }),
+        montantLd: z.number(),
     }),
     z.object({
         Have_ld: z.literal(false), // Discriminant avec la valeur `false`
@@ -266,7 +289,7 @@ export const DynamicSchema = z.discriminatedUnion("Have_sous_couvert_ld_cll", [
                 })
             )
             .max(5, { message: "Vous ne pouvez pas ajouter plus de 5 sous-couvertures." }),
-        // totalMontant: z.string().min(1, { message: "Le montant total est requis." }),
+        montantSC: z.number(),
     }),
     z.object({
         Have_sous_couvert_ld_cll: z.literal(false), // Discriminant avec la valeur `false`
@@ -284,6 +307,7 @@ export const MultiFormeSchema = z.object({
     step: z.number().min(1, { message: "Le numéro de l'étape est requis." }),
     Adresse_Livraison_Domicile: z.string().min(1, { message: "L'adresse est obligatoire." }),
     Adresse_collection: z.string().min(1, { message: "L'adresse est obligatoire." }),
+    totalMontant: z.string().min(1, { message: "Le montant total est requis." })
 }).and(DynamicSchema).and(NouveauClientSchemaStepTwo);
 
 

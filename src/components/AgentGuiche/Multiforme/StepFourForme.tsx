@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import HeaderImprimary from "../components/HeaderImprimary";
 import { MontantSaiasiSchema } from "@/Schema/schema";
 import { z } from "zod";
@@ -8,7 +8,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import printJS from "print-js";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Store/store";
 
@@ -18,6 +17,8 @@ const StepFourForme = () => {
     const [recueNumber, setRecueNumber] = useState(""); // Ceci peut être utilisé pour afficher le numéro de reçu plus tard
     const donnees = useSelector((state: RootState) => state.multiForm); // Vérifiez la structure de 'multiForm' dans Redux
     const [currentNumber, setCurrentNumber] = useState(1); // État pour gérer l'incrément du numéro
+    const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
+    const printAreaRef = useRef<HTMLDivElement>(null);
 
     const formMontantSaisi = useForm<MontantSaisi>({
         resolver: zodResolver(MontantSaiasiSchema),
@@ -36,17 +37,31 @@ const StepFourForme = () => {
         setRecueNumber(newRecueNumber);
     }, [currentNumber]);
 
-    const handlePayer = (value: MontantSaisi) => {
-        const printArea = document.getElementById("print-area");
-        if (!printArea) return;
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            // Importer printJS uniquement côté client
+            import("print-js").then((module) => {
+                setPrintJS(() => module.default);
+            });
+        }
+    }, []);
 
-        // Imprimer la section définie sous 'print-area'
-        printJS({
-            printable: "print-area",
-            type: "html",
-            targetStyles: ["*"],
-        });
+    const handlePayer = () => {
+        if (PrintJS && printAreaRef.current) { // Vérification que PrintJS est chargé et que le DOM est prêt
+            PrintJS({
+                printable: printAreaRef.current,
+                type: "html",
+                targetStyles: ["*"],
+            });
+        }
     };
+
+    // Calculer la somme totale des montants
+    const totalMontant =
+        (donnees?.montantRd || 0) +
+        (donnees?.montantLd || 0) +
+        (donnees?.montantCll || 0) +
+        (donnees?.montantSC || 0);
 
     return (
         <div className="bg-gray-100 p-6 rounded-lg shadow-md max-w-7xl mx-auto">
@@ -55,7 +70,7 @@ const StepFourForme = () => {
             </h2>
 
             {/* Section à imprimer */}
-            <div id="print-area" className="rounded-md border border-gray-300 p-4 flex flex-col items-center w-full">
+            <div id="print-area" ref={printAreaRef} className="rounded-md border border-gray-300 p-4 flex flex-col items-center w-full">
                 <HeaderImprimary />
                 {donnees && (
                     <div className="p-6 space-y-6 w-full">
@@ -133,6 +148,47 @@ const StepFourForme = () => {
                                                 </td>
                                             </tr>
                                         ))}
+                                    {/* Ajout des montants et de la somme totale */}
+                                    <tr className="even:bg-gray-50">
+                                        <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                            Montant Rd
+                                        </td>
+                                        <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                            {donnees?.montantRd || 0}
+                                        </td>
+                                    </tr>
+                                    <tr className="even:bg-gray-50">
+                                        <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                            Montant Ld
+                                        </td>
+                                        <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                            {donnees?.montantLd || 0}
+                                        </td>
+                                    </tr>
+                                    <tr className="even:bg-gray-50">
+                                        <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                            Montant Cll
+                                        </td>
+                                        <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                            {donnees?.montantCll || 0}
+                                        </td>
+                                    </tr>
+                                    <tr className="even:bg-gray-50">
+                                        <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                            Montant SC
+                                        </td>
+                                        <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                            {donnees?.montantSC || 0}
+                                        </td>
+                                    </tr>
+                                    <tr className="bg-gray-100">
+                                        <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800 font-bold">
+                                            Somme Totale
+                                        </td>
+                                        <td className="px-4 py-2 border-b border-gray-300 text-gray-600 font-bold">
+                                            {totalMontant}
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -172,13 +228,11 @@ const StepFourForme = () => {
                                     (v) => v && v.toString().trim() !== ""
                                 );
                             }
-                            if (typeof value === "string") return value.trim() !== "";
-                            if (Array.isArray(value)) return value.length > 0;
-                            return false;
+                            return value && value.toString().trim() !== "";
                         })}
-                        className="w-full bg-blue-900 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-primary transition duration-300"
+                        className="bg-blue-600 text-white mt-4"
                     >
-                        Payer et Imprimer
+                        Valider le Paiement
                     </Button>
                 </form>
             </Form>
