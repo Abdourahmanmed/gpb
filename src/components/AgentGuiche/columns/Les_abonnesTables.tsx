@@ -21,6 +21,9 @@ export type Les_abonnes = {
     sous_couvert: string;
     Domocile: string;
     Date_abonnement: string;
+    Adresse: string;
+    TypeClient: string;
+    Type_boite_postale: string;
 };
 
 export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [

@@ -2,36 +2,29 @@
 import React, { useEffect, useState } from 'react'
 import { DataTable } from '../Tables/DataTables'
 import { Changename, ChangenameColumns } from './columns/ChangeNameColumns'
+import { fetchClients } from '@/Store/Slices/GlobalManagementClient'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/Store/store'
 
-const data = [
-    {
-        id: "1",
-        Nom: "Farah ali kassim",
-        NBp: "2001",
-        Etat: "paye",
-    },
-    {
-        id: "2",
-        Nom: "Rouwada saleh",
-        NBp: "2041",
-        Etat: "paye",
-    },
-    {
-        id: "3",
-        Nom: "Zalma nasir",
-        NBp: "2003",
-        Etat: "paye",
-    },
-]
 
 const ChangeName = () => {
-    const [Change_name, SetChange_name] = useState<Changename[]>([])
-
+     const dispatch = useDispatch<AppDispatch>();
+    const { clients, loading, error } = useSelector((state: RootState) => state.clients);
+    // Utiliser le thunk pour charger les clients
     useEffect(() => {
-        SetChange_name(data);
-    }, [])
+        dispatch(fetchClients()); // Appeler le thunk pour récupérer les clients
+    }, [dispatch]);
+
     return (
-        <DataTable data={Change_name} columns={ChangenameColumns} typeName="Nom" />
+        <div>
+            {loading ? (
+                <p>Chargement des données...</p> // Indicateur de chargement
+            ) : error ? (
+                <p>{error}</p> // Affichage de l'erreur si elle existe
+            ) : (
+                <DataTable data={clients} columns={ChangenameColumns} typeName="Nom" />
+            )}
+        </div>
     )
 }
 

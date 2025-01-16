@@ -237,15 +237,17 @@ export const MontantSaiasiSchema = z.object({
 
 // Schéma de validation avec zod
 export const PaiementSchema = z.object({
-    Montant: z.literal(2000),
-    Methode_de_paiement: z.enum(["credit", "cheque", "cash", "wallet"], {
+    Montant: z.literal(40000),
+    Methode_de_paiement: z.enum(["cheque", "cash", "wallet"], {
         required_error: "Veuillez sélectionner une méthode de paiement.",
     }),
     Wallet: z.enum(["cac_pay", "waafi", "d_money", "sabapay", "dahabplaces"]).optional(),
     Numero_wallet: z.string().optional(),
     Numero_cheque: z.string().optional(),
     Nom_Banque: z.string().optional(),
+    ReferenceId: z.string().optional(),
 });
+
 
 // Schéma global avec condition (sans utiliser refine directement) pour la collection
 const DynamicSchemaCll = z.discriminatedUnion("Have_cll", [
