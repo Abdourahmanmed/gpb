@@ -131,7 +131,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen }) =
             console.log(recueNumber);
 
             // Met à jour les états nécessaires
-            setDonnees(values); // Sauvegarde les valeurs dans un état
+            setDonnees(finalData); // Sauvegarde les valeurs dans un état
             setIsSummaryOpen(true); // Ouvre le résumé
             setIsOpen(false); // Ferme le formulaire
         } catch (error) {
