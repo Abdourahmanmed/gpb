@@ -31,7 +31,7 @@ import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import HeaderImprimary from "./HeaderImprimary";
 import Imprimery from "./Imprimery";
-import { GetLastReferenceOfRdv } from "@/actions/All_references/GetLastReferenceOfRdv";
+import { GetLastReferenceOfCLL } from "@/actions/All_references/GetLastReferenceOfCll";
 
 interface ChangeNameFormProps {
   isOpen: boolean;
@@ -69,7 +69,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
     const fetchLastReference = async () => {
       try {
         // Récupérer la dernière référence depuis la base de données
-        const lastReference = await GetLastReferenceOfRdv();
+        const lastReference = await GetLastReferenceOfCLL();
 
         // Générer la date actuelle
         const currentDate = new Date();
@@ -79,7 +79,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
         if (!lastReference) {
           // Si aucune référence n'existe, générer un nouveau numéro
           const paddedNumber = String(currentNumber).padStart(5, "0");
-          const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
+          const newRecueNumber = `AJCll/${paddedNumber}/${formattedDate}`;
           setRecueNumber(newRecueNumber);
         } else {
           // Si une référence existe, analyser les données
@@ -91,14 +91,14 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
           if (lastReferenceYear !== anneeActuelle.toString()) {
             // Si l'année est différente, recommencer avec le numéro initial
             const paddedNumber = String(currentNumber).padStart(5, "0");
-            const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
+            const newRecueNumber = `AJCll/${paddedNumber}/${formattedDate}`;
             setRecueNumber(newRecueNumber);
           } else {
             // Si l'année est identique, incrémenter le numéro
             const incrementee = (parseInt(middleNumber, 10) + 1)
               .toString()
               .padStart(5, "0");
-            const newRecueNumber = `RNBP/${incrementee}/${formattedDate}`;
+            const newRecueNumber = `AJCll/${incrementee}/${formattedDate}`;
             setRecueNumber(newRecueNumber);
           }
         }

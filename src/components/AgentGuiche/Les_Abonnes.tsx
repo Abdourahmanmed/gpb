@@ -5,6 +5,7 @@ import { DataTable } from '../Tables/DataTables';
 import { Les_abonneColumns } from './columns/Les_abonnesTables';
 import { AppDispatch, RootState } from '@/Store/store';
 import { fetchClients } from '@/Store/Slices/GlobalManagementClient';
+import LoadingSpinner from '../Spinner';
 const Les_Abonnes = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { clients, loading, error } = useSelector((state: RootState) => state.clients);
@@ -17,7 +18,7 @@ const Les_Abonnes = () => {
     return (
         <div>
             {loading ? (
-                <p>Chargement des données...</p> // Indicateur de chargement
+                <LoadingSpinner /> // Indicateur de chargement
             ) : error ? (
                 <p>{error}</p> // Affichage de l'erreur si elle existe
             ) : (

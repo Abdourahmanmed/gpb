@@ -15,6 +15,14 @@ export type Changename = {
     Nom: string;
     NBp: string;
     Etat: string;
+    Telephone: string;
+    Redevance: string;
+    sous_couvert: string;
+    Domocile: string;
+    Date_abonnement: string;
+    Adresse: string;
+    TypeClient: string;
+    Type_boite_postale: string;
 };
 
 export const ChangenameColumns: ColumnDef<Changename>[] = [
@@ -67,14 +75,16 @@ export const ChangenameColumns: ColumnDef<Changename>[] = [
         id: "actions",
         header: "Actions",
         cell: ({ row }) => {
+            const userId = row?.original?.id;
             const [isDialogOpen, setIsDialogOpen] = useState(false);
+            console.log(userId);
 
             return (
                 <div>
                     <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
                         Changer
                     </Button>
-                    <ChangeNameForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+                    <ChangeNameForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId={userId}/>
                 </div>
             );
         },

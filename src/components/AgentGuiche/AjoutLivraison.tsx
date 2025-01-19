@@ -5,6 +5,7 @@ import {LivraisonDomicilCoulmns } from './columns/LivraisonDColumn';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/Store/store';
 import { fetchClients } from '@/Store/Slices/GlobalManagementClient';
+import LoadingSpinner from '../Spinner';
 
 
 
@@ -19,7 +20,7 @@ const AjoutLivraison = () => {
     return (
         <div>
             {loading ? (
-                <p>Chargement des données...</p> // Indicateur de chargement
+                <LoadingSpinner /> // Indicateur de chargement
             ) : error ? (
                 <p>{error}</p> // Affichage de l'erreur si elle existe
             ) : (
