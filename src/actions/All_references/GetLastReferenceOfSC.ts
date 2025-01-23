@@ -1,6 +1,6 @@
 "use server"
 export const GetLastReferenceOfSC = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=getLastReference`;
+    const api = `http://localhost/gbp_backend/api.php?method=getLastReferenceAjoutSousCouvette`;
 
     try {
         // Effectuer la requête fetch

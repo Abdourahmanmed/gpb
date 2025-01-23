@@ -96,6 +96,8 @@ export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
         id: "actions",
         header: "Actions",
         cell: ({ row }) => {
+            const userId = row?.original?.id;
+            const Np = row?.original?.NBp;
             const [isDialogOpen, setIsDialogOpen] = useState(false);
 
             return (
@@ -103,7 +105,7 @@ export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
                     <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
                         Ajouter livraison domicile
                     </Button>
-                    <LivreDoForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+                    <LivreDoForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId={userId} Np = {Np} />
                 </div>
             );
         },

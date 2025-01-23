@@ -97,13 +97,15 @@ export const CollectionCoulmns: ColumnDef<Collection>[] = [
         header: "Actions",
         cell: ({ row }) => {
             const [isDialogOpen, setIsDialogOpen] = useState(false);
+            const userId = row?.original?.id;
+            const Nbp = row?.original?.NBp;
 
             return (
                 <div>
                     <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
                         Ajouter une collection
                     </Button>
-                    <CollectForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+                    <CollectForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId ={userId} Nbp={Nbp} />
                 </div>
             );
         },

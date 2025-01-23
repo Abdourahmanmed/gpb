@@ -96,6 +96,7 @@ export const Achat_CleColumns: ColumnDef<Achat_Cle>[] = [
         id: "actions",
         header: "Actions",
         cell: ({ row }) => {
+            const userId = row?.original?.id;
             const [isDialogOpen, setIsDialogOpen] = useState(false);
 
             return (
@@ -103,7 +104,7 @@ export const Achat_CleColumns: ColumnDef<Achat_Cle>[] = [
                     <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
                         Changement cle
                     </Button>
-                    <ChangeCleForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+                    <ChangeCleForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId={userId}/>
                 </div>
             );
         },

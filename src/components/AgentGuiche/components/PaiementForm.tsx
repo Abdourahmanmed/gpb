@@ -18,6 +18,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MontantSaiasiSchema, PaiementSchema } from "@/Schema/schema";
 import Image from "next/image";
 import { GetLastReferenceOfRdv } from "@/actions/All_references/GetLastReferenceOfRdv";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
+import { ChangementRdvPaiement } from "@/actions/paiement/RdvPaiement";
 
 // Typages
 type MethodePaiement = "cheque" | "cash" | "wallet";
@@ -30,9 +33,10 @@ type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 interface PaymentFormProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
+    UserId: string,
 }
 
-export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen }) => {
+export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, UserId }) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<MethodePaiement | undefined>(undefined);
     const [donnees, setDonnees] = useState<PaiementFormValues | null>(null);
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
@@ -139,23 +143,38 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen }) =
         }
     };
 
-
-    const handlePayer = (value: MontantSaisi) => {
+    const handlePayer = async (value: MontantSaisi) => {
         if (parseInt(value.montantSaisi) !== donnees?.Montant) {
-            alert(`Le montant saisi doit être exactement ${donnees?.Montant} DJF.`);
+            toast.error(`Le montant saisi doit être exactement ${donnees?.Montant} DJF.`);
             return;
         }
 
-        if (PrintJS && printAreaRef.current) { // Vérification que PrintJS est chargé et que le DOM est prêt
-            PrintJS({
-                printable: printAreaRef.current,
-                type: "html",
-                targetStyles: ["*"],
-            });
-        }
+        try {
+            const enregistrement = await ChangementRdvPaiement(UserId, donnees);
 
-        setIsSummaryOpen(false);
-        form.reset();
+            if (enregistrement?.success) {
+                toast.success("Données enregistrées avec succès.");
+
+                // Vérification que PrintJS est chargé et que le DOM est prêt
+                if (PrintJS && printAreaRef.current) {
+                    PrintJS({
+                        printable: printAreaRef.current,
+                        type: "html",
+                        targetStyles: ["*"],
+                    });
+                }
+
+                // Réinitialiser l'état après succès
+                setIsSummaryOpen(false);
+                form.reset();
+            } else if (enregistrement?.error) {
+                // Gestion des erreurs retournées par l'API
+                toast.error(enregistrement.error || "Une erreur est survenue.");
+            }
+        } catch (error) {
+            // Gestion des erreurs inattendues
+            toast.error("Erreur lors de la communication avec le serveur.");
+        }
     };
 
     return (
@@ -325,6 +344,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen }) =
             <Dialog open={isSummaryOpen} onOpenChange={setIsSummaryOpen}>
                 <DialogContent className="p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
                     <ScrollArea className="max-h-[70vh] w-full">
+                        <ToastContainer />
                         <DialogHeader className="border-b-2 pb-4 mb-6">
                             <DialogTitle className="text-2xl font-bold text-gray-800">Résumé des informations Redevence</DialogTitle>
                         </DialogHeader>

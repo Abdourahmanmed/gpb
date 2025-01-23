@@ -77,8 +77,6 @@ export const ChangenameColumns: ColumnDef<Changename>[] = [
         cell: ({ row }) => {
             const userId = row?.original?.id;
             const [isDialogOpen, setIsDialogOpen] = useState(false);
-            console.log(userId);
-
             return (
                 <div>
                     <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>

@@ -96,13 +96,14 @@ export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
         header: "Actions",
         cell: ({ row }) => {
             const [isDialogOpen, setIsDialogOpen] = useState(false);
+            const userId= row?.original?.id;
 
             return (
                 <div>
                     <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
                         Paiement
                     </Button>
-                    <PaymentForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+                    <PaymentForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId ={userId} />
                 </div>
             );
         },

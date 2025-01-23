@@ -98,13 +98,15 @@ export const AjoutSousCouvertColumns: ColumnDef<AjoutSousCouvert>[] = [
         header: "Actions",
         cell: ({ row }) => {
             const [isDialogOpen, setIsDialogOpen] = useState(false);
+            const ClientId = row?.original?.id;
+            const Nbp = row?.original?.NBp;
 
             return (
                 <div>
                     <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
                         Ajouter un sous couverte
                     </Button>
-                    <SousCouverteForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+                    <SousCouverteForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} IdClient={ClientId} Nbp={Nbp} />
                 </div>
             );
         },

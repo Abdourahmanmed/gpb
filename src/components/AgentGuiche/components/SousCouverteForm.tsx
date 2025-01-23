@@ -32,6 +32,10 @@ import { MontantSaiasiSchema, SousCouvertSchema } from "@/Schema/schema";
 import HeaderImprimary from "./HeaderImprimary";
 import Imprimery from "./Imprimery";
 import { GetLastReferenceOfSC } from "@/actions/All_references/GetLastReferenceOfSC";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
+import { SousCouvertPaiement } from "@/actions/paiement/S_couvertPaiement";
+import { useRouter } from "next/navigation";
 
 type SousCouvertFormValues = z.infer<typeof SousCouvertSchema>;
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
@@ -39,16 +43,21 @@ type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 interface SousCouverteFormProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
+    IdClient: string;
+    Nbp: string;
 }
 
 const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
     isOpen,
     setIsOpen,
+    IdClient,
+    Nbp
 }) => {
     const montantParSousCouverture = 30000;
     const [TotalMontant, setTotalMontant] = useState(montantParSousCouverture);
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
     const [donnees, setDonnees] = useState<SousCouvertFormValues | null>(null);
+    const router = useRouter();
 
     // État pour gérer l'incrément du numéro
     const [currentNumber, setCurrentNumber] = useState(1);
@@ -111,10 +120,6 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
         }
     }, []);
 
-    // Fonction pour incrémenter le numéro de reçu
-    const handleNewRecue = () => {
-        setCurrentNumber((prev) => prev + 1);
-    };
 
     const form = useForm<SousCouvertFormValues>({
         resolver: zodResolver(SousCouvertSchema),
@@ -127,7 +132,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
             Numero_wallet: "",
             Numero_cheque: "",
             Nom_Banque: "",
-            totalMontant: TotalMontant
+            totalMontant: 0
         },
     });
 
@@ -164,6 +169,9 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
             const finalData = {
                 ...values,
                 ReferenceId: recueNumber,  // Assurez-vous d'ajouter la valeur de recueNumber ici
+                id_user: 1,
+                NBp: Nbp,
+                totalMontant: TotalMontant,
             };
 
             // Logique d'enregistrement (par exemple, sauvegarde des données)
@@ -179,23 +187,50 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
         }
     };
 
-    const handlePayer = (value: MontantSaisi) => {
-        if (parseInt(value.montantSaisi) !== TotalMontant) {
-            alert(`Le montant saisi doit être exactement ${TotalMontant} DJF.`);
+    const handlePayer = async (value: MontantSaisi) => {
+        // Vérification du montant saisi
+        if (parseInt(value.montantSaisi) !== donnees?.totalMontant) {
+            toast.error(`Le montant saisi doit être exactement ${donnees?.totalMontant} DJF.`);
             return;
         }
 
-        if (PrintJS && printAreaRef.current) { // Vérification que PrintJS est chargé et que le DOM est prêt
-            PrintJS({
-                printable: printAreaRef.current,
-                type: "html",
-                targetStyles: ["*"],
-            });
+        try {
+            // Envoi des données pour enregistrement
+            const enregistrement = await SousCouvertPaiement(IdClient, donnees);
+
+            if (enregistrement?.success) {
+                toast.success("Données enregistrées avec succès.");
+
+                // Vérification et impression via PrintJS
+                if (PrintJS && printAreaRef.current) {
+                    PrintJS({
+                        printable: printAreaRef.current,
+                        type: "html",
+                        targetStyles: ["*"],
+                    });
+                }
+
+                // Réinitialisation de l'état
+                setIsSummaryOpen(false);
+                form.reset(); // Réinitialisation du formulaire
+                router.refresh(); // Rafraîchissement de la page ou des données
+            } else {
+                // Affichage des erreurs retournées par l'API
+                const errorMessage = enregistrement?.error || "Une erreur inconnue est survenue.";
+                toast.error(errorMessage);
+            }
+        } catch (error) {
+            // Gestion des erreurs imprévues
+            if (error instanceof NetworkError) {
+                toast.error("Erreur réseau. Vérifiez votre connexion internet.");
+            } else if (error instanceof ServerError) {
+                toast.error("Erreur serveur. Réessayez plus tard.");
+            } else {
+                toast.error("Une erreur inattendue est survenue.");
+            }
         }
-        setIsSummaryOpen(false);
-        form.reset();
-        setTotalMontant(30000);
     };
+
 
     return (
         <>
@@ -422,6 +457,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
             <Dialog open={isSummaryOpen} onOpenChange={setIsSummaryOpen}>
                 <DialogContent className="p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
                     <ScrollArea className="max-h-[70vh] w-full">
+                        <ToastContainer />
                         <DialogHeader className="border-b-2 pb-4 mb-6">
                             <DialogTitle className="text-2xl font-bold text-gray-800">Résumé des informations</DialogTitle>
                         </DialogHeader>
