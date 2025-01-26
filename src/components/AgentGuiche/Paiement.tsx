@@ -23,7 +23,7 @@ const Paiement = () => {
             ) : error ? (
                 <p>{error}</p> // Affichage de l'erreur si elle existe
             ) : (
-                <DataTable data={clients} columns={Le_PaiementColumns} typeName="Nom" />
+                 <DataTable data={clients} columns={Le_PaiementColumns} typeName="Nom" />
             )}
         </div>
     )

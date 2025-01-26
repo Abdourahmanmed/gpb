@@ -27,6 +27,12 @@ import {
     FolderPen,
     HandCoins,
     ChevronDown,
+    LayoutDashboard,
+    FolderCheck,
+    Users,
+    UserRoundCog,
+    ScrollText,
+    Bell,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -40,6 +46,12 @@ const iconMapper: { [key: string]: React.FC<React.SVGProps<SVGSVGElement>> } = {
     UserX,
     Clipboard,
     HandCoins,
+    LayoutDashboard,
+    FolderCheck,
+    Users,
+    UserRoundCog,
+    ScrollText,
+    Bell,
 };
 
 interface SubmenuItem {

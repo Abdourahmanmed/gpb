@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             icon: "LayoutDashboard",
             RoleName: {
                 Prefix: "Agent",
-                Suffix: "Guiche"
+                Suffix: "Superviseur"
             }
         },
         
@@ -18,6 +18,42 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             title: "Depot de resiliation",
             url: "/Superviseur/Depot_de_resiliation",
             icon: "FolderCheck",
+            RoleName: {
+                Prefix: "Superviseur",
+                Suffix: ""
+            }
+        },
+        {
+            title: "Les Abonnes",
+            url: "/Superviseur/Les_Abonnes",
+            icon: "Users",
+            RoleName: {
+                Prefix: "Superviseur",
+                Suffix: ""
+            }
+        },
+        {
+            title: "Les Agents",
+            url: "/Superviseur/Les_Agents",
+            icon: "UserRoundCog",
+            RoleName: {
+                Prefix: "Superviseur",
+                Suffix: ""
+            }
+        },
+        {
+            title: "Liste Boite Postal",
+            url: "/Superviseur/Liste_Boite_Postal",
+            icon: "ScrollText",
+            RoleName: {
+                Prefix: "Superviseur",
+                Suffix: ""
+            }
+        },
+        {
+            title: "Notifications",
+            url: "/Superviseur/Notifications",
+            icon: "Bell",
             RoleName: {
                 Prefix: "Superviseur",
                 Suffix: ""
