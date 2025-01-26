@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import MultiFormSlice from "./Slices/Multi-formSlice";
 import paymentReducer from './Slices/AjouterCleSlice';
 import clientsReducer from './Slices/GlobalManagementClient';
+import AgentsReducer from './Slices/AgentManagement';
 
 
 const store = configureStore({
@@ -10,6 +11,7 @@ const store = configureStore({
         multiForm: MultiFormSlice,
         payment: paymentReducer,
         clients: clientsReducer,
+        Agents: AgentsReducer,
     }
 })
 

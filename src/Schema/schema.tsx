@@ -30,6 +30,23 @@ export const RegisterSchema = z.object({
   }),
 });
 
+// shema pour ajouter un utilisateur sur le systeme
+export const EditAgentSchema = z.object({
+  Nom: z.string().min(1, { message: "le Nom  est obligatoire." }),
+  Email: z.string().email({
+    message: "l'email est obligatoire",
+  }),
+  Password: z.string().min(1, {
+    message: "le password est obligatoire.",
+  }),
+  Telephone: z.string().min(1, {
+    message: "le Telephone est obligatoire.",
+  }),
+  Adresse: z.string().min(1, {
+    message: "l'adresse est obligatoire.",
+  }),
+});
+
 // schema pour le ajouter un nouveau client
 export const NouveauClientSchemaStepOne = z.object({
   BoitePostale: z

@@ -1,19 +1,19 @@
 "use client";
 import { NoFilterDataTable } from "@/components/Tables/NoFilterData";
 import React, { useEffect } from "react";
-import { DepotColumns } from "../columns/DepotCol";
-import { fetchClients } from "@/Store/Slices/GlobalManagementClient";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/Store/store";
 import LoadingSpinner from "@/components/Spinner";
+import { fetchAgents } from "@/Store/Slices/AgentManagement";
+import { AgentsColumns } from "../columns/AgentsCol";
 
 
-const DepotResiliation = () => {
+const AgentsGuichet = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { clients, loading, error } = useSelector((state: RootState) => state.clients);
+  const { agents, loading, error } = useSelector((state: RootState) => state.Agents);
   // Utiliser le thunk pour charger les clients
   useEffect(() => {
-    dispatch(fetchClients()); // Appeler le thunk pour récupérer les clients
+    dispatch(fetchAgents()); // Appeler le thunk pour récupérer les clients
   }, [dispatch]);
   return (
     <div>
@@ -22,11 +22,11 @@ const DepotResiliation = () => {
       ) : error ? (
         <p>{error}</p> // Affichage de l'erreur si elle existe
       ) : (
-        <NoFilterDataTable data={clients} columns={DepotColumns} typeName="Nom" />
+        <NoFilterDataTable data={agents} columns={AgentsColumns} typeName="nom" />
       )}
     </div>
 
   );
 };
 
-export default DepotResiliation;
+export default AgentsGuichet;

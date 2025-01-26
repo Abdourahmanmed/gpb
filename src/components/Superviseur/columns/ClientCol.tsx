@@ -10,7 +10,7 @@ import { DepotResilierForm } from "../Models/DepotModels"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type DepotType = {
+export type ClientType = {
     id: string;
     Nom: string;
     NBp: string;
@@ -25,7 +25,7 @@ export type DepotType = {
     Type_boite_postale: string;
 };
 
-export const DepotColumns: ColumnDef<DepotType>[] = [
+export const ClientColumns: ColumnDef<ClientType>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -91,25 +91,17 @@ export const DepotColumns: ColumnDef<DepotType>[] = [
         header: "Date abonnement",
     },
     {
+        accessorKey: "Adresse",
+        header: "Adresset",
+    },
+    {
+        accessorKey: "TypeClient",
+        header: "Type Abonnee",
+    },
+    {
         accessorKey: "Type_boite_postale",
         header: "Type boite postale",
     },
-    {
-        id: "actions",
-        header: "Actions",
-        cell: ({ row }) => {
-            const userId = row?.original?.id;
-            const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-            return (
-                <div>
-                    <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
-                        Deposer un resiliation
-                    </Button>
-                    <DepotResilierForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId={userId}/>
-                </div>
-            );
-        },
-    }
+  
 
 ]
