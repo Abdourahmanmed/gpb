@@ -58,6 +58,7 @@ export const NouveauClientSchemaStepOne = z.object({
   Adresse: z.string().min(1, { message: "L'adresse est obligatoire." }),
   Role: z.string().min(1, { message: "Choisir un type de client." }),
   montantRd: z.number().optional(),
+  Reference_Rdv: z.string().optional(),
 });
 
 //schema pour le ajouter un nouveau client
@@ -299,6 +300,7 @@ const DynamicSchemaCll = z.discriminatedUnion("Have_cll", [
       .string()
       .min(1, { message: "L'adresse est obligatoire." }),
     montantCll: z.number(),
+    reference_collection:z.string().optional()
   }),
   z.object({
     Have_cll: z.literal(false),
@@ -313,6 +315,7 @@ const DynamicSchemaLd = z.discriminatedUnion("Have_ld", [
       .string()
       .min(1, { message: "L'adresse est obligatoire." }),
     montantLd: z.number(),
+    reference_Ld:z.string().optional()
   }),
   z.object({
     Have_ld: z.literal(false), // Discriminant avec la valeur `false`
@@ -341,6 +344,7 @@ export const DynamicSchema = z
           message: "Vous ne pouvez pas ajouter plus de 5 sous-couvertures.",
         }),
       montantSC: z.number(),
+      reference_Sc:z.string().optional()
     }),
     z.object({
       Have_sous_couvert_ld_cll: z.literal(false), // Discriminant avec la valeur `false`

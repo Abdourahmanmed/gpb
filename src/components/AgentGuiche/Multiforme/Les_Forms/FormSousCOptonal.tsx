@@ -20,6 +20,9 @@ import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { nextStep, updateField } from "@/Store/Slices/Multi-formSlice";
 import { Badge } from "@/components/ui/badge";
+import { GetLastReferenceOfSC } from "@/actions/All_references/GetLastReferenceOfSC";
+import { GetLastReferenceOfCLL } from "@/actions/All_references/GetLastReferenceOfCll";
+import { GetLastReferenceOfLDV } from "@/actions/All_references/GetLastReferenceOfLVD";
 
 type SousCouvertFormValues = z.infer<typeof DynamicSchema>;
 
@@ -31,6 +34,17 @@ const FormSousCOptonal = () => {
     const dispatch = useDispatch<AppDispatch>();
     const multiFormState = useSelector((state: RootState) => state.multiForm);
     const [montantTotal, setMontantTotal] = useState(0);
+    // État pour gérer l'incrément du numéro pour les souscouverte
+    const [currentNumber, setCurrentNumber] = useState(1);
+    const [recueNumber, setRecueNumber] = useState('');
+
+    // État pour gérer l'incrément du numéro pour les livraisons
+    const [currentNumberLiv, setCurrentNumberLiv] = useState(1);
+    const [recueNumberLiv, setRecueNumberLiv] = useState('');
+
+    // État pour gérer l'incrément du numéro pour les collections
+    const [currentNumberCll, setCurrentNumberCll] = useState(1);
+    const [recueNumberCll, setRecueNumberCll] = useState('');
 
     const form = useForm<SousCouvertFormValues>({
         resolver: zodResolver(DynamicSchema),
@@ -39,6 +53,9 @@ const FormSousCOptonal = () => {
             MontantSC: 0,
             montantCll: 0,
             montantLd: 0,
+            reference_Sc: "",
+            reference_Ld: "",
+            reference_collection: "",
             Have_sous_couvert_ld_cll: false,
             Have_ld: false,
             Have_cll: false,
@@ -77,10 +94,138 @@ const FormSousCOptonal = () => {
         form.setValue("montantCll", haveCll ? montantBaseCll : 0);
     }, [watchedFields]);
 
-    const onSubmit = (values: SousCouvertFormValues) => {
-        console.log("Form Values: ", values);
+    // useEffect pour la référence sous-couvert
+    useEffect(() => {
+        if (form.getValues("Have_sous_couvert_ld_cll")) {
+            const fetchLastReference = async () => {
+                try {
+                    const lastReference = await GetLastReferenceOfSC();
+                    const currentDate = new Date();
+                    const formattedDate = currentDate.toISOString().split("T")[0];
+                    const anneeActuelle = currentDate.getFullYear();
 
-        Object.entries(values).forEach(([field, value]) => {
+                    if (!lastReference) {
+                        const paddedNumber = String(currentNumber).padStart(5, "0");
+                        const newRecueNumber = `AJSC/${paddedNumber}/${formattedDate}`;
+                        setRecueNumber(newRecueNumber);
+                    } else {
+                        const lastReferenceParts = lastReference.split("/");
+                        const lastReferenceDate = lastReferenceParts.pop();
+                        const lastReferenceYear = lastReferenceDate.split("-")[0];
+                        const middleNumber = lastReferenceParts[1];
+
+                        if (lastReferenceYear !== anneeActuelle.toString()) {
+                            const paddedNumber = String(currentNumber).padStart(5, "0");
+                            const newRecueNumber = `AJSC/${paddedNumber}/${formattedDate}`;
+                            setRecueNumber(newRecueNumber);
+                        } else {
+                            const incrementee = (parseInt(middleNumber, 10) + 1)
+                                .toString()
+                                .padStart(5, "0");
+                            const newRecueNumber = `AJSC/${incrementee}/${formattedDate}`;
+                            setRecueNumber(newRecueNumber);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Erreur lors de la récupération de la référence :", error);
+                }
+            };
+
+            fetchLastReference();
+        }
+    }, [form.getValues("Have_sous_couvert_ld_cll"), currentNumber]);
+
+    // useEffect pour la référence livraison
+    useEffect(() => {
+        if (form.getValues("Have_ld")) {
+            const fetchLastReference = async () => {
+                try {
+                    const lastReference = await GetLastReferenceOfLDV();
+                    const currentDate = new Date();
+                    const formattedDate = currentDate.toISOString().split("T")[0];
+                    const anneeActuelle = currentDate.getFullYear();
+
+                    if (!lastReference) {
+                        const paddedNumber = String(currentNumberLiv).padStart(5, "0");
+                        const newRecueNumber = `AJLV/${paddedNumber}/${formattedDate}`;
+                        setRecueNumberLiv(newRecueNumber);
+                    } else {
+                        const lastReferenceParts = lastReference.split("/");
+                        const lastReferenceDate = lastReferenceParts.pop();
+                        const lastReferenceYear = lastReferenceDate.split("-")[0];
+                        const middleNumber = lastReferenceParts[1];
+
+                        if (lastReferenceYear !== anneeActuelle.toString()) {
+                            const paddedNumber = String(currentNumberLiv).padStart(5, "0");
+                            const newRecueNumber = `AJLV/${paddedNumber}/${formattedDate}`;
+                            setRecueNumberLiv(newRecueNumber);
+                        } else {
+                            const incrementee = (parseInt(middleNumber, 10) + 1)
+                                .toString()
+                                .padStart(5, "0");
+                            const newRecueNumber = `AJLV/${incrementee}/${formattedDate}`;
+                            setRecueNumberLiv(newRecueNumber);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Erreur lors de la récupération de la référence :", error);
+                }
+            };
+
+            fetchLastReference();
+        }
+    }, [form.getValues("Have_ld"), currentNumberLiv]);
+
+    // useEffect pour la référence collection
+    useEffect(() => {
+        if (form.getValues("Have_cll")) {
+            const fetchLastReference = async () => {
+                try {
+                    const lastReference = await GetLastReferenceOfCLL();
+                    const currentDate = new Date();
+                    const formattedDate = currentDate.toISOString().split("T")[0];
+                    const anneeActuelle = currentDate.getFullYear();
+
+                    if (!lastReference) {
+                        const paddedNumber = String(currentNumberCll).padStart(5, "0");
+                        const newRecueNumber = `AJCll/${paddedNumber}/${formattedDate}`;
+                        setRecueNumberCll(newRecueNumber);
+                    } else {
+                        const lastReferenceParts = lastReference.split("/");
+                        const lastReferenceDate = lastReferenceParts.pop();
+                        const lastReferenceYear = lastReferenceDate.split("-")[0];
+                        const middleNumber = lastReferenceParts[1];
+
+                        if (lastReferenceYear !== anneeActuelle.toString()) {
+                            const paddedNumber = String(currentNumberCll).padStart(5, "0");
+                            const newRecueNumber = `AJCll/${paddedNumber}/${formattedDate}`;
+                            setRecueNumberCll(newRecueNumber);
+                        } else {
+                            const incrementee = (parseInt(middleNumber, 10) + 1)
+                                .toString()
+                                .padStart(5, "0");
+                            const newRecueNumber = `AJCll/${incrementee}/${formattedDate}`;
+                            setRecueNumberCll(newRecueNumber);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Erreur lors de la récupération de la référence :", error);
+                }
+            };
+
+            fetchLastReference();
+        }
+    }, [form.getValues("Have_cll"), currentNumberCll]);
+
+
+    const onSubmit = (values: SousCouvertFormValues) => {
+        const finaldata = {
+            ...values,
+            reference_Sc: recueNumber,
+            reference_Ld: recueNumberLiv,
+            reference_collection: recueNumberCll
+        }
+        Object.entries(finaldata).forEach(([field, value]) => {
             dispatch(updateField({ field, value }));
         });
 

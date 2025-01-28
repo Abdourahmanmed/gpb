@@ -39,6 +39,10 @@ interface MultiFormState {
   montantLd: number,
   montantCll: number,
   montantSC: number,
+  reference_Sc: string,
+  reference_Ld: string,
+  reference_collection: string,
+  Reference_Rdv:string,
 }
 
 const initialState: MultiFormState = {
@@ -73,6 +77,10 @@ const initialState: MultiFormState = {
   montantLd: 0,
   montantCll: 0,
   montantSC: 0,
+  reference_Sc: "",
+  reference_Ld: "",
+  reference_collection: "",
+  Reference_Rdv:""
 };
 
 // Fonction utilitaire pour sauvegarder dans le localStorage

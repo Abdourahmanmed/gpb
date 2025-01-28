@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Store/store";
+import { GetLastReferenceOfRdv } from "@/actions/All_references/GetLastReferenceOfRdv";
 
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 
@@ -26,15 +27,47 @@ const StepFourForme = () => {
     });
 
     useEffect(() => {
-        // Générer la date actuelle
-        const currentDate = new Date();
-        const formattedDate = currentDate.toISOString().split("T")[0]; // Format AAAA-MM-JJ
+        const fetchLastReference = async () => {
+            try {
+                // Récupérer la dernière référence depuis la base de données
+                const lastReference = await GetLastReferenceOfRdv();
 
-        // Générer le numéro de reçu
-        const paddedNumber = String(currentNumber).padStart(5, "0"); // Ajoute des zéros à gauche pour atteindre 5 chiffres
-        const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
+                // Générer la date actuelle
+                const currentDate = new Date();
+                const formattedDate = currentDate.toISOString().split('T')[0]; // Format AAAA-MM-JJ
+                const anneeActuelle = currentDate.getFullYear();
 
-        setRecueNumber(newRecueNumber);
+                if (!lastReference) {
+                    // Si aucune référence n'existe, générer un nouveau numéro
+                    const paddedNumber = String(currentNumber).padStart(5, '0');
+                    const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
+                    setRecueNumber(newRecueNumber);
+                } else {
+                    // Si une référence existe, analyser les données
+                    const lastReferenceParts = lastReference.split("/");
+                    const lastReferenceDate = lastReferenceParts.pop();
+                    const lastReferenceYear = lastReferenceDate.split('-')[0];
+                    const middleNumber = lastReferenceParts[1];
+
+                    if (lastReferenceYear !== anneeActuelle.toString()) {
+                        // Si l'année est différente, recommencer avec le numéro initial
+                        const paddedNumber = String(currentNumber).padStart(5, '0');
+                        const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
+                        setRecueNumber(newRecueNumber);
+                    } else {
+                        // Si l'année est identique, incrémenter le numéro
+                        const incrementee = (parseInt(middleNumber, 10) + 1).toString().padStart(5, '0');
+                        const newRecueNumber = `RNBP/${incrementee}/${formattedDate}`;
+                        setRecueNumber(newRecueNumber);
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur lors de la récupération de la référence :', error);
+            }
+        };
+
+        fetchLastReference();
+
     }, [currentNumber]);
 
     useEffect(() => {

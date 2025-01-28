@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { GetLastReferenceOfRdv } from '@/actions/All_references/GetLastReferenceOfRdv';
 
 
 const StepOneForm = () => {
@@ -22,20 +23,74 @@ const StepOneForm = () => {
     const dispatch = useDispatch<AppDispatch>();
     const multiFormState = useSelector((state: RootState) => state.multiForm);
 
+    // État pour gérer l'incrément du numéro
+    const [currentNumber, setCurrentNumber] = useState(1);
+    const [recueNumber, setRecueNumber] = useState('');
+
     const form = useForm<z.infer<typeof NouveauClientSchemaStepOne>>({
         resolver: zodResolver(NouveauClientSchemaStepOne),
         defaultValues: {
             ...multiFormState,
             montantRd: 40000,
+            Reference_Rdv: ""
         } // Charger les valeurs initiales depuis Redux
     });
 
+
+    useEffect(() => {
+        const fetchLastReference = async () => {
+            try {
+                // Récupérer la dernière référence depuis la base de données
+                const lastReference = await GetLastReferenceOfRdv();
+
+                // Générer la date actuelle
+                const currentDate = new Date();
+                const formattedDate = currentDate.toISOString().split('T')[0]; // Format AAAA-MM-JJ
+                const anneeActuelle = currentDate.getFullYear();
+
+                if (!lastReference) {
+                    // Si aucune référence n'existe, générer un nouveau numéro
+                    const paddedNumber = String(currentNumber).padStart(5, '0');
+                    const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
+                    setRecueNumber(newRecueNumber);
+                } else {
+                    // Si une référence existe, analyser les données
+                    const lastReferenceParts = lastReference.split("/");
+                    const lastReferenceDate = lastReferenceParts.pop();
+                    const lastReferenceYear = lastReferenceDate.split('-')[0];
+                    const middleNumber = lastReferenceParts[1];
+
+                    if (lastReferenceYear !== anneeActuelle.toString()) {
+                        // Si l'année est différente, recommencer avec le numéro initial
+                        const paddedNumber = String(currentNumber).padStart(5, '0');
+                        const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
+                        setRecueNumber(newRecueNumber);
+                    } else {
+                        // Si l'année est identique, incrémenter le numéro
+                        const incrementee = (parseInt(middleNumber, 10) + 1).toString().padStart(5, '0');
+                        const newRecueNumber = `RNBP/${incrementee}/${formattedDate}`;
+                        setRecueNumber(newRecueNumber);
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur lors de la récupération de la référence :', error);
+            }
+        };
+
+        fetchLastReference();
+
+    }, [currentNumber]);
+
     const onSubmit = (values: z.infer<typeof NouveauClientSchemaStepOne>) => {
+
+        const finaldata = {
+            ...values,
+            Reference_Rdv: recueNumber
+        }
         // Mise à jour des champs dans Redux
-        Object.entries(values).forEach(([field, value]) => {
+        Object.entries(finaldata).forEach(([field, value]) => {
             dispatch(updateField({ field, value }));
         });
-        console.log(values);
 
         dispatch(nextStep()); // Passer à l'étape suivante
         // router.push("/Agent_guiche/Nouveau_client/StepTwoForm"); // Naviguer vers la prochaine étape
