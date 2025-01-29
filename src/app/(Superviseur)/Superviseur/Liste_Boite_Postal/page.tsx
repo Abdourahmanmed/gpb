@@ -1,9 +1,8 @@
-import React from 'react'
+import ListeBp from "@/components/Superviseur/All_components/ListeBp";
+import React from "react";
 
 const page = () => {
-  return (
-    <div>page liste boite postale</div>
-  )
-}
+  return <ListeBp />;
+};
 
-export default page
+export default page;

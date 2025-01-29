@@ -103,6 +103,14 @@ export function NoFilterDataTable<TData, TValue>({
             className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
           />
         )}
+        {path && path === '/Superviseur/Liste_Boite_Postal' && (
+          <Input
+            placeholder="filtre par nom"
+            value={(table.getColumn(typeName)?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn(typeName)?.setFilterValue(event.target.value)}
+            className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+          />
+        )}
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
