@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AudioLines } from "lucide-react";
 
 
 type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
@@ -54,7 +55,7 @@ const StepThreeForm = () => {
     Object.entries(values).forEach(([field, value]) => {
       dispatch(updateField({ field, value }));
     });
-
+    console.log(values)
     dispatch(nextStep());
   };
 
@@ -69,7 +70,7 @@ const StepThreeForm = () => {
         Enregistrement d'un nouveau client
       </h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} encType="multipart/form-data">
           {/* Champs pour "entreprise" */}
           <div className="grid grid-cols-2 gap-4 w-full mb-4">
             <FormField

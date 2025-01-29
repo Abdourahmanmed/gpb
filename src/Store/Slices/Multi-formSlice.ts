@@ -100,16 +100,17 @@ const MultiFormSlice = createSlice({
   reducers: {
     updateField(state, action) {
       const { field, value } = action.payload;
-      if (value instanceof File) {
-        // Sérialiser le fichier
-        (state as any)[field] = {
-          name: value.name,
-          size: value.size,
-          type: value.type,
-        };
-      } else {
-        (state as any)[field] = value;
-      }
+      // if (value instanceof File) {
+      //   // Sérialiser le fichier
+      //   (state as any)[field] = {
+      //     name: value.name,
+      //     size: value.size,
+      //     type: value.type,
+      //   };
+      // } else {
+      //   (state as any)[field] = value;
+      // }
+      (state as any)[field] = value;
       saveToLocalStorage("multiFormData", state);
     },
     saveAndReset(state) {
