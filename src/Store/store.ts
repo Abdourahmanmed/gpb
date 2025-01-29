@@ -3,6 +3,7 @@ import MultiFormSlice from "./Slices/Multi-formSlice";
 import paymentReducer from './Slices/AjouterCleSlice';
 import clientsReducer from './Slices/GlobalManagementClient';
 import AgentsReducer from './Slices/AgentManagement';
+import BoitPostalReducer from './Slices/ListeBpSlice';
 
 
 const store = configureStore({
@@ -12,6 +13,7 @@ const store = configureStore({
         payment: paymentReducer,
         clients: clientsReducer,
         Agents: AgentsReducer,
+        BoitPostal: BoitPostalReducer,
     }
 })
 
