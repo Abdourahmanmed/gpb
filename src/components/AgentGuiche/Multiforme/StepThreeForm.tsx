@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormControl,
@@ -24,44 +24,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AudioLines } from "lucide-react";
-
 
 type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
 
 const StepThreeForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const multiFormState = useSelector((state: RootState) => state.multiForm);
+  const [files, setFiles] = useState<File[]>([]); // État local pour les fichiers réels
 
   const form = useForm<z.infer<typeof NouveauClientSchemaStepTwo>>({
     resolver: zodResolver(NouveauClientSchemaStepTwo),
     defaultValues: {
-      // Définir des valeurs par défaut explicites pour tous les champs requis
-      Abonnement: multiFormState.Abonnement || undefined, // Définit undefined si non présent
+      Abonnement: multiFormState.Abonnement || undefined,
       patent_quitance: multiFormState.TypeClient
-        ? multiFormState.patent_quitance || undefined // Définit uniquement si TypeClient est true
+        ? multiFormState.patent_quitance || undefined
         : undefined,
-      Identiter: multiFormState.Identiter || undefined, // Définit undefined si non présent
-      TypeClient: multiFormState.TypeClient ?? false, // Définit false comme valeur par défaut
-      Methode_de_paiement: multiFormState.Methode_de_paiement, // Définit une chaîne vide par défaut
-      wallet: multiFormState.wallet || undefined, // Définit undefined si non présent
-      Numero_wallet: multiFormState.Numero_wallet || "", // Définit une chaîne vide par défaut
-      Numero_cheque: multiFormState.Numero_cheque || "", // Définit une chaîne vide par défaut
-      Nom_Banque: multiFormState.Nom_Banque || "", // Définit une chaîne vide par défaut
+      Identiter: multiFormState.Identiter || undefined,
+      TypeClient: multiFormState.TypeClient ?? false,
+      Methode_de_paiement: multiFormState.Methode_de_paiement,
+      wallet: multiFormState.wallet || undefined,
+      Numero_wallet: multiFormState.Numero_wallet || "",
+      Numero_cheque: multiFormState.Numero_cheque || "",
+      Nom_Banque: multiFormState.Nom_Banque || "",
     },
   });
+
+  const handleFileChange = (field: any, index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null;
+    if (file) {
+      const updatedFiles = [...files];
+      updatedFiles[index] = file;
+      setFiles(updatedFiles);
+      field.onChange(file);
+      dispatch(updateField({ field: field.name, value: file }));
+    }
+  };
 
   const onSubmit = (values: z.infer<typeof NouveauClientSchemaStepTwo>) => {
     Object.entries(values).forEach(([field, value]) => {
       dispatch(updateField({ field, value }));
     });
-    console.log(values)
+    console.log("Final submission data:", { ...values, files });
     dispatch(nextStep());
-  };
-
-  const handleFileChange = (field: any) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null;
-    field.onChange(file);
   };
 
   return (
@@ -71,7 +75,6 @@ const StepThreeForm = () => {
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} encType="multipart/form-data">
-          {/* Champs pour "entreprise" */}
           <div className="grid grid-cols-2 gap-4 w-full mb-4">
             <FormField
               control={form.control}
@@ -80,7 +83,7 @@ const StepThreeForm = () => {
                 <FormItem>
                   <FormLabel>Abonnement :</FormLabel>
                   <FormControl>
-                    <Input type="file" onChange={handleFileChange(field)} onBlur={field.onBlur} />
+                    <Input type="file" onChange={handleFileChange(field, 0)} onBlur={field.onBlur} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,13 +97,12 @@ const StepThreeForm = () => {
                   <FormItem>
                     <FormLabel>Patent/Quittance :</FormLabel>
                     <FormControl>
-                      <Input type="file" onChange={handleFileChange(field)} onBlur={field.onBlur} />
+                      <Input type="file" onChange={handleFileChange(field, 1)} onBlur={field.onBlur} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
             )}
             <FormField
               control={form.control}
@@ -109,13 +111,12 @@ const StepThreeForm = () => {
                 <FormItem>
                   <FormLabel>Identité :</FormLabel>
                   <FormControl>
-                    <Input type="file" onChange={handleFileChange(field)} onBlur={field.onBlur} />
+                    <Input type="file" onChange={handleFileChange(field, 2)} onBlur={field.onBlur} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {/* Méthode de paiement */}
             <FormField
               control={form.control}
               name="Methode_de_paiement"
@@ -141,9 +142,7 @@ const StepThreeForm = () => {
                 </FormItem>
               )}
             />
-
-            {/* Informations spécifiques à chaque méthode de paiement */}
-            {form.watch('Methode_de_paiement') === 'wallet' && (
+            {form.watch("Methode_de_paiement") === "wallet" && (
               <div className="space-y-2">
                 <FormField
                   control={form.control}
@@ -187,7 +186,7 @@ const StepThreeForm = () => {
                 />
               </div>
             )}
-            {form.watch('Methode_de_paiement') === 'cheque' && (
+            {form.watch("Methode_de_paiement") === "cheque" && (
               <div className="space-y-2">
                 <FormField
                   control={form.control}
@@ -218,8 +217,6 @@ const StepThreeForm = () => {
               </div>
             )}
           </div>
-
-
           <Button type="submit" className="w-full bg-blue-900 text-white">
             Continuer
           </Button>
@@ -228,6 +225,5 @@ const StepThreeForm = () => {
     </div>
   );
 };
-
 
 export default StepThreeForm;

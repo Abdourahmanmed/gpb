@@ -14,7 +14,14 @@ const store = configureStore({
         clients: clientsReducer,
         Agents: AgentsReducer,
         BoitPostal: BoitPostalReducer,
-    }
+    },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: ["multiForm/updateField"],
+          ignoredPaths: ["multiForm.Abonnement", "multiForm.patent_quitance", "multiForm.Identiter"],
+        },
+      }),
 })
 
 export type RootState = ReturnType<typeof store.getState>; // Type du state global
