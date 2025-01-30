@@ -1,8 +1,9 @@
+import CrudUsers from '@/components/ResponsableCommercial/CrudUsers'
 import React from 'react'
 
 const page = () => {
   return (
-    <div>page creations des utilisateur</div>
+    <CrudUsers />
   )
 }
 
