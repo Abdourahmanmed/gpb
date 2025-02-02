@@ -15,9 +15,9 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useState, useTransition } from "react";
-import { login } from "@/actions/route";
 import { LoginSchema } from "@/Schema/schema";
 import { FormError } from "./FormError";
+import { login } from "@/actions/route";
 
 export default function LoginPage() {
 
@@ -33,13 +33,13 @@ export default function LoginPage() {
         },
     });
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-        // setError("")
-        // startTransition(() => {
-        //     login(values).then((data)=>{
-        //         setError(data?.error);
-        //     });
+        setError("")
+        startTransition(() => {
+            login(values).then((data)=>{
+                setError(data?.error);
+            });
 
-        // })
+        })
     }
     return (
         <div className="h-screen w-screen flex justify-center items-center bg-blue-900">

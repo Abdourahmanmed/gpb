@@ -42,6 +42,7 @@ import {
 import { usePathname } from "next/navigation";
 import React from "react";
 import { Button } from "./ui/button";
+import { LogOutButton } from "@/actions/route";
 
 // Typage des icônes
 const iconMapper: { [key: string]: React.FC<React.SVGProps<SVGSVGElement>> } = {
@@ -197,8 +198,10 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
             </SidebarContent>
 
             <SidebarFooter>
-                <Button className="bg-transparent hover:bg-white hover:text-blue-500 duration-500"><Power /> Deconnexion</Button>
+                <form className="w-full p-4" action={LogOutButton}>
+                    <Button type="submit" className="bg-transparent hover:bg-white hover:text-blue-500 duration-500"><Power /> Deconnexion</Button>
+                </form>
             </SidebarFooter>
-        </Sidebar>
+        </Sidebar >
     );
 }
