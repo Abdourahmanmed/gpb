@@ -1,9 +1,8 @@
-import React from 'react'
+import EnleverPenalite from "@/components/ResponsableCommercial/EnleverPenal";
+import React from "react";
 
 const page = () => {
-  return (
-    <div>page enlever les penaliter</div>
-  )
-}
+  return <EnleverPenalite />;
+};
 
-export default page
+export default page;

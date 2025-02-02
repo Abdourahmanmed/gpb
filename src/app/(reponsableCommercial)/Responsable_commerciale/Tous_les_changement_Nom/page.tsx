@@ -1,9 +1,8 @@
-import React from 'react'
+import ChangementNomAbonne from "@/components/ResponsableCommercial/ChangementNom";
+import React from "react";
 
 const page = () => {
-  return (
-    <div>page de tous les changement Nom</div>
-  )
-}
+  return <ChangementNomAbonne />;
+};
 
-export default page
+export default page;

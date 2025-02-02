@@ -1,20 +1,19 @@
 "use client";
 import { NoFilterDataTable } from "@/components/Tables/NoFilterData";
 import React, { useEffect } from "react";
+import { fetchClients } from "@/Store/Slices/GlobalManagementClient";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/Store/store";
 import LoadingSpinner from "@/components/Spinner";
-import { CrudUsersColumns } from "./columns/CrudUserCol";
-import { fetchCrudUsers } from "@/Store/Slices/CrudUserManagement";
+import { SubscribedColumns } from "./columns/AllSusbscibedcol";
 
-const CrudUsers = () => {
+
+const EnleverPenalite = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { users, loading, error } = useSelector(
-    (state: RootState) => state.UsersCrud
-  );
+  const { clients, loading, error } = useSelector((state: RootState) => state.clients);
   // Utiliser le thunk pour charger les clients
   useEffect(() => {
-    dispatch(fetchCrudUsers()); // Appeler le thunk pour récupérer les clients
+    dispatch(fetchClients()); // Appeler le thunk pour récupérer les clients
   }, [dispatch]);
   return (
     <div>
@@ -23,14 +22,11 @@ const CrudUsers = () => {
       ) : error ? (
         <p>{error}</p> // Affichage de l'erreur si elle existe
       ) : (
-        <NoFilterDataTable
-          data={users}
-          columns={CrudUsersColumns}
-          typeName="nom"
-        />
+        <NoFilterDataTable data={clients} columns={SubscribedColumns} typeName="Nom" />
       )}
     </div>
+
   );
 };
 
-export default CrudUsers;
+export default EnleverPenalite;

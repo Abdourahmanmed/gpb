@@ -1,9 +1,8 @@
-import React from 'react'
+import LvdAbonne from "@/components/ResponsableCommercial/AllLivraisonAbonne";
+import React from "react";
 
 const page = () => {
-  return (
-    <div>page de tous les demande livraison</div>
-  )
-}
+  return <LvdAbonne />;
+};
 
-export default page
+export default page;

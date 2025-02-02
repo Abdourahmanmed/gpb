@@ -1,9 +1,8 @@
-import React from 'react'
+import TousLesResilier from "@/components/ResponsableCommercial/TousLesResilier";
+import React from "react";
 
 const page = () => {
-  return (
-    <div>page de tout les resiliation</div>
-  )
-}
+  return <TousLesResilier />;
+};
 
-export default page
+export default page;

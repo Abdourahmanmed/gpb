@@ -2,19 +2,20 @@
 import { NoFilterDataTable } from "@/components/Tables/NoFilterData";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/Store/store";
+import { RootState } from "@/Store/store";
 import LoadingSpinner from "@/components/Spinner";
-import { CrudUsersColumns } from "./columns/CrudUserCol";
-import { fetchCrudUsers } from "@/Store/Slices/CrudUserManagement";
+import { AppDispatch } from "@/Store/store";
+import { LvdColumns } from "./columns/LivraisonAdded";
+import { fetchLivraison } from "@/Store/Slices/LvdSlice";
 
-const CrudUsers = () => {
+const LvdAbonne = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { users, loading, error } = useSelector(
-    (state: RootState) => state.UsersCrud
+  const { Livraison, loading, error } = useSelector(
+    (state: RootState) => state.Lvd
   );
   // Utiliser le thunk pour charger les clients
   useEffect(() => {
-    dispatch(fetchCrudUsers()); // Appeler le thunk pour récupérer les clients
+    dispatch(fetchLivraison()); // Appeler le thunk pour récupérer les clients
   }, [dispatch]);
   return (
     <div>
@@ -24,13 +25,13 @@ const CrudUsers = () => {
         <p>{error}</p> // Affichage de l'erreur si elle existe
       ) : (
         <NoFilterDataTable
-          data={users}
-          columns={CrudUsersColumns}
-          typeName="nom"
+          data={Livraison}
+          columns={LvdColumns}
+          typeName="client_nom"
         />
       )}
     </div>
   );
 };
 
-export default CrudUsers;
+export default LvdAbonne;

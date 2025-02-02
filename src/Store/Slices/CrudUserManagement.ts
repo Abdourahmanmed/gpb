@@ -27,7 +27,7 @@ const initialState: CrudUserState = {
 
 // Créer un thunk pour appeler FetchAllClients
 export const fetchCrudUsers = createAsyncThunk(
-    "CrudUserManagementFetch/fetchCrudUser",
+    "CrudUserManagementFetch/fetchCrudUsers",
     async (_, { rejectWithValue }) => {
         try {
             const response = await FetchAllUsers(); // Appel à FetchAllClients
@@ -40,7 +40,7 @@ export const fetchCrudUsers = createAsyncThunk(
 
 // Création du slice avec les actions nécessaires
 const UsersCrudSlice = createSlice({
-    name: "CrudUsresManagementFetch",
+    name: "CrudUserManagementFetch",
     initialState,
     reducers: {}, // Pas de reducers nécessaires pour l'instant
     extraReducers: (builder) => {
