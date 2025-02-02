@@ -15,7 +15,14 @@ export type ResilierClient = {
     Nom: string;
     NBp: string;
     Etat: string;
-    Type: string;
+    Telephone: string;
+    Redevance: string;
+    sous_couvert: string;
+    Domocile: string;
+    Date_abonnement: string;
+    Adresse: string;
+    TypeClient: string;
+    Type_boite_postale: string;
 };
 
 export const ResilierClientColumns: ColumnDef<ResilierClient>[] = [
@@ -61,13 +68,29 @@ export const ResilierClientColumns: ColumnDef<ResilierClient>[] = [
     },
     {
         accessorKey: "Etat",
-        header: "Etat Boite Postal",
+        header: "Etat",
     },
     {
-        accessorKey: "Type",
-        header: "Type Bp",
+        accessorKey: "Telephone",
+        header: "Telephone",
     },
-    
+    {
+        accessorKey: "Redevance",
+        header: "Redevance",
+    },
+    {
+        accessorKey: "sous_couvert",
+        header: "sous couvert",
+    },
+    {
+        accessorKey: "Domocile",
+        header: "Livraison à Domocile",
+    },
+    {
+        accessorKey: "Date_abonnement",
+        header: "Date abonnement",
+    },
+
     {
         id: "actions",
         header: "Actions",

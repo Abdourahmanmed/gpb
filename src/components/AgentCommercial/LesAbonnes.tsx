@@ -1,7 +1,12 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import { DataTable } from '../Tables/DataTables'
-import { Les_abonneCommerceColumns, Les_abonnesCommerce } from './colonnes/Les_abonneColumn'
+import { Les_abonneCommerceColumns } from './colonnes/Les_abonneColumn'
+import { NoFilterDataTable } from '../Tables/NoFilterData'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/Store/store'
+import { fetchClients } from '@/Store/Slices/GlobalManagementClient'
+import LoadingSpinner from '../Spinner'
 const data = [
   {
     id: "1",
@@ -447,13 +452,22 @@ const data = [
 
 
 const LesAbonnes = () => {
-  const [Abones, SetAbonne] = useState<Les_abonnesCommerce[]>([])
-
+  const dispatch = useDispatch<AppDispatch>();
+  const { clients, loading, error } = useSelector((state: RootState) => state.clients);
+  // Utiliser le thunk pour charger les clients
   useEffect(() => {
-    SetAbonne(data);
-  }, [])
+    dispatch(fetchClients()); // Appeler le thunk pour récupérer les clients
+  }, [dispatch]);
   return (
-    <DataTable data={Abones} columns={Les_abonneCommerceColumns} typeName="Nom" />
+    <div>
+      {loading ? (
+        <LoadingSpinner /> // Indicateur de chargement
+      ) : error ? (
+        <p>{error}</p> // Affichage de l'erreur si elle existe
+      ) : (
+        <NoFilterDataTable data={clients} columns={Les_abonneCommerceColumns} typeName="Nom" />
+      )}
+    </div>
   )
 }
 

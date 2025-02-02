@@ -138,24 +138,12 @@ export const SubscribedColumns: ColumnDef<Subscribed>[] = [
 
       return (
         <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Ellipsis className="" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <button
-                  className="w-full bg-blue-500 text-blanc hover:bg-blue-500/90 hover:text-blanc duration-500 rounded-lg p-1"
-                  onClick={() => setIsDeleteDialogOpen(true)}
-                >
-                  Enlever le penaliter
-                </button>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
+          <button
+            className="w-full bg-blue-500 text-white hover:bg-blue-500/90 hover:text-white duration-500 rounded-lg p-1"
+            onClick={() => setIsDeleteDialogOpen(true)}
+          >
+            Enlever le penaliter
+          </button>
           {/* Delete dialog */}
           <Dialog
             open={isDeleteDialogOpen}
@@ -168,7 +156,7 @@ export const SubscribedColumns: ColumnDef<Subscribed>[] = [
                   Enlever une penaliter à un abonne
                 </DialogTitle>
                 <DialogDescription>
-                  etes-vous sure d'enlever ???
+
                 </DialogDescription>
               </DialogHeader>
               <form
@@ -178,7 +166,7 @@ export const SubscribedColumns: ColumnDef<Subscribed>[] = [
                   handleDeleteUser(e); // Remplacez "123" par l'id réel
                 }}
               >
-                <h1>Voulez-vous vraiment supprimer ?</h1>
+                <h1> Etes-vous sure d'enlever ???</h1>
                 <div className="flex items-center">
                   <button
                     className="bg-blue-500 hover:bg-blue-500/80 text-white font-bold py-2 px-4 rounded-[10px] w-full focus:outline-none focus:shadow-outline mt-4"

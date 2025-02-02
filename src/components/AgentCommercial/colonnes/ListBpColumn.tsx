@@ -9,9 +9,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 // You can use a Zod schema here if you want.
 export type ListBp = {
     id: string;
-    NBp: string;
-    Etat: string;
-    Type: string;
+    type: string;
+    numero: string;
+    cle: string;
 };
 
 export const ListBpColumns: ColumnDef<ListBp>[] = [
@@ -38,7 +38,7 @@ export const ListBpColumns: ColumnDef<ListBp>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "NBp",
+        accessorKey: "numero",
         header: ({ column }) => {
             return (
                 <Button
@@ -52,11 +52,11 @@ export const ListBpColumns: ColumnDef<ListBp>[] = [
         },
     },
     {
-        accessorKey: "Etat",
-        header: "Etat",
+        accessorKey: "type",
+        header: "Type",
     },
     {
-        accessorKey: "Type",
-        header: "Type",
+        accessorKey: "cle",
+        header: "cle",
     },
 ]

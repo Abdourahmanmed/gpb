@@ -112,8 +112,30 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
                 },
             });
             //fonction pour editer les informations du compagne
-            const onEditSubmit = (values: z.infer<typeof EditUserSchema>) => {
-                console.log(values);
+            const onEditSubmit = async (values: z.infer<typeof EditUserSchema>) => {
+                const api = `http://localhost/gbp_backend/api.php?method=UpdateUser&id=${user.id}`;
+                try {
+                    const response = await fetch(api, {
+                        method: "PUT",
+                        body: JSON.stringify(values)
+                    })
+
+                    if (!response.ok) {
+                        console.log("erreur de l'execution de l'api");
+                    }
+
+                    const responseData = await response.json();
+                    if (responseData.error) {
+                        toast.error(responseData.error);
+                    }
+
+                    if (responseData.success) {
+                        toast.success(responseData.success);
+                    }
+
+                } catch (error) {
+                    console.log('erreur de ', error);
+                }
             };
 
             //fonction pour recupere les information d'un compagne par son id 
@@ -135,7 +157,7 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
                         form.setValue("Password", responseData.password);
                         form.setValue("Telephone", responseData.Telephone);
                         form.setValue("Adresse", responseData.Adresse);
-                        form.setValue("role", responseData.Role);
+                        form.setValue("role", responseData.role);
                     }
                 } catch (error) {
                     console.log(error);

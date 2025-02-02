@@ -1,9 +1,9 @@
-import ChangeName from '@/components/AgentGuiche/ChangeName'
+import Depots from '@/components/AgentCommercial/Depots'
 import React from 'react'
 
 const page = () => {
   return (
-    <ChangeName />
+    <Depots />
   )
 }
 

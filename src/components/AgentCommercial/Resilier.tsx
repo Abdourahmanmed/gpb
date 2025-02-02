@@ -1,7 +1,11 @@
 "use client";
 import React, { useEffect, useState } from 'react'
-import { DataTable } from '../Tables/DataTables'
 import { ResilierClient, ResilierClientColumns } from './colonnes/ResilierColumns';
+import { NoFilterDataTable } from '../Tables/NoFilterData';
+import LoadingSpinner from '../Spinner';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/Store/store';
+import { fetchClients } from '@/Store/Slices/GlobalManagementClient';
 
 const data = [
     {
@@ -28,13 +32,22 @@ const data = [
 ]
 
 const Resilier = () => {
-    const [Resilier_client, SetResilier_client] = useState<ResilierClient[]>([])
-
+    const dispatch = useDispatch<AppDispatch>();
+    const { clients, loading, error } = useSelector((state: RootState) => state.clients);
+    // Utiliser le thunk pour charger les clients
     useEffect(() => {
-        SetResilier_client(data);
-    }, [])
+        dispatch(fetchClients()); // Appeler le thunk pour récupérer les clients
+    }, [dispatch]);
     return (
-        <DataTable data={Resilier_client} columns={ResilierClientColumns} typeName="Nom" />
+        <div>
+            {loading ? (
+                <LoadingSpinner /> // Indicateur de chargement
+            ) : error ? (
+                <p>{error}</p> // Affichage de l'erreur si elle existe
+            ) : (
+                <NoFilterDataTable data={clients} columns={ResilierClientColumns} typeName="Nom" />
+            )}
+        </div>
     )
 }
 

@@ -3,6 +3,7 @@
 import {
     Sidebar,
     SidebarContent,
+    SidebarFooter,
     SidebarGroup,
     SidebarHeader,
     SidebarMenu,
@@ -33,9 +34,14 @@ import {
     UserRoundCog,
     ScrollText,
     Bell,
+    ListCheck,
+    ListFilter,
+    ListX,
+    Power,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { Button } from "./ui/button";
 
 // Typage des icônes
 const iconMapper: { [key: string]: React.FC<React.SVGProps<SVGSVGElement>> } = {
@@ -52,6 +58,9 @@ const iconMapper: { [key: string]: React.FC<React.SVGProps<SVGSVGElement>> } = {
     UserRoundCog,
     ScrollText,
     Bell,
+    ListX,
+    ListFilter,
+    ListCheck,
 };
 
 interface SubmenuItem {
@@ -123,8 +132,8 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
                                             <DropdownMenuTrigger asChild>
                                                 <SidebarMenuButton
                                                     className={`flex justify-between items-center ${isSubmenuActive(item.submenu)
-                                                            ? "bg-sidebar-accent text-primary"
-                                                            : "text-gray-300"
+                                                        ? "bg-sidebar-accent text-primary"
+                                                        : "text-gray-300"
                                                         }`}
                                                 >
                                                     {iconMapper[item.icon] &&
@@ -153,8 +162,8 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
                                                             <Link
                                                                 href={subItem.url}
                                                                 className={`${pathname === subItem.url
-                                                                        ? "bg-sidebar-accent text-primary"
-                                                                        : "text-gray-800"
+                                                                    ? "bg-sidebar-accent text-primary"
+                                                                    : "text-gray-800"
                                                                     }`}
                                                             >
                                                                 {subItem.title}
@@ -167,8 +176,8 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
                                         <SidebarMenuButton
                                             asChild
                                             className={`${pathname === item.url
-                                                    ? "bg-sidebar-accent text-primary"
-                                                    : "text-gray-300"
+                                                ? "bg-sidebar-accent text-primary"
+                                                : "text-gray-300"
                                                 }`}
                                         >
                                             <Link href={item.url || "#"}>
@@ -186,6 +195,10 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
                     </SidebarGroup>
                 </ScrollArea>
             </SidebarContent>
+
+            <SidebarFooter>
+                <Button className="bg-transparent hover:bg-white hover:text-blue-500 duration-500"><Power /> Deconnexion</Button>
+            </SidebarFooter>
         </Sidebar>
     );
 }

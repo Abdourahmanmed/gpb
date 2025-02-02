@@ -7,6 +7,7 @@ import { Input } from './ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Search } from 'lucide-react';
 import { Button } from './ui/button';
+import { ModeToggle } from './DartMode';
 
 const Header = () => {
     const path = usePathname();
@@ -39,6 +40,7 @@ const Header = () => {
                     <Button className='absolute right-0 bottom-2 top-0'><Search /></Button>
                 </form>
                 <div className="flex gap-2 items-center">
+                    {/* <ModeToggle /> */}
                     <Avatar>
                         <AvatarImage src="https://github.com/shadcn.png" />
                         <AvatarFallback>CN</AvatarFallback>

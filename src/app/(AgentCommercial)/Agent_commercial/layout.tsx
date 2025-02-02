@@ -5,6 +5,15 @@ import Header from "@/components/Header"
 export default function Layout({ children }: { children: React.ReactNode }) {
     const data = [
         {
+            title: "Les abonnes",
+            url: "/Agent_commercial/Les_abonnes",
+            icon: "Clipboard",
+            RoleName: {
+                Prefix: "Agent",
+                Suffix: "Commercial"
+            }
+        },
+        {
             title: "List Boit postal",
             url: "/Agent_commercial/Liste_Boite_postal",
             icon: "Cuboid",
@@ -14,8 +23,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }
         },
         {
-            title: "Changement Nom",
-            url: "/Agent_commercial/Changement_Nom",
+            title: "Voir les depots",
+            url: "/Agent_commercial/Voir_les_depots",
             icon: "FolderPen",
             RoleName: {
                 Prefix: "Agent",
@@ -31,15 +40,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Suffix: "Commercial"
             }
         },
-        {
-            title: "Les abonnes",
-            url: "/Agent_commercial/Les_abonnes",
-            icon: "Clipboard",
-            RoleName: {
-                Prefix: "Agent",
-                Suffix: "Commercial"
-            }
-        },
+
     ]
     return (
         <SidebarProvider style={
