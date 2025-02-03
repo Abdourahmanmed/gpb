@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             url: "/Agent_commercial/Voir_les_depots",
             icon: "FolderPen",
             RoleName: {
-                Prefix: "Agent",
+                Prefix: "Agent du ",
                 Suffix: "Commercial"
             }
         },

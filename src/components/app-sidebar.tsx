@@ -98,7 +98,7 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
+                        <SidebarMenuButton size="lg" asChild className="h-auto">
                             <a href="#">
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                                     <Image
@@ -108,7 +108,7 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
                                         height={50}
                                     />
                                 </div>
-                                <div className="flex gap-2 leading-none">
+                                <div className="flex flex-col gap-1 leading-none">
                                     <span className="font-semibold text-xl">
                                         {menuData[0]?.RoleName?.Prefix}
                                     </span>

@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             url: "/Agent_guiche/Rechercher",
             icon: "Home",
             RoleName: {
-                Prefix: "Agent",
+                Prefix: "Agent du",
                 Suffix: "Guiche"
             }
         },

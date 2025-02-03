@@ -9,8 +9,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             url: "/Superviseur/Dashbord",
             icon: "LayoutDashboard",
             RoleName: {
-                Prefix: "Agent",
-                Suffix: "Superviseur"
+                Prefix: "Superviseur",
+                Suffix: "des agents Guichet"
             }
         },
         

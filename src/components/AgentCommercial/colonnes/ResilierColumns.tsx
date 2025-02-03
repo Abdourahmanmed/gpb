@@ -94,8 +94,11 @@ export const ResilierClientColumns: ColumnDef<ResilierClient>[] = [
     {
         id: "actions",
         header: "Actions",
-        cell: () => {
-            // const clientid= row?.original?.id;
+        cell: ({row}) => {
+            const clientid= row?.original?.id;
+            const clientname= row?.original?.Nom;
+            const numerobp= row?.original?.NBp;
+            const etat= row?.original?.Etat;
             const [isDialogOpen, setIsDialogOpen] = useState(false);
 
             return (
@@ -103,7 +106,7 @@ export const ResilierClientColumns: ColumnDef<ResilierClient>[] = [
                     <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
                         Resilier
                     </Button>
-                    <ResilierForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+                    <ResilierForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} ClientId={clientid} ClientName={clientname} NumeroBp={numerobp} Etat={etat} />
                 </div>
             );
         },

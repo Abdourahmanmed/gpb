@@ -35,10 +35,10 @@ const Header = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <form className="relative w-[20%]">
+                {/* <form className="relative w-[20%]">
                     <Input placeholder='Recherche' className='w-full' />
                     <Button className='absolute right-0 bottom-2 top-0'><Search /></Button>
-                </form>
+                </form> */}
                 <div className="flex gap-2 items-center">
                     {/* <ModeToggle /> */}
                     <Avatar>
