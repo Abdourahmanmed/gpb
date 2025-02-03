@@ -1,7 +1,6 @@
 import { MyBetterChart } from "@/components/MyChart";
 import { PieChartDonutWithText } from "@/components/PyChart";
 import DashbordBoxFetch from "@/components/ResponsableCommercial/DashbordBoxFetch";
-import BoxInfo from "@/components/Superviseur/BoxInfo";
 import React from "react";
 
 const page = () => {

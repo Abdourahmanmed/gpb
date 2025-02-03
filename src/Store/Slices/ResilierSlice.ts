@@ -30,7 +30,9 @@ export const fetchResilier = createAsyncThunk(
       const response = await FetchAllResiliation(); // Appel à FetchAllClients
       return response; // Retourner les données récupérées
     } catch (error) {
+      console.log(error);
       return rejectWithValue("Erreur lors de la récupération des données");
+      
     }
   }
 );

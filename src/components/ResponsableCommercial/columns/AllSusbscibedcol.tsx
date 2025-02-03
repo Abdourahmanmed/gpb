@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Ellipsis } from "lucide-react";
+import { ArrowUpDown} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,16 +12,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { toast, ToastContainer } from "react-toastify";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+
+import {useState } from "react";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Subscribed = {
@@ -110,11 +103,11 @@ export const SubscribedColumns: ColumnDef<Subscribed>[] = [
     cell: ({ row }) => {
       const user = row.original;
       const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-      const [isPending, setIsPending] = useState(false);
+      // const [isPending, setIsPending] = useState(false);
 
       const handleDeleteUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Correction de la faute de frappe
-        const apiUrl = `http://localhost/gbp_backend/api.php?method=DeleteUser&id=${user?.id}`;
+        // const apiUrl = `http://localhost/gbp_backend/api.php?method=DeleteUser&id=${user?.id}`;
         console.log(user?.id);
         // try {
         //   const response = await fetch(apiUrl, {
@@ -166,7 +159,7 @@ export const SubscribedColumns: ColumnDef<Subscribed>[] = [
                   handleDeleteUser(e); // Remplacez "123" par l'id réel
                 }}
               >
-                <h1> Etes-vous sure d'enlever ???</h1>
+                <h1> Etes-vous sure d&#39;enlever ???</h1>
                 <div className="flex items-center">
                   <button
                     className="bg-blue-500 hover:bg-blue-500/80 text-white font-bold py-2 px-4 rounded-[10px] w-full focus:outline-none focus:shadow-outline mt-4"

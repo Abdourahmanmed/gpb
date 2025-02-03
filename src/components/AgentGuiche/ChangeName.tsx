@@ -1,7 +1,7 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { DataTable } from '../Tables/DataTables'
-import { Changename, ChangenameColumns } from './columns/ChangeNameColumns'
+import {  ChangenameColumns } from './columns/ChangeNameColumns'
 import { fetchClients } from '@/Store/Slices/GlobalManagementClient'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/Store/store'

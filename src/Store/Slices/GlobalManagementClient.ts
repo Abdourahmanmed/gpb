@@ -38,6 +38,7 @@ export const fetchClients = createAsyncThunk(
             const response = await FetchAllClients(); // Appel à FetchAllClients
             return response; // Retourner les données récupérées
         } catch (error) {
+            console.log(error);
             return rejectWithValue("Erreur lors de la récupération des données");
         }
     }

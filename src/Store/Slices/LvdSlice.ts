@@ -33,6 +33,7 @@ export const fetchLivraison = createAsyncThunk(
       const response = await FetchAllLiv(); // Appel à FetchAllClients
       return response; // Retourner les données récupérées
     } catch (error) {
+      console.log(error);
       return rejectWithValue("Erreur lors de la récupération des données");
     }
   }

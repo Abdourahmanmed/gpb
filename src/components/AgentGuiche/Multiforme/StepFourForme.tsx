@@ -99,7 +99,7 @@ const StepFourForme = () => {
     return (
         <div className="bg-gray-100 p-6 rounded-lg shadow-md max-w-7xl mx-auto">
             <h2 className="text-xl font-bold text-center text-blue-900 mb-6">
-                Tous les informations d'un nouveau client
+                Tous les informations d&#39;un nouveau client
             </h2>
 
             {/* Section à imprimer */}

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { FetchAllAgents } from "@/actions/FetchAgents";
 import { FetchAllBp } from "@/actions/FetListBp";
 
 // Définir le type des clients
@@ -31,6 +30,7 @@ export const fetchListBp = createAsyncThunk(
       const response = await FetchAllBp(); // Appel à FetchAllClients
       return response; // Retourner les données récupérées
     } catch (error) {
+      console.log(error);
       return rejectWithValue("Erreur lors de la récupération des données");
     }
   }

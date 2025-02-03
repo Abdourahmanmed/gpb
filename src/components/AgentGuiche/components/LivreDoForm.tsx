@@ -200,6 +200,7 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({
     } catch (error) {
       // Gestion des erreurs inattendues
       toast.error("Erreur lors de la communication avec le serveur.");
+      console.log(error);
     }
   };
 

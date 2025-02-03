@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
+// type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
 
 const StepThreeForm = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -71,7 +71,7 @@ const StepThreeForm = () => {
   return (
     <div className="bg-gray-100 p-6 rounded-lg shadow-md max-w-7xl mx-auto">
       <h2 className="text-xl font-bold text-center text-blue-900 mb-6">
-        Enregistrement d'un nouveau client
+        Enregistrement d&#39;un nouveau client
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} encType="multipart/form-data">

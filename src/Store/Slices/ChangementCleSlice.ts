@@ -33,6 +33,7 @@ export const fetchChangedCle = createAsyncThunk(
       const response = await FetchAllChangeCle(); // Appel à FetchAllClients
       return response; // Retourner les données récupérées
     } catch (error) {
+      console.log(error);
       return rejectWithValue("Erreur lors de la récupération des données");
     }
   }

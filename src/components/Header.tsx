@@ -7,7 +7,7 @@ import { Input } from './ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Search } from 'lucide-react';
 import { Button } from './ui/button';
-import { ModeToggle } from './DartMode';
+// import { ModeToggle } from './DartMode';
 
 const Header = () => {
     const path = usePathname();

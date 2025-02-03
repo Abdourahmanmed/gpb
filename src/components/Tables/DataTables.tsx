@@ -21,10 +21,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 
@@ -43,7 +40,6 @@ export function DataTable<TData, TValue>({
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
-    const [pageSize, setPageSize] = useState(10);
 
     const table = useReactTable({
         data,

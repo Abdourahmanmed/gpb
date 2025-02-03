@@ -26,7 +26,7 @@ export const ResilierForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen 
         <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle className="text-primary text-xl">Resiliation d'un abonne</DialogTitle>
+                    <DialogTitle className="text-primary text-xl">Resiliation d&#39;un abonne</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
 

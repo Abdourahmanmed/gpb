@@ -132,11 +132,6 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
     }
   }, []);
 
-  // Fonction pour incrémenter le numéro de reçu
-  const handleNewRecue = () => {
-    setCurrentNumber((prev) => prev + 1);
-  };
-
   const form = useForm<PaiementFormValues>({
     resolver: zodResolver(AchatCleSchema),
     defaultValues: {
@@ -212,6 +207,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
     } catch (error) {
       // Gestion des erreurs inattendues
       toast.error("Erreur lors de la communication avec le serveur.");
+      console.log(error);
     }
   };
 

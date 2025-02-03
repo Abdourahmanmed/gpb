@@ -174,6 +174,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
         } catch (error) {
             // Gestion des erreurs inattendues
             toast.error("Erreur lors de la communication avec le serveur.");
+            console.log(error);
         }
     };
 

@@ -127,11 +127,6 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
     }
   }, []);
 
-  // Fonction pour incrémenter le numéro de reçu
-  const handleNewRecue = () => {
-    setCurrentNumber((prev) => prev + 1);
-  };
-
   const form = useForm<z.infer<typeof ChangeNameSchema>>({
     resolver: zodResolver(ChangeNameSchema),
     defaultValues: {
@@ -208,6 +203,7 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
     } catch (error) {
       // Gestion des erreurs inattendues
       toast.error("Erreur lors de la communication avec le serveur.");
+      console.log(error);
     }
   };
 

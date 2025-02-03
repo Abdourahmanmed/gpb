@@ -1,6 +1,5 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, Rectangle, XAxis } from "recharts"
 
 import {
@@ -51,8 +50,8 @@ export function MyBetterChart({AbonneTotal,Abonne_a_jour,Abonne_non_a_jour}:Mych
   return (
     <Card className="w-full bg-white shadow-blue">
       <CardHeader>
-        <CardTitle className="text-blue">Vue d'ensemble</CardTitle>
-        <CardDescription className="text-blue">visualisation de l'evolution des abonnes</CardDescription>
+        <CardTitle className="text-blue">Vue d&#39;ensemble</CardTitle>
+        <CardDescription className="text-blue">visualisation de l&#39;evolution des abonnes</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

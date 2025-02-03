@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import { Headset } from 'lucide-react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as  z from "zod";
@@ -35,7 +34,7 @@ export default function LoginPage() {
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
         setError("")
         startTransition(() => {
-            login(values).then((data)=>{
+            login(values).then((data) => {
                 setError(data?.error);
             });
 
@@ -79,7 +78,7 @@ export default function LoginPage() {
                                         <FormItem>
                                             <FormLabel className="text-blue-900">Email</FormLabel>
                                             <FormControl>
-                                                <Input {...field} placeholder="fatouma@example.com" type="email" disabled={isPending}  />
+                                                <Input {...field} placeholder="fatouma@example.com" type="email" disabled={isPending} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -100,7 +99,7 @@ export default function LoginPage() {
                                 />
                             </div>
                             <FormError message={error} />
-                            <Button type="submit" className="w-full mt-2 bg-blue-900" disabled={isPending}>Se connecter</Button>
+                            <Button type="submit" className="w-full mt-2 bg-blue-900" disabled={isPending}>{isPending ? "connexion ..." : "Se connecter"}</Button>
                         </form>
 
                     </Form>

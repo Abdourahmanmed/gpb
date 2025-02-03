@@ -1,11 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Interface pour représenter un fichier sérialisable
-interface SerializableFile {
-  name: string;
-  size: number;
-  type: string;
-}
 
 interface SousCouverture {
   societe: string;

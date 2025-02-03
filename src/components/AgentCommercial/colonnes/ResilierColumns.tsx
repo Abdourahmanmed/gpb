@@ -94,7 +94,8 @@ export const ResilierClientColumns: ColumnDef<ResilierClient>[] = [
     {
         id: "actions",
         header: "Actions",
-        cell: ({ row }) => {
+        cell: () => {
+            // const clientid= row?.original?.id;
             const [isDialogOpen, setIsDialogOpen] = useState(false);
 
             return (

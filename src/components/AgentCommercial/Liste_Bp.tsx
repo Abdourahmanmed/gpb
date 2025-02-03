@@ -1,32 +1,11 @@
 "use client"
-import React, { useEffect, useState } from 'react'
-import { ListBp, ListBpColumns } from './colonnes/ListBpColumn'
+import React, { useEffect} from 'react'
+import { ListBpColumns } from './colonnes/ListBpColumn'
 import { NoFilterDataTable } from '../Tables/NoFilterData'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/Store/store'
 import { fetchListBp } from '@/Store/Slices/ListeBpSlice'
 import LoadingSpinner from '../Spinner'
-
-const data = [
-    {
-        id: "1",
-        NBp: "2001",
-        Etat: "paye",
-        Type: "Grand",
-    },
-    {
-        id: "2",
-        NBp: "2002",
-        Etat: "paye",
-        Type: "Petite",
-    },
-    {
-        id: "3",
-        NBp: "2004",
-        Etat: "Impayer",
-        Type: "Moyen",
-    },
-]
 
 const Liste_Bp = () => {
     const dispatch = useDispatch<AppDispatch>();

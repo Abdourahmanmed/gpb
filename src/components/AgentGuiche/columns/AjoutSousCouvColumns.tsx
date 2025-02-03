@@ -5,10 +5,7 @@ import { ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-
-import { PaymentForm } from "../components/PaiementForm"
 import { useState } from "react"
-import { ChangeCleForm } from "../components/ChangeCleForm"
 import SousCouverteForm from "../components/SousCouverteForm"
 
 // This type is used to define the shape of our data.
