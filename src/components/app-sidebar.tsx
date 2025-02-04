@@ -198,8 +198,8 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
             </SidebarContent>
 
             <SidebarFooter>
-                <form className="w-full p-4" action={LogOutButton}>
-                    <Button type="submit" className="bg-transparent hover:bg-white hover:text-blue-500 duration-500"><Power /> Deconnexion</Button>
+                <form className="w-full" action={LogOutButton}>
+                    <Button type="submit" className="bg-transparent hover:bg-white hover:text-blue-500 duration-500 w-full"><Power /> Deconnexion</Button>
                 </form>
             </SidebarFooter>
         </Sidebar >

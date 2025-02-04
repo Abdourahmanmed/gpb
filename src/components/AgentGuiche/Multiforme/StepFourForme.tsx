@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Store/store";
 import { GetLastReferenceOfRdv } from "@/actions/All_references/GetLastReferenceOfRdv";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
 
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 
@@ -78,8 +80,23 @@ const StepFourForme = () => {
             });
         }
     }, []);
+    // Calculer la somme totale des montants
+    const totalMontant =
+        (donnees?.montantRd || 0) +
+        (donnees?.montantLd || 0) +
+        (donnees?.montantCll || 0) +
+        (donnees?.montantSC || 0);
 
-    const handlePayer = () => {
+    const handlePayer = (value: MontantSaisi) => {
+
+        if (totalMontant == 0) {
+            toast.error(`Le montant ne doit pas etre ${totalMontant} DJF.`);
+            return;
+        }
+        if (parseInt(value.montantSaisi) !== totalMontant) {
+            toast.error(`Le montant saisi doit être exactement ${totalMontant} DJF.`);
+            return;
+        }
         if (PrintJS && printAreaRef.current) { // Vérification que PrintJS est chargé et que le DOM est prêt
             PrintJS({
                 printable: printAreaRef.current,
@@ -89,19 +106,14 @@ const StepFourForme = () => {
         }
     };
 
-    // Calculer la somme totale des montants
-    const totalMontant =
-        (donnees?.montantRd || 0) +
-        (donnees?.montantLd || 0) +
-        (donnees?.montantCll || 0) +
-        (donnees?.montantSC || 0);
+
 
     return (
         <div className="bg-gray-100 p-6 rounded-lg shadow-md max-w-7xl mx-auto">
             <h2 className="text-xl font-bold text-center text-blue-900 mb-6">
                 Tous les informations d&#39;un nouveau client
             </h2>
-
+            <ToastContainer />
             {/* Section à imprimer */}
             <div id="print-area" ref={printAreaRef} className="rounded-md border border-gray-300 p-4 flex flex-col items-center w-full">
                 <HeaderImprimary />

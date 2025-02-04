@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "@/Providers/Providers";
+import SessionWrapper from "@/components/SessionWrapper";
 // import { ThemeProvider } from "@/components/theme-provider";
 
 // Charger les polices localement
@@ -38,9 +39,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         > */}
-        <Providers>
-          {children}
-        </Providers>
+        <SessionWrapper>
+          <Providers>
+            {children}
+          </Providers>
+        </SessionWrapper>
         {/* </ThemeProvider> */}
       </body>
     </html>

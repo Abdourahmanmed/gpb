@@ -7,6 +7,7 @@ import { Input } from './ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Search } from 'lucide-react';
 import { Button } from './ui/button';
+import UserNameSession from './UserNameSession';
 // import { ModeToggle } from './DartMode';
 
 const Header = () => {
@@ -45,7 +46,7 @@ const Header = () => {
                         <AvatarImage src="https://github.com/shadcn.png" />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
-                    <span className='text-primary'>Abdourahman moussa ali</span>
+                    <span className='text-primary'><UserNameSession /></span>
                 </div>
             </div>
         </header>
