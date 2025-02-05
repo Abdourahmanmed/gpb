@@ -2,6 +2,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Header from "@/components/Header"
+import { FileProvider } from "@/components/FileContexe"
 export default function Layout({ children }: { children: React.ReactNode }) {
     const data = [
         {
@@ -50,7 +51,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Header />
                 <main className="w-[99%] bg-gris h-[88vh] rounded-lg overflow-hidden">
                     <ScrollArea className="h-full w-full p-4">
-                        {children}
+                        <FileProvider>
+                            {children}
+                        </FileProvider>
                     </ScrollArea>
                 </main>
             </SidebarInset>

@@ -24,13 +24,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFileContext } from "@/components/FileContexe";
 
 // type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
 
 const StepThreeForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const multiFormState = useSelector((state: RootState) => state.multiForm);
-  const [files, setFiles] = useState<File[]>([]); // État local pour les fichiers réels
+  const { files, addFile } = useFileContext(); // Utilisation du contexte pour les fichiers
 
   const form = useForm<z.infer<typeof NouveauClientSchemaStepTwo>>({
     resolver: zodResolver(NouveauClientSchemaStepTwo),
@@ -52,15 +53,13 @@ const StepThreeForm = () => {
   const handleFileChange = (field: any, index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
     if (file) {
-      const updatedFiles = [...files];
-      updatedFiles[index] = file;
-      setFiles(updatedFiles);
       field.onChange(file);
       dispatch(updateField({ field: field.name, value: file }));
     }
   };
 
   const onSubmit = (values: z.infer<typeof NouveauClientSchemaStepTwo>) => {
+    addFile(values);
     Object.entries(values).forEach(([field, value]) => {
       dispatch(updateField({ field, value }));
     });

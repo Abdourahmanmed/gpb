@@ -13,6 +13,8 @@ import { RootState } from "@/Store/store";
 import { GetLastReferenceOfRdv } from "@/actions/All_references/GetLastReferenceOfRdv";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
+import { useFileContext } from "@/components/FileContexe";
+import { useSession } from "next-auth/react";
 
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 
@@ -22,6 +24,8 @@ const StepFourForme = () => {
     const [currentNumber, setCurrentNumber] = useState(1); // État pour gérer l'incrément du numéro
     const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
     const printAreaRef = useRef<HTMLDivElement>(null);
+    const { files } = useFileContext(); // Utilisation du contexte pour les fichiers
+    const { data: session, status } = useSession();
 
     const formMontantSaisi = useForm<MontantSaisi>({
         resolver: zodResolver(MontantSaiasiSchema),
@@ -88,7 +92,34 @@ const StepFourForme = () => {
         (donnees?.montantSC || 0);
 
     const handlePayer = (value: MontantSaisi) => {
-
+        const finaldata = {
+            Nom: donnees.Nom,
+            Adresse: donnees.Adresse,
+            Methode_de_paiement: donnees.Methode_de_paiement,
+            Email: donnees.Email,
+            BoitePostale: donnees.BoitePostale,
+            Role: donnees.Role,
+            Telephone: donnees.Telephone,
+            Reference_Rdv: donnees.Reference_Rdv,
+            reference_Ld: donnees.reference_Ld,
+            reference_Sc: donnees.reference_Sc,
+            reference_collection: donnees.reference_collection,
+            Nom_Banque: donnees.Nom_Banque,
+            Numero_cheque: donnees.Numero_cheque,
+            Numero_wallet: donnees.Numero_wallet,
+            montantCll: donnees.montantCll,
+            montantLd: donnees.montantLd,
+            montantRd: donnees.montantRd,
+            montantSC: donnees.montantSC,
+            sousCouvertures: donnees.sousCouvertures,
+            Adresse_Livraison_Domicile: donnees.Adresse_Livraison_Domicile,
+            Adresse_collection: donnees.Adresse_collection,
+            Abonnement: files[0].Abonnement,
+            patent_quitance: files[0].patent_quitance,
+            Identiter: files[0].Identiter,
+            userid:session?.user?.id,
+        }
+        console.log(finaldata);
         if (totalMontant == 0) {
             toast.error(`Le montant ne doit pas etre ${totalMontant} DJF.`);
             return;
