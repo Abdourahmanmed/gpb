@@ -5,8 +5,7 @@ import { ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useState } from "react"
-import { CollectForm } from "../components/CollectionForm"
+import CollectionColAction from "@/components/ActionCellColumns/CollectionColAction"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -96,18 +95,10 @@ export const CollectionCoulmns: ColumnDef<Collection>[] = [
         id: "actions",
         header: "Actions",
         cell: ({ row }) => {
-            const [isDialogOpen, setIsDialogOpen] = useState(false);
             const userId = row?.original?.id;
             const Nbp = row?.original?.NBp;
 
-            return (
-                <div>
-                    <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
-                        Ajouter une collection
-                    </Button>
-                    <CollectForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId ={userId} Nbp={Nbp} />
-                </div>
-            );
+            return <CollectionColAction userId={userId} Nbp={Nbp} />
         },
     }
 

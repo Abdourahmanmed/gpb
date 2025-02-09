@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 import { useState } from "react"
 import { ChangeCleForm } from "../components/ChangeCleForm"
+import AchatCleColAction from "@/components/ActionCellColumns/AchatCleColAction"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -96,16 +97,8 @@ export const Achat_CleColumns: ColumnDef<Achat_Cle>[] = [
         header: "Actions",
         cell: ({ row }) => {
             const userId = row?.original?.id;
-            const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-            return (
-                <div>
-                    <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
-                        Changement cle
-                    </Button>
-                    <ChangeCleForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId={userId}/>
-                </div>
-            );
+            return <AchatCleColAction userId={userId} />
         },
     }
 

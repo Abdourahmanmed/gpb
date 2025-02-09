@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
 import { useForm } from "react-hook-form";
@@ -36,7 +35,7 @@ export const ResilierForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen,
     });
 
     const onSubmit = (values: z.infer<typeof DemandeSchema>) => {
-        console.log("Form submitted", values);
+        console.log("Form submitted", values,ClientId);
         toast.error("L'ID de la session est introuvable !!");
     };
     

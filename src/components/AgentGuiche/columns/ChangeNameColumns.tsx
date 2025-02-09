@@ -5,8 +5,7 @@ import { ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useState } from "react"
-import { ChangeNameForm} from "@/components/AgentGuiche/components/ChangeNameForùe"
+import ChangeNameColAction from "@/components/ActionCellColumns/ChangeNameColAction"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -70,21 +69,13 @@ export const ChangenameColumns: ColumnDef<Changename>[] = [
         accessorKey: "Etat",
         header: "Etat Boite Postal",
     },
-    
+
     {
         id: "actions",
         header: "Actions",
         cell: ({ row }) => {
             const userId = row?.original?.id;
-            const [isDialogOpen, setIsDialogOpen] = useState(false);
-            return (
-                <div>
-                    <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
-                        Changer
-                    </Button>
-                    <ChangeNameForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId={userId}/>
-                </div>
-            );
+            return <ChangeNameColAction userId={userId} />
         },
     }
 

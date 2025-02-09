@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import {
   Form,
   FormControl,
@@ -50,7 +50,7 @@ const StepThreeForm = () => {
     },
   });
 
-  const handleFileChange = (field: any, index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (field: any) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
     if (file) {
       field.onChange(file);

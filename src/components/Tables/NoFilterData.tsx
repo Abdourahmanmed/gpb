@@ -80,7 +80,7 @@ export function NoFilterDataTable<TData, TValue>({
 
   const path = usePathname();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [isPending, setIsPending] = useState(false);
+  const [isPending] = useState(false);
   const form = useForm<z.infer<typeof EditUserSchema>>({
     resolver: zodResolver(EditUserSchema),
     defaultValues: {

@@ -44,7 +44,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
     const printAreaRef = useRef<HTMLDivElement>(null);
 
     // État pour gérer l'incrément du numéro
-    const [currentNumber, setCurrentNumber] = useState(1);
+    const [currentNumber] = useState(1);
     const [recueNumber, setRecueNumber] = useState('');
 
     useEffect(() => {

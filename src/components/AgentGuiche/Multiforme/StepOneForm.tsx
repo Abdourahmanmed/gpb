@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,7 +24,7 @@ const StepOneForm = () => {
     const multiFormState = useSelector((state: RootState) => state.multiForm);
 
     // État pour gérer l'incrément du numéro
-    const [currentNumber, setCurrentNumber] = useState(1);
+    const [currentNumber] = useState(1);
     const [recueNumber, setRecueNumber] = useState('');
 
     const form = useForm<z.infer<typeof NouveauClientSchemaStepOne>>({

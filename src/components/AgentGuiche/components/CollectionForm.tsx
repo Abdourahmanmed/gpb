@@ -66,7 +66,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
   > | null>(null);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
   // État pour gérer l'incrément du numéro
-  const [currentNumber, setCurrentNumber] = useState(1);
+  const [currentNumber] = useState(1);
   const [recueNumber, setRecueNumber] = useState("");
 
   const [PrintJS, setPrintJS] = useState<any>(null); // Référence à printJS

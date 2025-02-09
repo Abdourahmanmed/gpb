@@ -5,8 +5,7 @@ import { ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useState } from "react"
-import { LivreDoForm } from "../components/LivreDoForm"
+import LivraisonDColAction from "@/components/ActionCellColumns/LivraisonDColAction"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -98,16 +97,8 @@ export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
         cell: ({ row }) => {
             const userId = row?.original?.id;
             const Np = row?.original?.NBp;
-            const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-            return (
-                <div>
-                    <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
-                        Ajouter livraison domicile
-                    </Button>
-                    <LivreDoForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId={userId} Np = {Np} />
-                </div>
-            );
+            return <LivraisonDColAction userId={userId} Np={Np} />
         },
     }
 

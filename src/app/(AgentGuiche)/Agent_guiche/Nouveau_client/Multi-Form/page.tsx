@@ -6,7 +6,7 @@ import StepTwoForm from '@/components/AgentGuiche/Multiforme/StepTwoForm';
 import {RootState } from '@/Store/store';
 import { useSelector } from 'react-redux';
 
-export default function page() {
+export default function Page() {
     const current = useSelector((state: RootState) => state.multiForm.step);
 
 

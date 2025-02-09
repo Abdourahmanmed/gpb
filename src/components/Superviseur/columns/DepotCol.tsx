@@ -5,8 +5,7 @@ import { ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useState } from "react"
-import { DepotResilierForm } from "../Models/DepotModels"
+import DepotColAction from "@/components/ActionCellColumns/depotColAction"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -99,16 +98,7 @@ export const DepotColumns: ColumnDef<DepotType>[] = [
         header: "Actions",
         cell: ({ row }) => {
             const userId = row?.original?.id;
-            const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-            return (
-                <div>
-                    <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
-                        Deposer un resiliation
-                    </Button>
-                    <DepotResilierForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId={userId}/>
-                </div>
-            );
+            return <DepotColAction userId={userId} />
         },
     }
 

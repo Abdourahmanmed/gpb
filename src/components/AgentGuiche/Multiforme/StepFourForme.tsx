@@ -21,11 +21,11 @@ type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 const StepFourForme = () => {
     const [recueNumber, setRecueNumber] = useState(""); // Ceci peut être utilisé pour afficher le numéro de reçu plus tard
     const donnees = useSelector((state: RootState) => state.multiForm); // Vérifiez la structure de 'multiForm' dans Redux
-    const [currentNumber, setCurrentNumber] = useState(1); // État pour gérer l'incrément du numéro
+    const [currentNumber] = useState(1); // État pour gérer l'incrément du numéro
     const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
     const printAreaRef = useRef<HTMLDivElement>(null);
     const { files } = useFileContext(); // Utilisation du contexte pour les fichiers
-    const { data: session, status } = useSession();
+    const { data: session} = useSession();
 
     const formMontantSaisi = useForm<MontantSaisi>({
         resolver: zodResolver(MontantSaiasiSchema),

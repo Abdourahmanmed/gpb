@@ -5,8 +5,7 @@ import { ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useState } from "react"
-import { ResilierForm } from "@/components/AgentGuiche/components/ResilierDialog"
+import ResilierColAction from "@/components/ActionCellColumns/ResilierColAction"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -94,21 +93,12 @@ export const ResilierClientColumns: ColumnDef<ResilierClient>[] = [
     {
         id: "actions",
         header: "Actions",
-        cell: ({row}) => {
-            const clientid= row?.original?.id;
-            const clientname= row?.original?.Nom;
-            const numerobp= row?.original?.NBp;
-            const etat= row?.original?.Etat;
-            const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-            return (
-                <div>
-                    <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
-                        Resilier
-                    </Button>
-                    <ResilierForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} ClientId={clientid} ClientName={clientname} NumeroBp={numerobp} Etat={etat} />
-                </div>
-            );
+        cell: ({ row }) => {
+            const clientid = row?.original?.id;
+            const clientname = row?.original?.Nom;
+            const numerobp = row?.original?.NBp;
+            const etat = row?.original?.Etat;
+            return <ResilierColAction clientid={clientid} clientname={clientname} numerobp={numerobp} etat={etat} />
         },
     }
 

@@ -35,15 +35,15 @@ const FormSousCOptonal = () => {
     const multiFormState = useSelector((state: RootState) => state.multiForm);
     const [montantTotal, setMontantTotal] = useState(0);
     // État pour gérer l'incrément du numéro pour les souscouverte
-    const [currentNumber, setCurrentNumber] = useState(1);
+    const [currentNumber] = useState(1);
     const [recueNumber, setRecueNumber] = useState('');
 
     // État pour gérer l'incrément du numéro pour les livraisons
-    const [currentNumberLiv, setCurrentNumberLiv] = useState(1);
+    const [currentNumberLiv] = useState(1);
     const [recueNumberLiv, setRecueNumberLiv] = useState('');
 
     // État pour gérer l'incrément du numéro pour les collections
-    const [currentNumberCll, setCurrentNumberCll] = useState(1);
+    const [currentNumberCll] = useState(1);
     const [recueNumberCll, setRecueNumberCll] = useState('');
 
     const form = useForm<SousCouvertFormValues>({

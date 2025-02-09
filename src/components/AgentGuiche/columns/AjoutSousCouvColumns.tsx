@@ -5,8 +5,7 @@ import { ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useState } from "react"
-import SousCouverteForm from "../components/SousCouverteForm"
+import SousCouvertColAction from "@/components/ActionCellColumns/SousCouvertColAction"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -94,18 +93,10 @@ export const AjoutSousCouvertColumns: ColumnDef<AjoutSousCouvert>[] = [
         id: "actions",
         header: "Actions",
         cell: ({ row }) => {
-            const [isDialogOpen, setIsDialogOpen] = useState(false);
             const ClientId = row?.original?.id;
             const Nbp = row?.original?.NBp;
 
-            return (
-                <div>
-                    <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
-                        Ajouter un sous couverte
-                    </Button>
-                    <SousCouverteForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} IdClient={ClientId} Nbp={Nbp} />
-                </div>
-            );
+            return <SousCouvertColAction ClientId={ClientId} Nbp={Nbp} />
         },
     }
 
