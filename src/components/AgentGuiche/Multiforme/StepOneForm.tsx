@@ -124,9 +124,9 @@ const StepOneForm = () => {
                                             <SelectValue placeholder="Choisir un n° BP..." />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="bp1">BP 1</SelectItem>
-                                            <SelectItem value="bp2">BP 2</SelectItem>
-                                            <SelectItem value="bp3">BP 3</SelectItem>
+                                            <SelectItem value="7B_11">7B_11</SelectItem>
+                                            <SelectItem value="B_789">B_789</SelectItem>
+                                            <SelectItem value="B200">B200</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </FormControl>
