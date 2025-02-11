@@ -21,11 +21,11 @@ export const GetLastReferenceOfCLL = async () => {
         const responseData = await response.json();
 
         //verification si laste reference est null 
-        if (responseData?.reference_ajout_collection === null) {
-            return responseData.reference_ajout_collection
+        if (responseData?.reference === null) {
+            return responseData.reference
         }
 
-        return responseData.reference_ajout_collection; // Retourne les données si tout va bien
+        return responseData.reference; // Retourne les données si tout va bien
     } catch (error) {
         // Gérer les erreurs et les logs
         console.error('Erreur lors de l\'appel API :', error);

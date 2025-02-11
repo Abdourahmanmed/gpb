@@ -38,6 +38,7 @@ import { GetLastReferenceOfCLE } from "@/actions/All_references/GetLastReference
 import { ChangementClePaiement } from "@/actions/paiement/ClePaiement";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
+import { useSession } from "next-auth/react";
 
 // Typages
 type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
@@ -74,6 +75,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
 
   const [PrintJS, setPrintJS] = useState<any>(null); // Référence à printJS
   const printAreaRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchLastReference = async () => {
@@ -161,6 +163,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
       const finalData = {
         ...values,
         ReferenceId: recueNumber, // Assurez-vous d'ajouter la valeur de recueNumber ici
+        id_user: session?.user?.id,
       };
 
       // Logique d'enregistrement (par exemple, sauvegarde des données)

@@ -35,6 +35,7 @@ import { GetLastReferenceOfCLL } from "@/actions/All_references/GetLastReference
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
 import { CollectionPaiement } from "@/actions/paiement/CollectionPaiement";
+import { useSession } from "next-auth/react";
 
 interface ChangeNameFormProps {
   isOpen: boolean;
@@ -71,6 +72,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
 
   const [PrintJS, setPrintJS] = useState<any>(null); // Référence à printJS
   const printAreaRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchLastReference = async () => {
@@ -160,11 +162,12 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
         ...values,
         ReferenceId: recueNumber, // Assurez-vous d'ajouter la valeur de recueNumber ici
         NBp: Nbp,
+        id_user: session?.user?.id,
       };
 
       // Logique d'enregistrement (par exemple, sauvegarde des données)
       console.log("Données soumises :", finalData);
-      console.log(recueNumber);
+      console.log(recueNumber,UserId);
 
       // Met à jour les états nécessaires
       setDonnees(finalData); // Sauvegarde les valeurs dans un état
@@ -183,6 +186,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
 
     try {
       const enregistrement = await CollectionPaiement(UserId, donnees);
+      console.log(UserId);
 
       if (enregistrement?.success) {
         toast.success("Données enregistrées avec succès.");

@@ -35,6 +35,7 @@ import { GetLastReferenceOfName } from "@/actions/All_references/GetLastReferenc
 import { ChangementNamePaiement } from "@/actions/paiement/NamePaiement";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
+import { useSession } from "next-auth/react";
 
 interface ChangeNameFormProps {
   isOpen: boolean;
@@ -69,6 +70,7 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
 
   const [PrintJS, setPrintJS] = useState<any>(null); // Référence à printJS
   const printAreaRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchLastReference = async () => {
@@ -155,6 +157,7 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
       const finalData = {
         ...values,
         ReferenceId: recueNumber, // Assurez-vous d'ajouter la valeur de recueNumber ici
+        id_user: session?.user?.id,
       };
 
       // Logique d'enregistrement (par exemple, sauvegarde des données)

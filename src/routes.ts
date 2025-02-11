@@ -90,7 +90,7 @@ export const AgentGuichetRoutes = [
     "/Agent_guiche/Paiement",
     "/Agent_guiche/Nouveau_client/Multi-Form",
     "/Agent_guiche/Changer_nom",
-    "Agent_guiche/Achat_cle",
+    "/Agent_guiche/Achat_cle",
     "/Agent_guiche/Ajout_sous_couverte",
     "/Agent_guiche/Ajout_livraison",
     "/Agent_guiche/Ajout_collection",

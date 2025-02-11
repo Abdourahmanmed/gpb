@@ -36,6 +36,7 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
 import { SousCouvertPaiement } from "@/actions/paiement/S_couvertPaiement";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type SousCouvertFormValues = z.infer<typeof SousCouvertSchema>;
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
@@ -58,6 +59,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
     const [donnees, setDonnees] = useState<SousCouvertFormValues | null>(null);
     const router = useRouter();
+    const { data: session } = useSession();
 
     // État pour gérer l'incrément du numéro
     const [currentNumber] = useState(1);
@@ -169,14 +171,14 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
             const finalData = {
                 ...values,
                 ReferenceId: recueNumber,  // Assurez-vous d'ajouter la valeur de recueNumber ici
-                id_user: 1,
+                id_user: session?.user?.id,
                 NBp: Nbp,
                 totalMontant: TotalMontant,
             };
 
             // Logique d'enregistrement (par exemple, sauvegarde des données)
             console.log("Données soumises :", finalData);
-            console.log(recueNumber);
+            console.log(recueNumber,IdClient);
 
             // Met à jour les états nécessaires
             setDonnees(finalData); // Sauvegarde les valeurs dans un état
@@ -221,13 +223,8 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
             }
         } catch (error) {
             // Gestion des erreurs imprévues
-            if (error instanceof NetworkError) {
-                toast.error("Erreur réseau. Vérifiez votre connexion internet.");
-            } else if (error instanceof ServerError) {
-                toast.error("Erreur serveur. Réessayez plus tard.");
-            } else {
-                toast.error("Une erreur inattendue est survenue.");
-            }
+            toast.error("Erreur réseau. Vérifiez votre connexion internet.");
+            console.log(error);
         }
     };
 

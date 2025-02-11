@@ -21,11 +21,11 @@ export const GetLastReferenceOfLDV = async () => {
         const responseData = await response.json();
 
         //verification si laste reference est null 
-        if (responseData?.reference_livraison_domicile === null) {
-            return responseData.reference_livraison_domicile
+        if (responseData?.reference === null) {
+            return responseData.reference
         }
 
-        return responseData.reference_livraison_domicile; // Retourne les données si tout va bien
+        return responseData.reference; // Retourne les données si tout va bien
     } catch (error) {
         // Gérer les erreurs et les logs
         console.error('Erreur lors de l\'appel API :', error);

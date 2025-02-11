@@ -21,6 +21,7 @@ import { GetLastReferenceOfRdv } from "@/actions/All_references/GetLastReference
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
 import { ChangementRdvPaiement } from "@/actions/paiement/RdvPaiement";
+import { useSession } from "next-auth/react";
 
 // Typages
 type MethodePaiement = "cheque" | "cash" | "wallet";
@@ -46,6 +47,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
     // État pour gérer l'incrément du numéro
     const [currentNumber] = useState(1);
     const [recueNumber, setRecueNumber] = useState('');
+    const { data: session } = useSession();
 
     useEffect(() => {
         const fetchLastReference = async () => {
@@ -128,6 +130,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
             const finalData = {
                 ...values,
                 ReferenceId: recueNumber,  // Assurez-vous d'ajouter la valeur de recueNumber ici
+                id_user: session?.user?.id,
             };
 
             // Logique d'enregistrement (par exemple, sauvegarde des données)

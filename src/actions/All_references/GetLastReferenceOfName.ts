@@ -21,11 +21,11 @@ export const GetLastReferenceOfName = async () => {
         const responseData = await response.json();
 
         //verification si laste reference est null 
-        if (responseData?.reference_changer_nom === null) {
-            return responseData.reference_changer_nom
+        if (responseData?.reference === null) {
+            return responseData.reference
         }
 
-        return responseData.reference_changer_nom; // Retourne les données si tout va bien
+        return responseData.reference; // Retourne les données si tout va bien
     } catch (error) {
         // Gérer les erreurs et les logs
         console.error('Erreur lors de l\'appel API :', error);

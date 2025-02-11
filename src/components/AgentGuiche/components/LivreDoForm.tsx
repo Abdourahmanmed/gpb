@@ -33,8 +33,9 @@ import Imprimery from "./Imprimery";
 import HeaderImprimary from "./HeaderImprimary";
 import { GetLastReferenceOfLDV } from "@/actions/All_references/GetLastReferenceOfLVD";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
+import "react-toastify/dist/ReactToastify.css"; // Importer les styles de react-toastify
 import { ChangementLvdPaiement } from "@/actions/paiement/LvdPaiement";
+import { useSession } from "next-auth/react";
 
 interface ChangeNameFormProps {
   isOpen: boolean;
@@ -51,7 +52,7 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({
   isOpen,
   setIsOpen,
   UserId,
-  Np
+  Np,
 }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     MethodePaiement | undefined
@@ -65,6 +66,7 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({
   const [recueNumber, setRecueNumber] = useState("");
   const [PrintJS, setPrintJS] = useState<any>(null); // Référence à printJS
   const printAreaRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchLastReference = async () => {
@@ -153,7 +155,8 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({
       const finalData = {
         ...values,
         ReferenceId: recueNumber, // Assurez-vous d'ajouter la valeur de recueNumber ici
-        NBp:Np,
+        NBp: Np,
+        id_user: session?.user?.id,
       };
 
       // Logique d'enregistrement (par exemple, sauvegarde des données)
@@ -171,7 +174,9 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({
 
   const handlePayer = async (value: MontantSaisi) => {
     if (parseInt(value.montantSaisi) !== donnees?.Montant) {
-      toast.error(`Le montant saisi doit être exactement ${donnees?.Montant} DJF.`);
+      toast.error(
+        `Le montant saisi doit être exactement ${donnees?.Montant} DJF.`
+      );
       return;
     }
 
