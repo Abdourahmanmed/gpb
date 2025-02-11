@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
   );
 
   return (
-    <ScrollArea className="h-full w-[1020px] p-2">
+    <ScrollArea className="h-full w-full p-2">
       <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 bg-white w-full h-max rounded-lg shadow-blue p-2">
         {/* Filtres dynamiques selon le type */}
         {path &&
@@ -78,12 +78,12 @@ export function DataTable<TData, TValue>({
                 .concat(
                   path === "/Agent_guiche/Rechercher"
                     ? [
-                        { placeholder: "Filtrer par Etat...", column: "Etat" },
-                        {
-                          placeholder: "Filtrer par sous couvert...",
-                          column: "sous_couvert",
-                        },
-                      ]
+                      { placeholder: "Filtrer par Etat...", column: "Etat" },
+                      {
+                        placeholder: "Filtrer par sous couvert...",
+                        column: "sous_couvert",
+                      },
+                    ]
                     : []
                 )
                 .map(({ placeholder, column }) => (
@@ -122,9 +122,9 @@ export function DataTable<TData, TValue>({
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     ))}
                   </TableRow>

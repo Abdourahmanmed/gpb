@@ -22,7 +22,7 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
 import { ChangementRdvPaiement } from "@/actions/paiement/RdvPaiement";
 import { useSession } from "next-auth/react";
-
+import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 // Typages
 type MethodePaiement = "cheque" | "cash" | "wallet";
 type WalletOptions = "cac_pay" | "waafi" | "d_money" | "dahabplaces" | "sabapay";
@@ -41,8 +41,11 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<MethodePaiement | undefined>(undefined);
     const [donnees, setDonnees] = useState<PaiementFormValues | null>(null);
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+    const [isSucessOpen, setisSucessOpen] = useState(false);
+    const [message, setMessage] = useState('');
     const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
     const printAreaRef = useRef<HTMLDivElement>(null);
+    const confettiRef = useRef<ConfettiRef>(null);
 
     // État pour gérer l'incrément du numéro
     const [currentNumber] = useState(1);
@@ -135,7 +138,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
 
             // Logique d'enregistrement (par exemple, sauvegarde des données)
             console.log("Données soumises :", finalData);
-            console.log(recueNumber);
+            console.log(recueNumber, UserId);
 
             // Met à jour les états nécessaires
             setDonnees(finalData); // Sauvegarde les valeurs dans un état
@@ -154,19 +157,10 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
 
         try {
             const enregistrement = await ChangementRdvPaiement(UserId, donnees);
-
+            console.log(UserId);
             if (enregistrement?.success) {
-                toast.success("Données enregistrées avec succès.");
-
-                // Vérification que PrintJS est chargé et que le DOM est prêt
-                if (PrintJS && printAreaRef.current) {
-                    PrintJS({
-                        printable: printAreaRef.current,
-                        type: "html",
-                        targetStyles: ["*"],
-                    });
-                }
-
+                setMessage(enregistrement?.success);
+                setisSucessOpen(true);
                 // Réinitialiser l'état après succès
                 setIsSummaryOpen(false);
                 form.reset();
@@ -180,6 +174,19 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
             console.log(error);
         }
     };
+
+    const handleImprimary = () => {
+        // Vérification que PrintJS est chargé et que l'élément à imprimer est bien disponible
+        // Vérification que PrintJS est chargé et que le DOM est prêt
+        if (PrintJS && printAreaRef.current) {
+            PrintJS({
+                printable: printAreaRef.current,
+                type: "html",
+                targetStyles: ["*"],
+            });
+        }
+    };
+
 
     return (
         <>
@@ -343,7 +350,109 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
                 </DialogContent>
             </Dialog>
 
+            <Dialog open={isSucessOpen} onOpenChange={setisSucessOpen}>
+                <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
+                    <DialogHeader className="border-b-2 pb-4 mb-6">
+                        <DialogTitle className="text-2xl font-bold text-gray-800">Imprimer</DialogTitle>
+                    </DialogHeader>
+                    <div className="relative">
+                        <h1 className="text-2xl text-green-600 font-semibold bg-green-100 p-2 rounded-md">Felicitation {message}</h1>
+                        <Confetti
+                            ref={confettiRef}
+                            className="absolute left-0 top-0 z-0 size-full"
+                            onMouseEnter={() => {
+                                confettiRef.current?.fire({});
+                            }}
+                        />
+                    </div>
+                    {/* Section à imprimer */}
+                    <div id="print-area" ref={printAreaRef} className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
+                        <div className="flex items-center gap">
+                            {/* Logo à gauche */}
+                            <div className="w-max h-max rounded-full flex items-center justify-center overflow-hidden">
+                                <Image
+                                    src="/logoposte.png"
+                                    alt="Logo"
+                                    width={100} // Largeur de 64px
+                                    height={100} // Hauteur de 64px
+                                    className="object-cover"
+                                />
+                            </div>
 
+                            {/* Texte principal */}
+                            <div className="flex-1 text-center">
+                                <div className="text-lg font-bold">
+                                    REPUBLIQUE DE DJIBOUTI
+                                </div>
+                                <div className="text-sm italic my-1">
+                                    Unité - Égalité - Paix
+                                </div>
+                                <div className="text-sm uppercase my-1">
+                                    MINISTÈRE DE LA COMMUNICATION, CHARGÉ DES POSTES ET DES TÉLÉCOMMUNICATIONS
+                                </div>
+                                <div className="text-blue-500 font-bold mt-4 text-lg">
+                                    LA POSTE DE DJIBOUTI S.A
+                                </div>
+                                <div className="text-sm uppercase">
+                                    DIRECTION COMMERCIALE
+                                </div>
+                            </div>
+                        </div>
+                        {donnees && (
+                            <div className="h-max w-full p-4 ">
+                                <h1 className="text-2xl font-bold text-gray-800 mb-4">Reçue du paiement Redevence</h1>
+                                {/* Numéro de reçu */}
+                                <div className="mt-4 text-xl py-4 font-semibold">
+                                    <span>Numéro de reçu : </span>
+                                    <span className="text-blue-700">{recueNumber}</span>
+                                </div>
+                                <div className="space-y-6">
+                                    {/* Méthode de Paiement */}
+                                    <div className="space-y-2">
+                                        <div className="text-lg font-semibold text-gray-700">
+                                            <strong>Méthode de paiement :</strong> {donnees.Methode_de_paiement}
+                                            {donnees.ReferenceId}
+                                        </div>
+                                        {donnees.Wallet ? (
+                                            <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-md">
+                                                <div className="text-sm text-gray-800">
+                                                    <strong>Wallet :</strong> {donnees.Wallet}
+                                                </div>
+                                                <div className="text-sm text-gray-800">
+                                                    <strong>Telephone :</strong> {donnees.Numero_wallet}
+                                                </div>
+                                                <div className="text-sm text-gray-800">
+                                                    <strong>Montant :</strong> {donnees.Montant}  Djf
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-md">
+                                                {donnees?.Methode_de_paiement === "cheque" && (
+                                                    <>
+                                                        <div className="text-sm text-gray-800">
+                                                            <strong>Cheque :</strong> {donnees.Numero_cheque}
+                                                        </div>
+                                                        <div className="text-sm text-gray-800">
+                                                            <strong>Banque :</strong> {donnees.Nom_Banque}
+                                                        </div>
+                                                    </>
+                                                )}
+                                                <div className="text-sm text-gray-800">
+                                                    <strong>Montant :</strong> {donnees.Montant} Djf
+                                                </div>
+
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex justify-end space-y-2">
+                        <Button onClick={handleImprimary} type="submit">Imprimer</Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
             {/* formuliare d'enregistrement */}
             <Dialog open={isSummaryOpen} onOpenChange={setIsSummaryOpen}>
                 <DialogContent className="p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
@@ -354,7 +463,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
                         </DialogHeader>
 
                         {/* Section à imprimer */}
-                        <div id="print-area" ref={printAreaRef} className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
+                        <div className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
                             <div className="flex items-center gap">
                                 {/* Logo à gauche */}
                                 <div className="w-max h-max rounded-full flex items-center justify-center overflow-hidden">
@@ -468,6 +577,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
                     </ScrollArea>
                 </DialogContent>
             </Dialog>
+
         </>
     );
 };
