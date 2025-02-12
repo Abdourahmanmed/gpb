@@ -67,7 +67,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             } as React.CSSProperties
         }>
             <AppSidebar menuData={data} />
-            <SidebarInset className="">
+            <SidebarInset className="overflow-hidden">
                 <Header />
                 <main className="w-[99%] bg-gris h-[88vh] rounded-lg overflow-hidden">
                     <ScrollArea className="h-full w-full p-4">

@@ -37,6 +37,7 @@ import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-
 import { SousCouvertPaiement } from "@/actions/paiement/S_couvertPaiement";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 
 type SousCouvertFormValues = z.infer<typeof SousCouvertSchema>;
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
@@ -60,6 +61,9 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
     const [donnees, setDonnees] = useState<SousCouvertFormValues | null>(null);
     const router = useRouter();
     const { data: session } = useSession();
+    const confettiRef = useRef<ConfettiRef>(null);
+    const [isSucessOpen, setisSucessOpen] = useState(false);
+    const [message, setMessage] = useState('');
 
     // État pour gérer l'incrément du numéro
     const [currentNumber] = useState(1);
@@ -178,7 +182,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
 
             // Logique d'enregistrement (par exemple, sauvegarde des données)
             console.log("Données soumises :", finalData);
-            console.log(recueNumber,IdClient);
+            console.log(recueNumber, IdClient);
 
             // Met à jour les états nécessaires
             setDonnees(finalData); // Sauvegarde les valeurs dans un état
@@ -201,16 +205,8 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
             const enregistrement = await SousCouvertPaiement(IdClient, donnees);
 
             if (enregistrement?.success) {
-                toast.success("Données enregistrées avec succès.");
-
-                // Vérification et impression via PrintJS
-                if (PrintJS && printAreaRef.current) {
-                    PrintJS({
-                        printable: printAreaRef.current,
-                        type: "html",
-                        targetStyles: ["*"],
-                    });
-                }
+                setMessage(enregistrement?.success);
+                setisSucessOpen(true);
 
                 // Réinitialisation de l'état
                 setIsSummaryOpen(false);
@@ -225,6 +221,19 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
             // Gestion des erreurs imprévues
             toast.error("Erreur réseau. Vérifiez votre connexion internet.");
             console.log(error);
+        }
+    };
+
+
+    const handleImprimary = () => {
+        // Vérification que PrintJS est chargé et que l'élément à imprimer est bien disponible
+        // Vérification que PrintJS est chargé et que le DOM est prêt
+        if (PrintJS && printAreaRef.current) {
+            PrintJS({
+                printable: printAreaRef.current,
+                type: "html",
+                targetStyles: ["*"],
+            });
         }
     };
 
@@ -449,7 +458,40 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                     </ScrollArea>
                 </DialogContent>
             </Dialog>
-
+            <Dialog open={isSucessOpen} onOpenChange={setisSucessOpen}>
+                <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
+                    <DialogHeader className="border-b-2 pb-4 mb-6">
+                        <DialogTitle className="text-2xl font-bold text-gray-800">Imprimer</DialogTitle>
+                    </DialogHeader>
+                    <div className="relative">
+                        <h1 className="text-2xl text-green-600 font-semibold bg-green-100 p-2 rounded-md">Felicitation {message}</h1>
+                        <Confetti
+                            ref={confettiRef}
+                            className="absolute left-0 top-0 z-0 size-full"
+                            onMouseEnter={() => {
+                                confettiRef.current?.fire({});
+                            }}
+                        />
+                    </div>
+                    <div
+                        id="print-area"
+                        ref={printAreaRef}
+                        className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full"
+                    >
+                        <HeaderImprimary />
+                        {donnees && (
+                            <Imprimery
+                                donnees={donnees}
+                                recueNumber={recueNumber}
+                                NomRecue="Sous couverte"
+                            />
+                        )}
+                    </div>
+                    <div className="flex justify-end space-y-2">
+                        <Button onClick={handleImprimary} type="submit">Imprimer</Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
             {/* Résumé et Paiement */}
             <Dialog open={isSummaryOpen} onOpenChange={setIsSummaryOpen}>
                 <DialogContent className="p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
@@ -460,7 +502,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                         </DialogHeader>
 
                         {/* Section à imprimer */}
-                        <div id="print-area" ref={printAreaRef} className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
+                        <div  className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
                             <HeaderImprimary />
                             {donnees && (
                                 <Imprimery donnees={donnees} recueNumber={recueNumber} NomRecue="Sous couverte" totalMontant={TotalMontant} />

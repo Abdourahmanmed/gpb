@@ -14,8 +14,8 @@ export type LivraisonType = {
   client_email: string;
   client_telephone: string;
   client_adresse: string;
-  montant_livraison_a_domicile: string;
-  reference_livraison_domicile: string;
+  montant: string;
+  reference: string;
 };
 
 export const LvdColumns: ColumnDef<LivraisonType>[] = [
@@ -68,11 +68,11 @@ export const LvdColumns: ColumnDef<LivraisonType>[] = [
     header: "Adresse",
   },
   {
-    accessorKey: "montant_livraison_a_domicile",
+    accessorKey: "montant",
     header: "Montant livraison a domicile",
   },
   {
-    accessorKey: "reference_livraison_domicile",
+    accessorKey: "reference",
     header: "Numero facture",
   },
 ];

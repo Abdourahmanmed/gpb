@@ -22,6 +22,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Importer les styles de react-toastify
 import { useFileContext } from "@/components/FileContexe";
 import { useSession } from "next-auth/react";
+import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 
@@ -33,6 +36,9 @@ const StepFourForme = () => {
     const printAreaRef = useRef<HTMLDivElement>(null);
     const { files } = useFileContext(); // Utilisation du contexte pour les fichiers
     const { data: session } = useSession();
+    const confettiRef = useRef<ConfettiRef>(null);
+    const [isSucessOpen, setisSucessOpen] = useState(false);
+    const [message, setMessage] = useState('');
 
 
     const formMontantSaisi = useForm<MontantSaisi>({
@@ -153,7 +159,8 @@ const StepFourForme = () => {
             if (result?.error) {
                 toast.error(result?.error);
             } else {
-                toast.success(result?.success);
+                setMessage(result?.success);
+                setisSucessOpen(true);
             }
         } catch (error) {
             console.error("Erreur lors du paiement :", error);
@@ -161,17 +168,187 @@ const StepFourForme = () => {
         }
     };
 
+    const handleImprimary = () => {
+        // Vérification que PrintJS est chargé et que l'élément à imprimer est bien disponible
+        // Vérification que PrintJS est chargé et que le DOM est prêt
+        if (PrintJS && printAreaRef.current) {
+            PrintJS({
+                printable: printAreaRef.current,
+                type: "html",
+                targetStyles: ["*"],
+            });
+        }
+    };
+
 
     return (
         <div className="bg-gray-100 p-6 rounded-lg shadow-md max-w-7xl mx-auto">
+            <Dialog open={isSucessOpen} onOpenChange={setisSucessOpen}>
+                <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
+                    <ScrollArea className="max-h-[70vh] w-full">
+                        <DialogHeader className="border-b-2 pb-4 mb-6">
+                            <DialogTitle className="text-2xl font-bold text-gray-800">Imprimer</DialogTitle>
+                        </DialogHeader>
+                        <div className="relative">
+                            <h1 className="text-2xl text-green-600 font-semibold bg-green-100 p-2 rounded-md">Felicitation {message}</h1>
+                            <Confetti
+                                ref={confettiRef}
+                                className="absolute left-0 top-0 z-0 size-full"
+                                onMouseEnter={() => {
+                                    confettiRef.current?.fire({});
+                                }}
+                            />
+                        </div>
+
+                        {/* Section à imprimer */}
+                        <div
+                            id="print-area"
+                            ref={printAreaRef}
+                            className="rounded-md border border-gray-300 p-4 flex flex-col items-center w-full mt-2"
+                        >
+                            <HeaderImprimary />
+                            {donnees && (
+                                <div className="p-6 space-y-6 w-full">
+                                    <div className="mt-4 text-xl py-4 font-semibold flex justify-between items-center border-b">
+                                        <h2 className="text-2xl font-bold text-gray-800">Résumé</h2>
+                                        <div>
+                                            <span className="text-gray-600">Numéro de reçu :</span>
+                                            <span className="text-blue-700 font-medium ml-2">
+                                                {recueNumber}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Tableau pour afficher les données */}
+                                    <div className="">
+                                        <table className="min-w-full border-collapse border border-gray-300 rounded-md">
+                                            <thead className="bg-blue-50">
+                                                <tr>
+                                                    <th className="text-left px-4 py-2 font-semibold text-gray-700 border-b border-gray-300">
+                                                        Champ
+                                                    </th>
+                                                    <th className="text-left px-4 py-2 font-semibold text-gray-700 border-b border-gray-300">
+                                                        Valeur
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {Object.entries(donnees)
+                                                    .filter(([key, value]) => {
+                                                        // Ignorer les champs inutiles comme 'step'
+                                                        if (key === "step") return false;
+
+                                                        // Vérifier les objets pour des données valides
+                                                        if (typeof value === "object" && value !== null) {
+                                                            return Object.values(value).some(
+                                                                (v) => v && v.toString().trim() !== ""
+                                                            );
+                                                        }
+
+                                                        // Vérifier les chaînes non vides
+                                                        if (typeof value === "string") {
+                                                            return value.trim() !== "";
+                                                        }
+
+                                                        // Vérifier les tableaux non vides
+                                                        if (Array.isArray(value)) {
+                                                            return value.length > 0;
+                                                        }
+
+                                                        return false; // Ignorer tout autre type de données
+                                                    })
+                                                    .map(([key, value], index) => (
+                                                        <tr key={index} className="even:bg-gray-50">
+                                                            <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                                                {key.replace(/_/g, " ")}
+                                                            </td>
+                                                            <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                                                {Array.isArray(value) ? (
+                                                                    <ul className="pl-4 list-disc">
+                                                                        {value.map((item, idx) => (
+                                                                            <li key={idx} className="text-sm text-gray-600">
+                                                                                {JSON.stringify(item, null, 2)}
+                                                                            </li>
+                                                                        ))}
+                                                                    </ul>
+                                                                ) : typeof value === "object" && value !== null ? (
+                                                                    <pre className="bg-gray-100 p-2 rounded text-sm">
+                                                                        {JSON.stringify(
+                                                                            Object.fromEntries(
+                                                                                Object.entries(value).filter(
+                                                                                    ([, v]) => v && v.toString().trim() !== ""
+                                                                                )
+                                                                            ),
+                                                                            null,
+                                                                            2
+                                                                        )}
+                                                                    </pre>
+                                                                ) : (
+                                                                    <span>{value}</span>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                {/* Ajout des montants et de la somme totale */}
+                                                <tr className="even:bg-gray-50">
+                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                                        Montant Rd
+                                                    </td>
+                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                                        {donnees?.montantRd || 0}
+                                                    </td>
+                                                </tr>
+                                                <tr className="even:bg-gray-50">
+                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                                        Montant Ld
+                                                    </td>
+                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                                        {donnees?.montantLd || 0}
+                                                    </td>
+                                                </tr>
+                                                <tr className="even:bg-gray-50">
+                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                                        Montant Cll
+                                                    </td>
+                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                                        {donnees?.montantCll || 0}
+                                                    </td>
+                                                </tr>
+                                                <tr className="even:bg-gray-50">
+                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                                        Montant SC
+                                                    </td>
+                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                                        {donnees?.montantSC || 0}
+                                                    </td>
+                                                </tr>
+                                                <tr className="bg-gray-100">
+                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800 font-bold">
+                                                        Somme Totale
+                                                    </td>
+                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600 font-bold">
+                                                        {totalMontant}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </ScrollArea>
+                    <div className="flex justify-end space-y-2">
+                        <Button onClick={handleImprimary} type="submit">Imprimer</Button>
+                    </div>
+
+                </DialogContent>
+            </Dialog>
             <ToastContainer />
             <h2 className="text-xl font-bold text-center text-blue-900 mb-6">
                 Tous les informations d&#39;un nouveau client
             </h2>
             {/* Section à imprimer */}
             <div
-                id="print-area"
-                ref={printAreaRef}
                 className="rounded-md border border-gray-300 p-4 flex flex-col items-center w-full"
             >
                 <HeaderImprimary />

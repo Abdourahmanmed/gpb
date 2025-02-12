@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
   );
 
   return (
-    <ScrollArea className="h-full w-full p-2">
+    <ScrollArea className="h-full max-w-[80%]">
       <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 bg-white w-full h-max rounded-lg shadow-blue p-2">
         {/* Filtres dynamiques selon le type */}
         {path &&

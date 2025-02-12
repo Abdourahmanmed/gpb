@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import SousCouvertColAction from "@/components/ActionCellColumns/SousCouvertColAction";
 import { Badge } from "@/components/ui/badge";
+import Detail from "@/components/Detail";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -124,9 +125,9 @@ export const AjoutSousCouvertColumns: ColumnDef<AjoutSousCouvert>[] = [
     accessorKey: "Etat",
     header: "État Abonnement",
     cell: ({ row }) => (
-      <Badge className={getBadgeBackgroundColor(row.original.Etat)}>
+      <p >
         {row.original.Etat}
-      </Badge>
+      </p>
     ),
   },
   {
@@ -139,47 +140,84 @@ export const AjoutSousCouvertColumns: ColumnDef<AjoutSousCouvert>[] = [
   },
   {
     accessorKey: "Patente_Quitance",
-    header: "Patente Quitance",
+    header: "Patente/Quitance",
+    cell: ({ row }) => {
+      const FilePath = row.original.Patente_Quitance; // Récupère le chemin du fichier
+      const fileUrl = FilePath
+        ? `http://localhost/gbp_backend/${FilePath}`
+        : null;
+
+      return (
+        <div className="flex justify-center">
+          {fileUrl ? (
+            <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+              Voir le document Patente/Quitance
+            </a>
+          ) : (
+            <span className="text-gray-500 italic">Aucun document</span>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "Identite_Gerant",
-    header: "Identité Gérant",
+    header: "Identité",
+    cell: ({ row }) => {
+      const FilePath = row.original.Identite_Gerant; // Récupère le chemin du fichier
+      const fileUrl = FilePath
+        ? `http://localhost/gbp_backend/${FilePath}`
+        : null;
+
+      return (
+        <div className="flex justify-center">
+          {fileUrl ? (
+            <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+              Voir le document Identité
+            </a>
+          ) : (
+            <span className="text-gray-500 italic">Aucun document</span>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "Abonnement_Unique",
-    header: "Abonnement Unique",
-  },
-  {
-    accessorKey: "Paiement_Type",
-    header: "Type Paiement",
-    cell: ({ row }) => (
-      <Badge className={getBadgeBackgroundColor(row.original.Paiement_Type)}>
-        {row.original.Paiement_Type}
-      </Badge>
-    ),
+    header: "Abonnement",
+    cell: ({ row }) => {
+      const FilePath = row.original.Abonnement_Unique; // Récupère le chemin du fichier
+      const fileUrl = FilePath
+        ? `http://localhost/gbp_backend/${FilePath}`
+        : null;
+
+      return (
+        <div className="flex justify-center">
+          {fileUrl ? (
+            <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+              Voir le document Abonnement
+            </a>
+          ) : (
+            <span className="text-gray-500 italic">Aucun document</span>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "Penalites",
     header: "Pénalités",
-    cell: ({ row }) => (
-      <Badge className={getBadgeBackgroundColor(row.original.Penalites)}>
-        {row.original.Penalites}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const idClient = row?.original?.id;
+      const nom = row?.original?.Nom;
+      return <Detail IdClient={idClient} Nom={nom} />; // Retourner le composant ici
+    },
   },
   {
     accessorKey: "Montant_Redevance",
     header: "Montant Redevance",
   },
-  {
-    accessorKey: "Methode_Paiement",
-    header: "Méthode Paiement",
-    cell: ({ row }) => (
-      <Badge className={getBadgeBackgroundColor(row.original.Methode_Paiement)}>
-        {row.original.Methode_Paiement}
-      </Badge>
-    ),
-  },
+
   {
     accessorKey: "Reference_General",
     header: "Référence Générale",
@@ -188,125 +226,14 @@ export const AjoutSousCouvertColumns: ColumnDef<AjoutSousCouvert>[] = [
     accessorKey: "Date_Paiement",
     header: "Date Paiement",
   },
-
-  // ✅ Décomposition des paiements
   {
-    accessorKey: "Paiement_Categories",
-    header: "Catégories Paiement",
-    cell: ({ row }) => (
-      <div>
-        {row.original.Paiement_Categories?.split(", ").map(
-          (categorie, index) => (
-            <p key={index} className="text-sm text-gray-600 mt-2">
-              <Badge className={getBadgeBackgroundColor(categorie)}>
-                {categorie}
-              </Badge>
-            </p>
-          )
-        )}
-      </div>
-    ),
+    header: "Detais du paiements",
+    cell: ({ row }) => {
+      const idClient = row?.original?.id;
+      const nom = row?.original?.Nom;
+      return <Detail IdClient={idClient} Nom={nom} />; // Retourner le composant ici
+    },
   },
-  {
-    accessorKey: "Paiement_Montants",
-    header: "Montants Paiement",
-    cell: ({ row }) => (
-      <div>
-        {row.original.Paiement_Montants?.split(", ").map((montant, index) => (
-          <p key={index} className="text-sm text-gray-600 mt-2">
-            <Badge className={getBadgeBackgroundColor(montant)}>
-              {montant} FDJ
-            </Badge>
-          </p>
-        ))}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "Paiement_Methodes",
-    header: "Méthodes Paiement",
-    cell: ({ row }) => (
-      <div>
-        {row.original.Paiement_Methodes?.split(", ").map((methode, index) => (
-          <p key={index} className="text-sm text-gray-600">
-            <Badge className={getBadgeBackgroundColor(methode)}>
-              {methode}
-            </Badge>
-          </p>
-        ))}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "Type_Wallets",
-    header: "Types Wallet",
-    cell: ({ row }) => (
-      <div>
-        {row.original.Type_Wallets?.split(", ").map((wallet, index) => (
-          <p key={index} className="text-sm text-gray-600">
-            <Badge className={getBadgeBackgroundColor(wallet)}>{wallet}</Badge>
-          </p>
-        ))}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "Numero_Wallets",
-    header: "Numéros Wallet",
-    cell: ({ row }) => (
-      <div>
-        {row.original.Numero_Wallets?.split(", ").map((numero, index) => (
-          <p key={index} className="text-sm text-gray-600">
-            {numero}
-          </p>
-        ))}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "Numero_Cheques",
-    header: "Numéros Chèques",
-    cell: ({ row }) => (
-      <div>
-        {row.original.Numero_Cheques?.split(", ").map((cheque, index) => (
-          <p key={index} className="text-sm text-gray-600">
-            {cheque}
-          </p>
-        ))}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "Nom_Banques",
-    header: "Banques",
-    cell: ({ row }) => (
-      <div>
-        {row.original.Nom_Banques?.split(", ").map((banque, index) => (
-          <p key={index} className="text-sm text-gray-600">
-            {banque}
-          </p>
-        ))}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "Paiement_References",
-    header: "Références Paiement",
-    cell: ({ row }) => (
-      <div>
-        {row.original.Paiement_References?.split(", ").map(
-          (reference, index) => (
-            <p key={index} className="text-sm text-gray-600 mt-2">
-              <Badge className={getBadgeBackgroundColor(reference)}>
-                {reference}
-              </Badge>
-            </p>
-          )
-        )}
-      </div>
-    ),
-  },
-
   {
     id: "actions",
     header: "Actions",

@@ -36,6 +36,7 @@ import { ChangementNamePaiement } from "@/actions/paiement/NamePaiement";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
 import { useSession } from "next-auth/react";
+import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 
 interface ChangeNameFormProps {
   isOpen: boolean;
@@ -71,6 +72,9 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
   const [PrintJS, setPrintJS] = useState<any>(null); // Référence à printJS
   const printAreaRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
+  const confettiRef = useRef<ConfettiRef>(null);
+  const [isSucessOpen, setisSucessOpen] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchLastReference = async () => {
@@ -185,16 +189,8 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
       const enregistrement = await ChangementNamePaiement(UserId, donnees);
 
       if (enregistrement?.success) {
-        toast.success("Données enregistrées avec succès.");
-
-        // Vérification que PrintJS est chargé et que le DOM est prêt
-        if (PrintJS && printAreaRef.current) {
-          PrintJS({
-            printable: printAreaRef.current,
-            type: "html",
-            targetStyles: ["*"],
-          });
-        }
+        setMessage(enregistrement?.success);
+        setisSucessOpen(true);
 
         // Réinitialiser l'état après succès
         setIsSummaryOpen(false);
@@ -209,7 +205,17 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
       console.log(error);
     }
   };
-
+  const handleImprimary = () => {
+    // Vérification que PrintJS est chargé et que l'élément à imprimer est bien disponible
+    // Vérification que PrintJS est chargé et que le DOM est prêt
+    if (PrintJS && printAreaRef.current) {
+      PrintJS({
+        printable: printAreaRef.current,
+        type: "html",
+        targetStyles: ["*"],
+      });
+    }
+  };
 
   return (
     <>
@@ -389,6 +395,41 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={isSucessOpen} onOpenChange={setisSucessOpen}>
+        <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
+          <DialogHeader className="border-b-2 pb-4 mb-6">
+            <DialogTitle className="text-2xl font-bold text-gray-800">Imprimer</DialogTitle>
+          </DialogHeader>
+          <div className="relative">
+            <h1 className="text-2xl text-green-600 font-semibold bg-green-100 p-2 rounded-md">Felicitation {message}</h1>
+            <Confetti
+              ref={confettiRef}
+              className="absolute left-0 top-0 z-0 size-full"
+              onMouseEnter={() => {
+                confettiRef.current?.fire({});
+              }}
+            />
+          </div>
+          <div
+            id="print-area"
+            ref={printAreaRef}
+            className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full"
+          >
+            <HeaderImprimary />
+            {donnees && (
+              <Imprimery
+                donnees={donnees}
+                recueNumber={recueNumber}
+                NomRecue="Changement Nom"
+              />
+            )}
+          </div>
+          <div className="flex justify-end space-y-2">
+            <Button onClick={handleImprimary} type="submit">Imprimer</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
       {/* Résumé et Paiement */}
       <Dialog open={isSummaryOpen} onOpenChange={setIsSummaryOpen}>
         <DialogContent className="p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
@@ -402,8 +443,6 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
 
             {/* Section à imprimer */}
             <div
-              id="print-area"
-              ref={printAreaRef}
               className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full"
             >
               <HeaderImprimary />

@@ -41,6 +41,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EditUserSchema } from "@/Schema/schema";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -124,7 +125,7 @@ export function NoFilterDataTable<TData, TValue>({
   };
 
   return (
-    <>
+    <ScrollArea className="h-full max-w-[80%]">
       <div className="flex items-center gap-8 bg-white w-full h-max rounded-lg shadow-blue p-2">
         <ToastContainer />
         <Input
@@ -135,7 +136,7 @@ export function NoFilterDataTable<TData, TValue>({
         />
         {/* c'est uniquement pour les pages superviser du depot resiliation et tous les abonnes */}
         {path &&
-          ['/Superviseur/Depot_de_resiliation', '/Superviseur/Les_Abonnes'].some((route) => path.includes(route)) && (
+          ['/Superviseur/Depot_de_resiliation'].some((route) => path.includes(route)) && (
             <div className="w-full flex items-center gap-8">
               {[
                 { placeholder: "Filtrer par Nom...", column: typeName },
@@ -152,6 +153,24 @@ export function NoFilterDataTable<TData, TValue>({
               ))}
             </div>
           )}
+        {/* {path &&
+          ['/Superviseur/Les_Abonnes'].some((route) => path.includes(route)) && (
+            <div className="w-full flex items-center gap-8">
+              {[
+                { placeholder: "Filtrer par Nom...", column: typeName },
+                { placeholder: "Filtrer par Etat...", column: "Etat" },
+                { placeholder: "Filtrer par type boite postal...", column: "Type_boite_postale" },
+              ].map(({ placeholder, column }) => (
+                <Input
+                  key={column}
+                  placeholder={placeholder}
+                  value={(table.getColumn(column)?.getFilterValue() as string) ?? ""}
+                  onChange={(event) => table.getColumn(column)?.setFilterValue(event.target.value)}
+                  className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+                />
+              ))}
+            </div>
+          )} */}
 
         {/* c'est uniquement la page superviseur du gestion agent */}
         {path && path === '/Superviseur/Les_Agents' && (
@@ -412,7 +431,7 @@ export function NoFilterDataTable<TData, TValue>({
           </Button>
         </div>
       </div>
-
-    </>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
   );
 }
