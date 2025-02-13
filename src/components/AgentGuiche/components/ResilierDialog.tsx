@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { DemandeSchema } from "@/Schema/schema";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useSession } from "next-auth/react";
 
 interface ChangeNameFormProps {
     isOpen: boolean;
@@ -26,6 +27,7 @@ interface ChangeNameFormProps {
 }
 
 export const ResilierForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen, ClientId, ClientName, NumeroBp, Etat }) => {
+    const { data: session } = useSession();
     const form = useForm<z.infer<typeof DemandeSchema>>({
         resolver: zodResolver(DemandeSchema),
         defaultValues: {
@@ -34,11 +36,51 @@ export const ResilierForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen,
         },
     });
 
-    const onSubmit = (values: z.infer<typeof DemandeSchema>) => {
-        console.log("Form submitted", values,ClientId);
-        toast.error("L'ID de la session est introuvable !!");
+    const onSubmit = async (values: z.infer<typeof DemandeSchema>) => {
+        if (!session?.user?.id) {
+            toast.error("L'ID de la session est introuvable !!");
+            return;
+        }
+
+        if (!ClientId) {
+            toast.error("L'ID du client est introuvable !!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("id_user", session.user.id.toString()); // ID utilisateur
+        formData.append("id_client", ClientId.toString()); // ID client
+
+        // Vérifier et ajouter le fichier si présent
+        if (values.lettreDemande instanceof File) {
+            formData.append("lettre", values.lettreDemande);
+        } else {
+            toast.error("Veuillez sélectionner un fichier valide !");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost/gbp_backend/api.php?method=EnregistrerResiliation&id=${ClientId}`, {
+                method: "POST",
+                body: formData
+            });
+
+            const responseData = await response.json();
+            if (!response.ok) {
+                toast.error("Erreur d'excution !");
+            } else {
+                if(responseData?.error){
+                    toast.error(responseData?.error);
+                }
+                toast.success(responseData?.success);
+            }
+        } catch (error) {
+            toast.error("Erreur de connexion au serveur.");
+            console.error("Erreur :", error);
+        }
     };
-    
+
+
 
 
     return (

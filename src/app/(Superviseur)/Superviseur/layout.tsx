@@ -14,15 +14,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }
         },
         
-        {
-            title: "Depot de resiliation",
-            url: "/Superviseur/Depot_de_resiliation",
-            icon: "FolderCheck",
-            RoleName: {
-                Prefix: "Superviseur",
-                Suffix: ""
-            }
-        },
+        // {
+        //     title: "Depot de resiliation",
+        //     url: "/Superviseur/Depot_de_resiliation",
+        //     icon: "FolderCheck",
+        //     RoleName: {
+        //         Prefix: "Superviseur",
+        //         Suffix: ""
+        //     }
+        // },
         {
             title: "Les Abonnes",
             url: "/Superviseur/Les_Abonnes",
@@ -51,7 +51,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }
         },
         {
-            title: "Notifications",
+            title: "Activiter du jour",
             url: "/Superviseur/Notifications",
             icon: "Bell",
             RoleName: {

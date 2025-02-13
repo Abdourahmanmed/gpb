@@ -22,15 +22,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Suffix: "Commercial"
             }
         },
-        {
-            title: "Voir les depots",
-            url: "/Agent_commercial/Voir_les_depots",
-            icon: "FolderPen",
-            RoleName: {
-                Prefix: "Agent du ",
-                Suffix: "Commercial"
-            }
-        },
+        // {
+        //     title: "Voir les depots",
+        //     url: "/Agent_commercial/Voir_les_depots",
+        //     icon: "FolderPen",
+        //     RoleName: {
+        //         Prefix: "Agent du ",
+        //         Suffix: "Commercial"
+        //     }
+        // },
         {
             title: "Resiliation",
             url: "/Agent_commercial/Resiliation",
@@ -49,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             } as React.CSSProperties
         }>
             <AppSidebar menuData={data} />
-            <SidebarInset className="">
+            <SidebarInset className="overflow-hidden">
                 <Header />
                 <main className="w-[99%] bg-gris min-h-[calc(100vh-4.6rem)] rounded-lg overflow-hidden">
                     <ScrollArea className="h-full w-full p-4">
