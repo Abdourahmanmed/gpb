@@ -1,101 +1,84 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-
-type Activity = {
-    name: string; // Assure-toi que c'est bien ce qui est retourné par l'API
-};
-
-type Activities = {
-    sousCouverte: Activity[];
-    ld: Activity[];
-    achatCle: Activity[];
-    general: Activity[];
-    collections: Activity[];
-    changementName: Activity[];
-};
+"use client";
+import React, { useEffect, useState } from "react";
+import {
+  ActiveClient,
+  ActiveClientColumns,
+} from "../columns/ActivityClientCol";
+import { NoFilterDataTable } from "@/components/Tables/NoFilterData";
 
 const Activiter_du_jour: React.FC = () => {
-    const [activities, setActivities] = useState<Activities>({
-        sousCouverte: [],
-        ld: [],
-        achatCle: [],
-        general: [],
-        collections: [],
-        changementName: []
-    });
-    const [loading, setLoading] = useState<boolean>(true);
+  const [ActivityRedevance, setActivityRedevance] = useState<ActiveClient[]>(
+    []
+  );
+  const [ActivitySousCouvert, setActivitySousCouvert] = useState<
+    ActiveClient[]
+  >([]);
+  const [ActivityLD, setActivityLd] = useState<ActiveClient[]>([]);
+  const [ActivityCollection, setActivityCollection] = useState<ActiveClient[]>(
+    []
+  );
+  const [ActivityChangeName, setActivityChangeName] = useState<ActiveClient[]>(
+    []
+  );
+  const [ActivityAchatCle, setActivityAchatCle] = useState<ActiveClient[]>([]);
 
-    // Fonction pour récupérer les données de chaque API
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const responses = await Promise.all([
-                fetch('http://localhost/gbp_backend/api.php?method=GetToDayActivitySousCouverte'),
-                fetch('http://localhost/gbp_backend/api.php?method=GetToDayActivityLD'),
-                fetch('http://localhost/gbp_backend/api.php?method=GetToDayActivityAchatCle'),
-                fetch('http://localhost/gbp_backend/api.php?method=GetToDayActivity'),
-                fetch('http://localhost/gbp_backend/api.php?method=GetToDayActivityCollections'),
-                fetch('http://localhost/gbp_backend/api.php?method=GetToDayActivityChagementName')
-            ]);
+  const fetchActivities = async () => {
+    const urls = [
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivity",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivitySousCouverte",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivityLD",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivityAchatCle",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivityCollections",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivityChagementName",
+    ];
 
-            const data = await Promise.all(responses.map(response => response.json()));
+    try {
+      const responses = await Promise.all(urls.map((url) => fetch(url)));
+      const data = await Promise.all(responses.map((res) => res.json()));
 
-            setActivities({
-                sousCouverte: data[0],
-                ld: data[1],
-                achatCle: data[2],
-                general: data[3],
-                collections: data[4],
-                changementName: data[5]
-            });
-        } catch (error) {
-            console.error("Error fetching data", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    if (loading) {
-        return <div>Loading...</div>;
+      setActivityRedevance(data[0] || []);
+      setActivitySousCouvert(data[1] || []);
+      setActivityLd(data[2] || []);
+      setActivityAchatCle(data[3] || []);
+      setActivityCollection(data[4] || []);
+      setActivityChangeName(data[5] || []);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données :", error);
     }
+  };
 
-    const renderTable = (activitiesList: Activity[], title: string) => (
-        <div className="border p-4">
-            <h3 className="font-semibold">{title}</h3>
-            <table className="min-w-full table-auto border-collapse mt-4">
-                <thead>
-                    <tr>
-                        <th className="px-4 py-2 border">Nom de l'Activité</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {activitiesList.map((activity, index) => (
-                        <tr key={index}>
-                            <td className="px-4 py-2 border">{activity.name}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+  useEffect(() => {
+    fetchActivities();
+  }, []);
 
-    return (
-        <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Activités du Jour</h2>
-            <div className="grid grid-cols-3 gap-4">
-                {renderTable(activities.sousCouverte, "Sous Couverte")}
-                {renderTable(activities.ld, "LD")}
-                {renderTable(activities.achatCle, "Achat Clé")}
-                {renderTable(activities.general, "Activités Générales")}
-                {renderTable(activities.collections, "Collections")}
-                {renderTable(activities.changementName, "Changement de Nom")}
-            </div>
-        </div>
-    );
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">
+        Activités du Jour
+      </h2>
+      <div className="grid grid-cols-3 gap-6">
+        {[
+          { title: "Redevance", data: ActivityRedevance },
+          { title: "Sous Couvert", data: ActivitySousCouvert },
+          { title: "Livraison à Domicile", data: ActivityLD },
+          { title: "Collection", data: ActivityCollection },
+          { title: "Changement de Nom", data: ActivityChangeName },
+          { title: "Achat Clé", data: ActivityAchatCle },
+        ].map(({ title, data }, index) => (
+          <div key={index} className="p-4 bg-white rounded-lg shadow-md">
+            <h1 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">
+              {title}
+            </h1>
+            <NoFilterDataTable
+              data={data}
+              columns={ActiveClientColumns}
+              typeName="client_nom"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default Activiter_du_jour;
