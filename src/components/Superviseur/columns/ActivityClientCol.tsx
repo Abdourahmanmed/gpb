@@ -59,7 +59,7 @@ export const ActiveClientColumns: ColumnDef<ActiveClient>[] = [
     },
     {
         accessorKey: "utilisateur_nom",
-        header: "Nom de l'Utilisateur",
+        header: "creer par",
     },
     {
         accessorKey: "paiement_type",
