@@ -16,7 +16,7 @@ interface dataType {
 }
 
 export const SousCouvertPaiement = async (userid: string, data: dataType) => {
-    const api = `http://192.168.0.5/gbp_backend/api.php?method=addSousCouvette&id=${userid}`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=addSousCouvette&id=${userid}`;
     try {
         const response = await fetch(api, {
             method: "POST",

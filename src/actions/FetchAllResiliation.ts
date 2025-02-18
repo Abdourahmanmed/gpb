@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchAllResiliation = async () => {
-    const api = `http://192.168.0.5/gbp_backend/api.php?method=getAllResilations`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=getAllResilations`;
 
     try {
         // Effectuer la requête fetch

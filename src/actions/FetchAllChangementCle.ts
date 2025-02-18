@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchAllChangeCle = async () => {
-  const api = `http://192.168.0.5/gbp_backend/api.php?method=GetChangementCle`;
+  const api = `http://192.168.0.15/gbp_backend/api.php?method=GetChangementCle`;
 
   try {
     // Effectuer la requête fetch
