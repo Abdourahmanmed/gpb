@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchNombreabonne = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=getClientCount`;
+    const api = `http://192.168.0.5/gbp_backend/api.php?method=getClientCount`;
 
     try {
         // Effectuer la requête fetch

@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchAllClients = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=GetAllClients`;
+    const api = `http://192.168.0.5/gbp_backend/api.php?method=GetAllClients`;
 
     try {
         // Effectuer la requête fetch
