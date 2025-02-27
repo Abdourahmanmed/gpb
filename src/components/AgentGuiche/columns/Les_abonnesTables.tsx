@@ -120,7 +120,7 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
     cell: ({ row }) => {
       const FilePath = row.original.Patente_Quitance; // Récupère le chemin du fichier
       const fileUrl = FilePath
-        ? `http://192.168.0.15/gbp_backend/${FilePath}`
+        ? `http://localhost/gbp_backend/${FilePath}`
         : null;
 
       return (
@@ -142,7 +142,7 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
     cell: ({ row }) => {
       const FilePath = row.original.Identite_Gerant; // Récupère le chemin du fichier
       const fileUrl = FilePath
-        ? `http://192.168.0.15/gbp_backend/${FilePath}`
+        ? `http://localhost/gbp_backend/${FilePath}`
         : null;
 
       return (
@@ -164,7 +164,7 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
     cell: ({ row }) => {
       const FilePath = row.original.Abonnement_Unique; // Récupère le chemin du fichier
       const fileUrl = FilePath
-        ? `http://192.168.0.15/gbp_backend/${FilePath}`
+        ? `http://localhost/gbp_backend/${FilePath}`
         : null;
 
       return (
