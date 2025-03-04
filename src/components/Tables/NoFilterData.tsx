@@ -96,7 +96,7 @@ export function NoFilterDataTable<TData, TValue>({
 
   //fonction pour editer les informations du compagne
   const onEditSubmit = async (values: z.infer<typeof EditUserSchema>) => {
-    const api = `http://localhost/gbp_backend/api.php?method=CreateUser`;
+    const api = `http://localhost/gbp_backend/api.php?method=CreateAgentsByResponsable`;
     try {
       const response = await fetch(api, {
         method: "POST",

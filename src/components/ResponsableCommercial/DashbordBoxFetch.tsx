@@ -18,6 +18,7 @@ const DashbordBoxFetch = () => {
     const [NbrAbonneAjour, SetNbrAbonneAjour] = useState(0);
     const [NbrAbonneNonAjour, SetNbrAbonneNonAjour] = useState(0);
     const [Nbrresilier, SetNbrresilier] = useState(0);
+    const [NbrExonorer, SetNbrExonorer] = useState(0);
 
     const fetctBpG = async () => {
         const result = await FetchGrandBp();
@@ -61,6 +62,12 @@ const DashbordBoxFetch = () => {
             SetNbrresilier(result);
         }
     }
+    const fetctnbrExonorer = async () => {
+        const result = await FetchNombreabonneResilier();
+        if (result) {
+            SetNbrExonorer(result);
+        }
+    }
 
     useEffect(() => {
         fetctBpG();
@@ -70,6 +77,7 @@ const DashbordBoxFetch = () => {
         fetctNbrAbonneajour();
         fetctAbonneNonajour();
         fetctnbrResilier();
+        fetctnbrExonorer();
     }, [])
 
     return (
@@ -107,7 +115,7 @@ const DashbordBoxFetch = () => {
             />
             <BoxInfo
                 titre="Nombre des comptes exonorer"
-                Nombre={10}
+                Nombre={NbrExonorer}
                 color="text-primary-3"
             />
         </div>

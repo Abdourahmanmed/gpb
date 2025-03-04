@@ -111,7 +111,7 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
             });
             //fonction pour editer les informations du compagne
             const onEditSubmit = async (values: z.infer<typeof EditUserSchema>) => {
-                const api = `http://localhost/gbp_backend/api.php?method=UpdateUser&id=${user.id}`;
+                const api = `http://localhost/gbp_backend/api.php?method=UpdateAgentByResponsable&id=${user.id}`;
                 try {
                     const response = await fetch(api, {
                         method: "PUT",
