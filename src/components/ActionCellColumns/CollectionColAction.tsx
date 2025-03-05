@@ -4,18 +4,18 @@ import { Button } from '../ui/button';
 import { CollectForm } from '../AgentGuiche/components/CollectionForm';
 
 interface collectiopropos {
-    userId: string;
+    ClientId: string;
     Nbp: string;
 }
 
-const CollectionColAction = ({ userId, Nbp }: collectiopropos) => {
+const CollectionColAction = ({ ClientId, Nbp }: collectiopropos) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     return (
         <div>
             <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
                 Ajouter une collection
             </Button>
-            <CollectForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId={userId} Nbp={Nbp} />
+            <CollectForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} ClientId={ClientId} Nbp={Nbp} />
         </div>
     );
 }

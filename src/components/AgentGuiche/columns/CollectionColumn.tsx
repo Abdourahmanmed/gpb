@@ -238,10 +238,10 @@ export const CollectionCoulmns: ColumnDef<Collection>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const userId = row?.original?.id;
+      const ClientId = row?.original?.id;
       const Nbp = row?.original?.NBp;
 
-      return <CollectionColAction userId={userId} Nbp={Nbp} />;
+      return <CollectionColAction ClientId={ClientId} Nbp={Nbp} />;
     },
   },
 ];
