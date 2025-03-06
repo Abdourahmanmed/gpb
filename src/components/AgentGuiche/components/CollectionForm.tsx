@@ -189,7 +189,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
     }
 
     try {
-      const enregistrement = await CollectionPaiement(ClientId, donnees);
+      const enregistrement = await CollectionPaiement(ClientId,session?.user?.id, donnees);
       console.log(ClientId);
 
       if (enregistrement?.success) {

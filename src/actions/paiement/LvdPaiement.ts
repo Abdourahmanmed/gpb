@@ -12,8 +12,8 @@ interface dataType {
     NBp?: string | undefined;
 }
 
-export const ChangementLvdPaiement = async (userid: string, data: dataType) => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=insererLivraisonEtMettreAJourPaiement&id=${userid}`;
+export const ChangementLvdPaiement = async (clientId: string,UserId:string | undefined, data: dataType) => {
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=insererLivraisonEtMettreAJourPaiement&id=${UserId}&idClient=${clientId}`;
     try {
         const response = await fetch(api, {
             method: "POST",
