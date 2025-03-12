@@ -26,7 +26,7 @@ const CrudUsers = () => {
         <NoFilterDataTable
           data={users}
           columns={CrudUsersColumns}
-          typeName="nom"
+          typeName="Nom"
         />
       )}
     </div>

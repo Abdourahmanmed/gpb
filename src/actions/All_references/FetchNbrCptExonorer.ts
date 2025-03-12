@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchNombreabonneExonorer = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetAllClientsExonoreCount`;
+    const api = `http://localhost/gbp_backend/api.php?method=GetAllClientsExonoreCount`;
 
     try {
         // Effectuer la requête fetch

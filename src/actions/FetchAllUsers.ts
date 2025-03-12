@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchAllUsers = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=getAllUsers`;
+    const api = `http://localhost/gbp_backend/api.php?method=NoadminUsers`;
 
     try {
         // Effectuer la requête fetch

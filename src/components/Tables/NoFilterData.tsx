@@ -42,6 +42,9 @@ import { EditUserSchema } from "@/Schema/schema";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/Store/store";
+import { addUserSuccess } from "@/Store/Slices/CrudUserManagement";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -82,6 +85,7 @@ export function NoFilterDataTable<TData, TValue>({
   const path = usePathname();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isPending] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
   const form = useForm<z.infer<typeof EditUserSchema>>({
     resolver: zodResolver(EditUserSchema),
     defaultValues: {
@@ -94,7 +98,7 @@ export function NoFilterDataTable<TData, TValue>({
     },
   });
 
-  //fonction pour editer les informations du compagne
+  //fonction pour ajouter les informations d'un agents
   const onEditSubmit = async (values: z.infer<typeof EditUserSchema>) => {
     const api = `http://localhost/gbp_backend/api.php?method=CreateAgentsByResponsable`;
     try {
@@ -102,6 +106,7 @@ export function NoFilterDataTable<TData, TValue>({
         method: "POST",
         body: JSON.stringify(values)
       })
+      console.log(values)
 
       if (!response.ok) {
         console.log("erreur de l'execution de l'api");
@@ -114,8 +119,18 @@ export function NoFilterDataTable<TData, TValue>({
       }
 
       if (responseData.success) {
+        dispatch(addUserSuccess({
+          id: crypto.randomUUID(), // 🔥 Générer un ID unique
+          Nom: values.Nom,
+          Email: values.Email,
+          Telephone: values.Telephone,
+          Adresse: values.Adresse,
+          password: values.Password, // 🔥 Mettre la bonne casse
+          Role: values.role, // 🔥 Mettre la bonne casse
+        }));
+
         toast.success(responseData.success);
-        setIsEditDialogOpen(false);
+        // setIsEditDialogOpen(false);
         form.reset();
       }
 
@@ -127,7 +142,7 @@ export function NoFilterDataTable<TData, TValue>({
   return (
     <ScrollArea className="h-full max-w-[80%]">
       <div className="flex items-center gap-8 bg-white w-full h-max rounded-lg shadow-blue p-2">
-        <ToastContainer />
+        {/* <ToastContainer /> */}
         <Input
           placeholder="filtre par nom"
           value={(table.getColumn(typeName)?.getFilterValue() as string) ?? ""}
@@ -200,6 +215,7 @@ export function NoFilterDataTable<TData, TValue>({
             {/* Edit dialog */}
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
               <DialogContent className="bg-white">
+                <ToastContainer />
                 <DialogHeader>
                   <DialogTitle className="text-blue text-2xl mb-1 ml-[15%]">Ajouter un utilisateur</DialogTitle>
                   <DialogDescription >
@@ -288,9 +304,9 @@ export function NoFilterDataTable<TData, TValue>({
                                   <SelectValue placeholder="Choisissez une méthode" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="supersiveur">supersiveur</SelectItem>
-                                  <SelectItem value="agent_commerciale">agent commerciale</SelectItem>
-                                  <SelectItem value="agent_guichets">agent guichets</SelectItem>
+                                  <SelectItem value="superviseur">supersiveur</SelectItem>
+                                  <SelectItem value="agent_commercial">agent commerciale</SelectItem>
+                                  <SelectItem value="agent_guichet">agent guichets</SelectItem>
                                   <SelectItem value="agent_comptable">agent comptable</SelectItem>
                                 </SelectContent>
                               </Select>
