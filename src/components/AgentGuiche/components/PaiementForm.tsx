@@ -34,7 +34,7 @@ type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 interface PaymentFormProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-    UserId: string,
+    UserId: Number,
 }
 
 export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, UserId }) => {

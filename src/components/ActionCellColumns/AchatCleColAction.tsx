@@ -4,10 +4,10 @@ import { Button } from '../ui/button';
 import { ChangeCleForm } from '../AgentGuiche/components/ChangeCleForm';
 
 interface Clepropos {
-    userId: string;
+    ClientId: string;
 }
 
-const AchatCleColAction = ({ userId }: Clepropos) => {
+const AchatCleColAction = ({ ClientId }: Clepropos) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     return (
@@ -15,7 +15,7 @@ const AchatCleColAction = ({ userId }: Clepropos) => {
             <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
                 Changement cle
             </Button>
-            <ChangeCleForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} UserId={userId} />
+            <ChangeCleForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} ClientId={ClientId} />
         </div>
     );
 }

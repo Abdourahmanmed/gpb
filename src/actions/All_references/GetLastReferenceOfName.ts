@@ -1,6 +1,6 @@
 "use server"
 export const GetLastReferenceOfName = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=getLastReferenceChangerNom`;
+    const api = `http://localhost/gbp_backend/api.php?method=getLastReferenceChangerNom`;
 
     try {
         // Effectuer la requête fetch

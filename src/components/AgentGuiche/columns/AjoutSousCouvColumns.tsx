@@ -14,53 +14,21 @@ import Detail from "@/components/Detail";
 export type AjoutSousCouvert = {
   id: string;
   Nom: string;
+  Email: string;
   Adresse: string;
   TypeClient: string;
-  NBp: string;
-  Type_boite_postale: string;
   Telephone: string;
-  annee_abonnement: string;
-  Paiement_Type: string;
-  Penalites: string;
-  Montant_Redevance: string;
-  Methode_Paiement: string;
-  Reference_General: string;
-  Date_Paiement: string;
-  Etat: string;
-  sous_couvert: string;
-  Document_Type: string;
-  Patente_Quitance: string;
-  Identite_Gerant: string;
-  Abonnement_Unique: string;
-  Document_Created_At: string;
-  Paiement_Categories: string;
-  Paiement_Montants: string;
-  Paiement_Methodes: string;
-  Type_Wallets: string;
-  Numero_Wallets: string;
-  Numero_Cheques: string;
-  Nom_Banques: string;
-  Paiement_References: string;
-};
-
-// Fonction pour obtenir la couleur de fond en fonction du texte
-const getBadgeBackgroundColor = (text: string): string => {
-  switch (text) {
-    case "Carte":
-      return "bg-blue-500";
-    case "Chèque":
-      return "bg-yellow-500";
-    case "Espèces":
-      return "bg-green-500";
-    case "Virement":
-      return "bg-purple-500";
-    case "Payer":
-      return "bg-teal-500";
-    case "Non payé":
-      return "bg-red-500";
-    default:
-      return "bg-gray-500";
-  }
+  Id_boite_postale: number;
+  Date_abonnement: string;
+  id_user: number;
+  updated_by: number;
+  abonnement_status: string;
+  abonnement_penalite: string;
+  Annee_abonnement: number;
+  boite_postal_numero: string;
+  nombre_sous_couverte: number;
+  Adresse_Livraison: number;
+  Adresse_Collection: number;
 };
 
 export const AjoutSousCouvertColumns: ColumnDef<AjoutSousCouvert>[] = [
@@ -98,148 +66,68 @@ export const AjoutSousCouvertColumns: ColumnDef<AjoutSousCouvert>[] = [
     ),
   },
   {
+    accessorKey: "Email",
+    header: "Email",
+  },
+  {
     accessorKey: "Adresse",
     header: "Adresse",
   },
   {
     accessorKey: "TypeClient",
-    header: "Type Client",
-  },
-  {
-    accessorKey: "NBp",
-    header: "N° Boite Postale",
-  },
-  {
-    accessorKey: "Type_boite_postale",
-    header: "Type Boîte Postale",
+    header: "Client",
   },
   {
     accessorKey: "Telephone",
     header: "Téléphone",
   },
   {
-    accessorKey: "annee_abonnement",
+    accessorKey: "Id_boite_postale",
+    header: "ID Boîte Postale",
+  },
+  {
+    accessorKey: "boite_postal_numero",
+    header: "N° Boîte Postale",
+  },
+  {
+    accessorKey: "Annee_abonnement",
     header: "Année Abonnement",
   },
   {
-    accessorKey: "Etat",
+    accessorKey: "abonnement_status",
     header: "État Abonnement",
     cell: ({ row }) => (
-      <p >
-        {row.original.Etat}
+      <p>
+        {row.original.abonnement_status}
       </p>
     ),
   },
   {
-    accessorKey: "sous_couvert",
-    header: "Sous Couvert",
+    accessorKey: "nombre_sous_couverte",
+    header: "Nombre Sous Couvert",
   },
   {
-    accessorKey: "Document_Type",
-    header: "Type Document",
+    accessorKey: "Adresse_Livraison",
+    header: "Nombre Adresse livraison",
   },
   {
-    accessorKey: "Patente_Quitance",
-    header: "Patente/Quitance",
-    cell: ({ row }) => {
-      const FilePath = row.original.Patente_Quitance; // Récupère le chemin du fichier
-      const fileUrl = FilePath
-        ? `http://localhost/gbp_backend/${FilePath}`
-        : null;
-
-      return (
-        <div className="flex justify-center">
-          {fileUrl ? (
-            <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-              Voir le document Patente/Quitance
-            </a>
-          ) : (
-            <span className="text-gray-500 italic">Aucun document</span>
-          )}
-        </div>
-      );
-    },
+    accessorKey: "Adresse_Collection",
+    header: "Nombre Adresse Collections",
   },
   {
-    accessorKey: "Identite_Gerant",
-    header: "Identité",
-    cell: ({ row }) => {
-      const FilePath = row.original.Identite_Gerant; // Récupère le chemin du fichier
-      const fileUrl = FilePath
-        ? `http://localhost/gbp_backend/${FilePath}`
-        : null;
-
-      return (
-        <div className="flex justify-center">
-          {fileUrl ? (
-            <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-              Voir le document Identité
-            </a>
-          ) : (
-            <span className="text-gray-500 italic">Aucun document</span>
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "Abonnement_Unique",
-    header: "Abonnement",
-    cell: ({ row }) => {
-      const FilePath = row.original.Abonnement_Unique; // Récupère le chemin du fichier
-      const fileUrl = FilePath
-        ? `http://localhost/gbp_backend/${FilePath}`
-        : null;
-
-      return (
-        <div className="flex justify-center">
-          {fileUrl ? (
-            <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-              Voir le document Abonnement
-            </a>
-          ) : (
-            <span className="text-gray-500 italic">Aucun document</span>
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "Penalites",
+    accessorKey: "abonnement_penalite",
     header: "Pénalités",
-    cell: ({ row }) => {
-      const idClient = row?.original?.id;
-      const nom = row?.original?.Nom;
-      return <Detail IdClient={idClient} Nom={nom} />; // Retourner le composant ici
-    },
   },
   {
-    accessorKey: "Montant_Redevance",
-    header: "Montant Redevance",
-  },
-
-  {
-    accessorKey: "Reference_General",
-    header: "Référence Générale",
-  },
-  {
-    accessorKey: "Date_Paiement",
-    header: "Date Paiement",
-  },
-  {
-    header: "Detais du paiements",
-    cell: ({ row }) => {
-      const idClient = row?.original?.id;
-      const nom = row?.original?.Nom;
-      return <Detail IdClient={idClient} Nom={nom} />; // Retourner le composant ici
-    },
+    accessorKey: "Date_abonnement",
+    header: "Date Abonnement",
   },
   {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
       const ClientId = row?.original?.id;
-      const Nbp = row?.original?.NBp;
+      const Nbp = row?.original?.boite_postal_numero;
 
       return <SousCouvertColAction ClientId={ClientId} Nbp={Nbp} />;
     },

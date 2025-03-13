@@ -57,13 +57,13 @@ type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 interface PaymentFormProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  UserId: string;
+  ClientId: string;
 }
 
 export const ChangeCleForm: React.FC<PaymentFormProps> = ({
   isOpen,
   setIsOpen,
-  UserId,
+  ClientId,
 }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     MethodePaiement | undefined
@@ -171,8 +171,8 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
       };
 
       // Logique d'enregistrement (par exemple, sauvegarde des données)
-      console.log("Données soumises :", finalData);
-      console.log(recueNumber);
+      // console.log("Données soumises :", finalData);
+      // console.log(recueNumber);
 
       // Met à jour les états nécessaires
       setDonnees(finalData); // Sauvegarde les valeurs dans un état
@@ -190,7 +190,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
     }
 
     try {
-      const enregistrement = await ChangementClePaiement(UserId, donnees);
+      const enregistrement = await ChangementClePaiement(ClientId,session?.user?.id, donnees);
 
       if (enregistrement?.success) {
         setMessage(enregistrement?.success);

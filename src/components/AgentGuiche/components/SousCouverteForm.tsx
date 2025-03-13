@@ -202,7 +202,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
 
         try {
             // Envoi des données pour enregistrement
-            const enregistrement = await SousCouvertPaiement(IdClient, donnees);
+            const enregistrement = await SousCouvertPaiement(IdClient,session?.user?.id, donnees);
 
             if (enregistrement?.success) {
                 setMessage(enregistrement?.success);
