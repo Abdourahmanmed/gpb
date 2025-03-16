@@ -1,6 +1,6 @@
 "use server"
 export const GetLastReferenceOfLDV = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=getLastReferenceLivraisonDomicile`;
+    const api = `http://localhost/gbp_backend/api.php?method=getLastReferenceLvd`;
 
     try {
         // Effectuer la requête fetch

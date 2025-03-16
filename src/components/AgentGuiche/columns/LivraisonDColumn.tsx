@@ -127,10 +127,10 @@ export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const userId = row?.original?.id;
+      const ClientId = row?.original?.id;
       const Np = row?.original?.boite_postal_numero;
 
-      return <LivraisonDColAction userId={userId} Np={Np} />;
+      return <LivraisonDColAction ClientId={ClientId} Np={Np} />;
     },
   },
 ];

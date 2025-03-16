@@ -9,7 +9,7 @@ import Detail from "@/components/Detail";
 
 // Définir le type de Le_Paiement
 export type Le_Paiement = {
-  id: number;
+  id: string;
   Nom: string;
   Email: string;
   Adresse: string;
@@ -134,7 +134,7 @@ export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
           <PaymentForm
             isOpen={isDialogOpen}
             setIsOpen={setIsDialogOpen}
-            UserId={userId}
+            ClientId={userId}
           />
         </div>
       );

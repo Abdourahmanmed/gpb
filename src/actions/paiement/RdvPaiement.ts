@@ -1,7 +1,7 @@
 "use server";
 
 interface dataType {
-    Montant: 40000;
+    Montant: number;
     Methode_de_paiement: "cheque" | "cash" | "wallet";
     Wallet?: "cac_pay" | "waafi" | "d_money" | "sabapay" | "dahabplaces" | undefined;
     Numero_wallet?: string | undefined;
@@ -10,8 +10,8 @@ interface dataType {
     ReferenceId?: string | undefined;
 }
 
-export const ChangementRdvPaiement = async (userid: string, data: dataType) => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=enregistrerPaiement&id=${userid}`;
+export const ChangementRdvPaiement = async (clientId: string, UserId: string | undefined, data: dataType) => {
+    const api = `http://localhost/gbp_backend/api.php?method=PaidAbonnement&id=${UserId}&idClient=${clientId}`;
     try {
         const response = await fetch(api, {
             method: "POST",

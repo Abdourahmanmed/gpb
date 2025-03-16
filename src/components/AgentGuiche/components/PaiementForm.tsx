@@ -34,10 +34,10 @@ type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 interface PaymentFormProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-    UserId: Number,
+    ClientId: string,
 }
 
-export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, UserId }) => {
+export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, ClientId }) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<MethodePaiement | undefined>(undefined);
     const [donnees, setDonnees] = useState<PaiementFormValues | null>(null);
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
@@ -51,6 +51,33 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
     const [currentNumber] = useState(1);
     const [recueNumber, setRecueNumber] = useState('');
     const { data: session } = useSession();
+
+    // pour recupere le montant que les clients doivent payer 
+    const [Apayer, SetApayer] = useState(0);
+
+    const FetApayer = async () => {
+        const api = `http://localhost/gbp_backend/api.php?method=SelectionsLesMontantsImaper&ClientId=${ClientId}`;
+        try {
+            const response = await fetch(api);
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Erreur inconnue");
+            }
+
+            SetApayer(data.MontantApayer);
+        } catch (error) {
+            console.error("Erreur lors de la récupération du montant à payer :", error);
+        }
+    }
+
+    // Appeler l'API lorsque ClientId change
+    useEffect(() => {
+        if (ClientId) {
+            FetApayer();
+        }
+    }, [ClientId]);
+
 
     useEffect(() => {
         const fetchLastReference = async () => {
@@ -96,6 +123,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
 
     }, [currentNumber]);
 
+
     useEffect(() => {
         if (typeof window !== "undefined") {
             // Importer printJS uniquement côté client
@@ -109,7 +137,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
     const form = useForm<PaiementFormValues>({
         resolver: zodResolver(PaiementSchema),
         defaultValues: {
-            Montant: 40000,
+            Montant: Apayer,
             Methode_de_paiement: undefined,
             Wallet: undefined,
             Numero_wallet: '',
@@ -129,17 +157,17 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
                 console.error("La référence n'est pas générée.");
                 return;
             }
+            form.setValue('Montant',Apayer);
             // Ajouter la référence dans les données avant d'envoyer la requête
             const finalData = {
                 ...values,
+                Montant:Apayer,
                 ReferenceId: recueNumber,  // Assurez-vous d'ajouter la valeur de recueNumber ici
                 id_user: session?.user?.id,
             };
 
             // Logique d'enregistrement (par exemple, sauvegarde des données)
             console.log("Données soumises :", finalData);
-            console.log(recueNumber, UserId);
-
             // Met à jour les états nécessaires
             setDonnees(finalData); // Sauvegarde les valeurs dans un état
             setIsSummaryOpen(true); // Ouvre le résumé
@@ -150,14 +178,14 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
     };
 
     const handlePayer = async (value: MontantSaisi) => {
+        
         if (parseInt(value.montantSaisi) !== donnees?.Montant) {
             toast.error(`Le montant saisi doit être exactement ${donnees?.Montant} DJF.`);
             return;
         }
 
         try {
-            const enregistrement = await ChangementRdvPaiement(UserId, donnees);
-            console.log(UserId);
+            const enregistrement = await ChangementRdvPaiement(ClientId,session?.user?.id, donnees);
             if (enregistrement?.success) {
                 setMessage(enregistrement?.success);
                 setisSucessOpen(true);
@@ -207,13 +235,13 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
                                             <FormItem>
                                                 <FormLabel>Montant</FormLabel>
                                                 <FormControl>
-                                                    <Input {...field} value={field.value} disabled />
+                                                    <Input {...field} value={Apayer} disabled />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField
+                                    {/* <FormField
                                         control={form.control}
                                         name="ReferenceId"
                                         render={({ field }) => (
@@ -229,7 +257,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
                                                 <FormMessage />
                                             </FormItem>
                                         )}
-                                    />
+                                    /> */}
                                     <FormField
                                         control={form.control}
                                         name="Methode_de_paiement"
@@ -411,7 +439,6 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
                                     <div className="space-y-2">
                                         <div className="text-lg font-semibold text-gray-700">
                                             <strong>Méthode de paiement :</strong> {donnees.Methode_de_paiement}
-                                            {donnees.ReferenceId}
                                         </div>
                                         {donnees.Wallet ? (
                                             <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-md">
@@ -508,7 +535,6 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Use
                                         <div className="space-y-2">
                                             <div className="text-lg font-semibold text-gray-700">
                                                 <strong>Méthode de paiement :</strong> {donnees.Methode_de_paiement}
-                                                {donnees.ReferenceId}
                                             </div>
                                             {donnees.Wallet ? (
                                                 <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-md">

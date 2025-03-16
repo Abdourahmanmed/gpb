@@ -11,8 +11,8 @@ interface dataType {
     ReferenceId?: string | undefined;
 }
 
-export const CollectionPaiement = async (clientId: string,UserId:string | undefined, data: dataType) => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=AddCollectionClients&id=${UserId}&idClient=${clientId}`;
+export const CollectionPaiement = async (clientId: string, UserId: string | undefined, data: dataType) => {
+    const api = `http://localhost/gbp_backend/api.php?method=AddCollectionClients&id=${UserId}&idClient=${clientId}`;
     try {
         const response = await fetch(api, {
             method: "POST",
