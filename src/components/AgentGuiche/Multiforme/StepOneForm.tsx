@@ -17,6 +17,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { GetLastReferenceOfRdv } from '@/actions/All_references/GetLastReferenceOfRdv';
 
+// Définition du type de la réponse API
+interface ApiResponse {
+    numeros_disponibles: number[];
+}
 
 const StepOneForm = () => {
     // const router = useRouter();
@@ -26,6 +30,8 @@ const StepOneForm = () => {
     // État pour gérer l'incrément du numéro
     const [currentNumber] = useState(1);
     const [recueNumber, setRecueNumber] = useState('');
+    const [LesNumerosBp, setLesNumerosBp] = useState<number[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true); // État de chargement
 
     const form = useForm<z.infer<typeof NouveauClientSchemaStepOne>>({
         resolver: zodResolver(NouveauClientSchemaStepOne),
@@ -36,6 +42,30 @@ const StepOneForm = () => {
         } // Charger les valeurs initiales depuis Redux
     });
 
+    // Fonction pour récupérer les numéros depuis l'API
+    const FetchLesNumero = async (): Promise<void> => {
+        setIsLoading(true);
+        const api = "http://localhost/gbp_backend/api.php?method=GetNextBoitePostal";
+
+        try {
+            const response = await fetch(api);
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP: ${response.status}`);
+            }
+
+            const data: ApiResponse = await response.json();
+            setLesNumerosBp(data.numeros_disponibles || []);
+        } catch (error) {
+            console.error("Erreur de serveur:", error);
+            setLesNumerosBp([]); // En cas d'erreur, tableau vide
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        FetchLesNumero();
+    }, []);
 
     useEffect(() => {
         const fetchLastReference = async () => {
@@ -116,17 +146,26 @@ const StepOneForm = () => {
                             <FormItem>
                                 <FormLabel>Le numéro boîte postale:</FormLabel>
                                 <FormControl>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        value={field.value}
-                                    >
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Choisir un n° BP..." />
+                                            <SelectValue placeholder={isLoading ? "Chargement..." : "Choisir un n° BP..."} />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="7B_11">7B_11</SelectItem>
-                                            <SelectItem value="B_789">B_789</SelectItem>
-                                            <SelectItem value="B200">B200</SelectItem>
+                                            {isLoading ? (
+                                                <SelectItem disabled value="loading">
+                                                    Chargement...
+                                                </SelectItem>
+                                            ) : LesNumerosBp.length > 0 ? (
+                                                LesNumerosBp.map((num) => (
+                                                    <SelectItem key={num} value={num.toString()}>
+                                                        {num}
+                                                    </SelectItem>
+                                                ))
+                                            ) : (
+                                                <SelectItem disabled value="no-data">
+                                                    Aucun numéro disponible
+                                                </SelectItem>
+                                            )}
                                         </SelectContent>
                                     </Select>
                                 </FormControl>

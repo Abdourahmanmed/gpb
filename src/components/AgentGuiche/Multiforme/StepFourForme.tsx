@@ -129,9 +129,9 @@ const StepFourForme = () => {
         });
 
         // Ajout des fichiers si disponibles
-        if (files[0]?.Abonnement) formData.append("Abonnement1", files[0].Abonnement);
-        if (files[0]?.patent_quitance) formData.append("patent_quitance1", files[0].patent_quitance);
-        if (files[0]?.Identiter) formData.append("Identiter1", files[0].Identiter);
+        if (files[0]?.Abonnement) formData.append("Abonnement", files[0].Abonnement);
+        if (files[0]?.patent_quitance) formData.append("patent_quitance", files[0].patent_quitance);
+        if (files[0]?.Identiter) formData.append("Identiter", files[0].Identiter);
 
         // formData.append("userid", session?.user?.id);
 
@@ -143,7 +143,7 @@ const StepFourForme = () => {
 
         try {
             const response = await fetch(
-                `http://localhost/gbp_backend/api.php?method=insertAndAssignBoitePostaleToClient&id=${session?.user?.id}`,
+                `http://localhost/gbp_backend/api.php?method=AddClientsAbonnment&id=${session?.user?.id}`,
                 {
                     method: "POST",
                     body: formData, // Envoi des données au format multipart/form-data
@@ -385,6 +385,13 @@ const StepFourForme = () => {
 
                                             // Vérifier les objets pour des données valides
                                             if (typeof value === "object" && value !== null) {
+                                                // Vérifier si 'sousCouvertures' contient des données valides
+                                                if (key === "sousCouvertures" && Array.isArray(value)) {
+                                                    return value.some(
+                                                        (item) => Object.values(item).some((v) => v && v.toString().trim() !== "")
+                                                    );
+                                                }
+                                                // Pour les autres objets, on vérifie s'ils ont des valeurs valides
                                                 return Object.values(value).some(
                                                     (v) => v && v.toString().trim() !== ""
                                                 );
@@ -409,27 +416,39 @@ const StepFourForme = () => {
                                                 </td>
                                                 <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
                                                     {Array.isArray(value) ? (
+                                                        // Gérer le cas des tableaux
                                                         <ul className="pl-4 list-disc">
                                                             {value.map((item, idx) => (
-                                                                <li key={idx} className="text-sm text-gray-600">
-                                                                    {JSON.stringify(item, null, 2)}
-                                                                </li>
+                                                                <div key={idx} >
+                                                                    <li  className="text-sm text-gray-600">
+                                                                        {typeof item === "object" && item !== null ? (
+                                                                            // Afficher les objets imbriqués de manière plus lisible
+                                                                            <div>
+                                                                                {Object.entries(item).map(([subKey, subValue]) => (
+                                                                                    <div key={subKey}>
+                                                                                        <strong>{subKey.replace(/_/g, " ")}:</strong> <span>{typeof subValue === 'string' || typeof subValue === 'number' ? subValue : "N/A"}</span>
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        ) : (
+                                                                            item || "N/A"
+                                                                        )}
+                                                                    </li>
+                                                                    <hr  className="font-semibold"/>
+                                                                </div>
                                                             ))}
                                                         </ul>
                                                     ) : typeof value === "object" && value !== null ? (
+                                                        // Gérer les objets imbriqués
                                                         <pre className="bg-gray-100 p-2 rounded text-sm">
-                                                            {JSON.stringify(
-                                                                Object.fromEntries(
-                                                                    Object.entries(value).filter(
-                                                                        ([, v]) => v && v.toString().trim() !== ""
-                                                                    )
-                                                                ),
-                                                                null,
-                                                                2
-                                                            )}
+                                                            {Object.entries(value).map(([subKey, subValue]) => (
+                                                                <div key={subKey}>
+                                                                    <strong>{subKey.replace(/_/g, " ")}:</strong> <span>{typeof subValue === 'string' || typeof subValue === 'number' ? subValue : "N/A"}</span>
+                                                                </div>
+                                                            ))}
                                                         </pre>
                                                     ) : (
-                                                        <span>{value}</span>
+                                                        <span>{value || "N/A"}</span>
                                                     )}
                                                 </td>
                                             </tr>
