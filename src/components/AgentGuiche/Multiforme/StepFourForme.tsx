@@ -15,8 +15,8 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import { useSelector } from "react-redux";
-import { RootState } from "@/Store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/Store/store";
 import { GetLastReferenceOfRdv } from "@/actions/All_references/GetLastReferenceOfRdv";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Importer les styles de react-toastify
@@ -25,12 +25,14 @@ import { useSession } from "next-auth/react";
 import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { resetStep } from "@/Store/Slices/Multi-formSlice";
 
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 
 const StepFourForme = () => {
     const [recueNumber, setRecueNumber] = useState(""); // Ceci peut être utilisé pour afficher le numéro de reçu plus tard
     const donnees = useSelector((state: RootState) => state.multiForm); // Vérifiez la structure de 'multiForm' dans Redux
+    const dispatch = useDispatch<AppDispatch>();
     const [currentNumber] = useState(1); // État pour gérer l'incrément du numéro
     const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
     const printAreaRef = useRef<HTMLDivElement>(null);
@@ -121,9 +123,12 @@ const StepFourForme = () => {
 
         const formData = new FormData();
 
-        // Ajout des données texte au formulaire
+        // Convertir sousCouvertures en JSON valide avant de l'ajouter à formData
+        formData.append("sousCouvertures", JSON.stringify(donnees.sousCouvertures));
+
+        // Ajouter les autres données texte
         Object.entries(donnees).forEach(([key, val]) => {
-            if (val !== undefined && val !== null) {
+            if (key !== "sousCouvertures" && val !== undefined && val !== null) {
                 formData.append(key, val);
             }
         });
@@ -133,9 +138,7 @@ const StepFourForme = () => {
         if (files[0]?.patent_quitance) formData.append("patent_quitance", files[0].patent_quitance);
         if (files[0]?.Identiter) formData.append("Identiter", files[0].Identiter);
 
-        // formData.append("userid", session?.user?.id);
-
-        // Affichage du contenu de formData dans la console
+        // Affichage du contenu de formData dans la console pour débogage
         console.log("FormData content:");
         for (let [key, value] of formData.entries()) {
             console.log(`${key}:`, value);
@@ -168,6 +171,7 @@ const StepFourForme = () => {
         }
     };
 
+
     const handleImprimary = () => {
         // Vérification que PrintJS est chargé et que l'élément à imprimer est bien disponible
         // Vérification que PrintJS est chargé et que le DOM est prêt
@@ -178,6 +182,7 @@ const StepFourForme = () => {
                 targetStyles: ["*"],
             });
         }
+        dispatch(resetStep()); // reinitialisation de l'étape
     };
 
 
@@ -240,6 +245,13 @@ const StepFourForme = () => {
 
                                                         // Vérifier les objets pour des données valides
                                                         if (typeof value === "object" && value !== null) {
+                                                            // Vérifier si 'sousCouvertures' contient des données valides
+                                                            if (key === "sousCouvertures" && Array.isArray(value)) {
+                                                                return value.some(
+                                                                    (item) => Object.values(item).some((v) => v && v.toString().trim() !== "")
+                                                                );
+                                                            }
+                                                            // Pour les autres objets, on vérifie s'ils ont des valeurs valides
                                                             return Object.values(value).some(
                                                                 (v) => v && v.toString().trim() !== ""
                                                             );
@@ -264,27 +276,39 @@ const StepFourForme = () => {
                                                             </td>
                                                             <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
                                                                 {Array.isArray(value) ? (
+                                                                    // Gérer le cas des tableaux
                                                                     <ul className="pl-4 list-disc">
                                                                         {value.map((item, idx) => (
-                                                                            <li key={idx} className="text-sm text-gray-600">
-                                                                                {JSON.stringify(item, null, 2)}
-                                                                            </li>
+                                                                            <div key={idx} >
+                                                                                <li className="text-sm text-gray-600">
+                                                                                    {typeof item === "object" && item !== null ? (
+                                                                                        // Afficher les objets imbriqués de manière plus lisible
+                                                                                        <div>
+                                                                                            {Object.entries(item).map(([subKey, subValue]) => (
+                                                                                                <div key={subKey}>
+                                                                                                    <strong>{subKey.replace(/_/g, " ")}:</strong> <span>{typeof subValue === 'string' || typeof subValue === 'number' ? subValue : "N/A"}</span>
+                                                                                                </div>
+                                                                                            ))}
+                                                                                        </div>
+                                                                                    ) : (
+                                                                                        item || "N/A"
+                                                                                    )}
+                                                                                </li>
+                                                                                <hr className="font-semibold" />
+                                                                            </div>
                                                                         ))}
                                                                     </ul>
                                                                 ) : typeof value === "object" && value !== null ? (
+                                                                    // Gérer les objets imbriqués
                                                                     <pre className="bg-gray-100 p-2 rounded text-sm">
-                                                                        {JSON.stringify(
-                                                                            Object.fromEntries(
-                                                                                Object.entries(value).filter(
-                                                                                    ([, v]) => v && v.toString().trim() !== ""
-                                                                                )
-                                                                            ),
-                                                                            null,
-                                                                            2
-                                                                        )}
+                                                                        {Object.entries(value).map(([subKey, subValue]) => (
+                                                                            <div key={subKey}>
+                                                                                <strong>{subKey.replace(/_/g, " ")}:</strong> <span>{typeof subValue === 'string' || typeof subValue === 'number' ? subValue : "N/A"}</span>
+                                                                            </div>
+                                                                        ))}
                                                                     </pre>
                                                                 ) : (
-                                                                    <span>{value}</span>
+                                                                    <span>{value || "N/A"}</span>
                                                                 )}
                                                             </td>
                                                         </tr>
@@ -420,7 +444,7 @@ const StepFourForme = () => {
                                                         <ul className="pl-4 list-disc">
                                                             {value.map((item, idx) => (
                                                                 <div key={idx} >
-                                                                    <li  className="text-sm text-gray-600">
+                                                                    <li className="text-sm text-gray-600">
                                                                         {typeof item === "object" && item !== null ? (
                                                                             // Afficher les objets imbriqués de manière plus lisible
                                                                             <div>
@@ -434,7 +458,7 @@ const StepFourForme = () => {
                                                                             item || "N/A"
                                                                         )}
                                                                     </li>
-                                                                    <hr  className="font-semibold"/>
+                                                                    <hr className="font-semibold" />
                                                                 </div>
                                                             ))}
                                                         </ul>

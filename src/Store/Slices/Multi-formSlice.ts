@@ -36,7 +36,7 @@ interface MultiFormState {
   reference_Sc: string,
   reference_Ld: string,
   reference_collection: string,
-  Reference_Rdv:string,
+  Reference_Rdv: string,
 }
 
 const initialState: MultiFormState = {
@@ -74,7 +74,7 @@ const initialState: MultiFormState = {
   reference_Sc: "",
   reference_Ld: "",
   reference_collection: "",
-  Reference_Rdv:""
+  Reference_Rdv: ""
 };
 
 // Fonction utilitaire pour sauvegarder dans le localStorage
@@ -132,6 +132,9 @@ const MultiFormSlice = createSlice({
     setStep: (state, action) => {
       state.step = action.payload;
     },
+    resetStep(state) {
+      state.step = 1; // Réinitialise le step à sa valeur initiale
+    },
     // Nouvelle action pour définir TypeClient avec une valeur ou une valeur par défaut
     setTypeClient(state, action) {
       state.TypeClient = action.payload ?? false; // Prend la valeur donnée ou utilise "true" par défaut
@@ -173,6 +176,7 @@ export const {
   setTypeClient, // Nouvelle action
   addAmount, // Ajouter un montant
   removeAmount, // Retirer un montant
+  resetStep,
 } = MultiFormSlice.actions;
 
 export default MultiFormSlice.reducer;

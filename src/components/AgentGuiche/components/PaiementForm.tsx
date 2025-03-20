@@ -62,7 +62,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Cli
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Erreur inconnue");
+                toast.error(data.error || "Erreur inconnue");
             }
 
             SetApayer(data.MontantApayer);
