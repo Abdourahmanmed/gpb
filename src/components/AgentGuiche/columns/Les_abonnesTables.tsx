@@ -6,6 +6,10 @@ import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Detail from "@/components/Detail";
+import { AnimatedModalDemo } from "../components/SubModelComponents/ModelDemo";
+import ClientsCellAction from "../components/SubModelComponents/SuBCellActions/ClientsCellAction";
+import LVDCellAction from "../components/SubModelComponents/SuBCellActions/LivraiCellAction";
+import ColectionCellAction from "../components/SubModelComponents/SuBCellActions/CollectionCelleAction";
 
 export type Les_abonnes = {
   id: number;
@@ -19,7 +23,7 @@ export type Les_abonnes = {
   id_user: number;
   updated_by: number;
   abonnement_status: string;
-  abonnement_penalite: string;
+  abonnement_penalite: number;
   Annee_abonnement: number;
   boite_postal_numero: string;
   nombre_sous_couverte: number;
@@ -101,18 +105,31 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
   {
     accessorKey: "nombre_sous_couverte",
     header: "Nombre Sous Couvert",
+    cell: ({ row }) => {
+
+      return <ClientsCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+    },
   },
   {
     accessorKey: "Adresse_Livraison",
     header: "Nombre Adresse livraison",
+    cell: ({ row }) => {
+      return <LVDCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+    },
   },
   {
     accessorKey: "Adresse_Collection",
     header: "Nombre Adresse Collections",
+    cell: ({ row }) => {
+      return <ColectionCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+    },
   },
   {
     accessorKey: "abonnement_penalite",
     header: "Pénalités",
+    cell: ({ row }) => {
+      // return <AnimatedModalDemo Nbr={row.original?.abonnement_penalite} />
+    },
   },
   {
     accessorKey: "Date_abonnement",
