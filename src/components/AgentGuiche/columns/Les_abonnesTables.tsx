@@ -10,6 +10,7 @@ import { AnimatedModalDemo } from "../components/SubModelComponents/ModelDemo";
 import ClientsCellAction from "../components/SubModelComponents/SuBCellActions/ClientsCellAction";
 import LVDCellAction from "../components/SubModelComponents/SuBCellActions/LivraiCellAction";
 import ColectionCellAction from "../components/SubModelComponents/SuBCellActions/CollectionCelleAction";
+import FactureCelleAction from "../components/SubModelComponents/SuBCellActions/FactureCellAction";
 
 export type Les_abonnes = {
   id: number;
@@ -127,13 +128,16 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
   {
     accessorKey: "abonnement_penalite",
     header: "Pénalités",
-    cell: ({ row }) => {
-      // return <AnimatedModalDemo Nbr={row.original?.abonnement_penalite} />
-    },
   },
   {
     accessorKey: "Date_abonnement",
     header: "Date Abonnement",
+  },
+  {
+    header: "Facture",
+    cell: ({ row }) => {
+      return <FactureCelleAction Name="Facture" Clients={row.original?.id} Nom={row.original?.Nom} />
+    },
   },
 
 ];
