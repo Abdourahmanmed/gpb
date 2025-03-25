@@ -22,21 +22,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Suffix: "Commercial"
             }
         },
-        // {
-        //     title: "Voir les depots",
-        //     url: "/Agent_commercial/Voir_les_depots",
-        //     icon: "FolderPen",
-        //     RoleName: {
-        //         Prefix: "Agent du ",
-        //         Suffix: "Commercial"
-        //     }
-        // },
         {
             title: "Resiliation",
             url: "/Agent_commercial/Resiliation",
             icon: "UserX",
             RoleName: {
                 Prefix: "Agent",
+                Suffix: "Commercial"
+            }
+        },
+         {
+            title: "Recaputilation",
+            url: "/Agent_commercial/Recaputilation",
+            icon: "FolderPen",
+            RoleName: {
+                Prefix: "Agent du ",
                 Suffix: "Commercial"
             }
         },

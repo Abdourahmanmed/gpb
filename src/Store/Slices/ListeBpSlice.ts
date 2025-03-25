@@ -4,9 +4,8 @@ import { FetchAllBp } from "@/actions/FetListBp";
 // Définir le type des clients
 interface ListeBpManagement {
   id: string;
-  type: string;
-  numero: string;
-  cle: string;
+  Type: string;
+  Numero: string;
 }
 
 interface ListeBpState {

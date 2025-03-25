@@ -20,9 +20,9 @@ import { useSession } from "next-auth/react";
 interface ChangeNameFormProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-    ClientId: string;
+    ClientId: number;
     ClientName: string;
-    NumeroBp: string;
+    NumeroBp: number;
     Etat: string;
 }
 
@@ -53,14 +53,14 @@ export const ResilierForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen,
 
         // Vérifier et ajouter le fichier si présent
         if (values.lettreDemande instanceof File) {
-            formData.append("lettre", values.lettreDemande);
+            formData.append("lettre_recommandation", values.lettreDemande);
         } else {
             toast.error("Veuillez sélectionner un fichier valide !");
             return;
         }
 
         try {
-            const response = await fetch(`http://localhost/gbp_backend/api.php?method=EnregistrerResiliation&id=${ClientId}`, {
+            const response = await fetch(`http://localhost/gbp_backend/api.php?method=ResilierClients&id=${session?.user?.id}&idClient=${ClientId}`, {
                 method: "POST",
                 body: formData
             });

@@ -79,6 +79,7 @@ export const AgentCommercialRoutes = [
     "/Agent_commercial/Les_abonnes",
     "/Agent_commercial/Voir_les_depots",
     "/Agent_commercial/Resiliation",
+    "/Agent_commercial/Recaputilation",
 ];
 /**
  * An array of routes used for authenticated users with the role "Agent Guichet".

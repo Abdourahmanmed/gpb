@@ -140,52 +140,33 @@ export function NoFilterDataTable<TData, TValue>({
   };
 
   return (
-    <ScrollArea className="h-full max-w-[80%]">
+    <ScrollArea className="h-full w-[98%] rounded">
       <div className="flex items-center gap-8 bg-white w-full h-max rounded-lg shadow-blue p-2">
         {/* <ToastContainer /> */}
-        <Input
-          placeholder="filtre par nom"
-          value={(table.getColumn(typeName)?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn(typeName)?.setFilterValue(event.target.value)}
-          className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-        />
-        {/* c'est uniquement pour les pages superviser du depot resiliation et tous les abonnes */}
-        {path &&
-          ['/Superviseur/Depot_de_resiliation'].some((route) => path.includes(route)) && (
-            <div className="w-full flex items-center gap-8">
-              {[
-                { placeholder: "Filtrer par Nom...", column: typeName },
-                { placeholder: "Filtrer par Etat...", column: "Etat" },
-                { placeholder: "Filtrer par type boite postal...", column: "Type_boite_postale" },
-              ].map(({ placeholder, column }) => (
-                <Input
-                  key={column}
-                  placeholder={placeholder}
-                  value={(table.getColumn(column)?.getFilterValue() as string) ?? ""}
-                  onChange={(event) => table.getColumn(column)?.setFilterValue(event.target.value)}
-                  className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-                />
-              ))}
-            </div>
-          )}
-        {/* {path &&
-          ['/Superviseur/Les_Abonnes'].some((route) => path.includes(route)) && (
-            <div className="w-full flex items-center gap-8">
-              {[
-                { placeholder: "Filtrer par Nom...", column: typeName },
-                { placeholder: "Filtrer par Etat...", column: "Etat" },
-                { placeholder: "Filtrer par type boite postal...", column: "Type_boite_postale" },
-              ].map(({ placeholder, column }) => (
-                <Input
-                  key={column}
-                  placeholder={placeholder}
-                  value={(table.getColumn(column)?.getFilterValue() as string) ?? ""}
-                  onChange={(event) => table.getColumn(column)?.setFilterValue(event.target.value)}
-                  className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-                />
-              ))}
-            </div>
-          )} */}
+        {/* c'est uniquement pour les agent commercial  */}
+        {path && ['/Agent_commercial/Les_abonnes', '/Agent_commercial/Resiliation'].includes(path) && (
+          <>
+            <Input
+              placeholder="Filtrer par N. Boîte postale"
+              value={table.getColumn("boite_postal_numero")?.getFilterValue()?.toString() ?? ""}
+              onChange={(event) => table.getColumn("boite_postal_numero")?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+            <Input
+              placeholder="Filtrer par statut d'abonnement"
+              value={table.getColumn("abonnement_status")?.getFilterValue()?.toString() ?? ""}
+              onChange={(event) => table.getColumn("abonnement_status")?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+            <Input
+              placeholder="Filtrer par nom"
+              value={table.getColumn(typeName)?.getFilterValue()?.toString() ?? ""}
+              onChange={(event) => table.getColumn(typeName)?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+          </>
+        )}
+
 
         {/* c'est uniquement la page superviseur du gestion agent */}
         {path && path === '/Superviseur/Les_Agents' && (

@@ -6,6 +6,10 @@ import { ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import Detail from "@/components/Detail"
+import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction"
+import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction"
+import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction"
+import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -21,10 +25,12 @@ export type Les_abonnesCommerce = {
     id_user: number;
     updated_by: number;
     abonnement_status: string;
-    abonnement_penalite: string;
+    abonnement_penalite: number;
     Annee_abonnement: number;
     boite_postal_numero: string;
     nombre_sous_couverte: number;
+    Adresse_Livraison: number;
+    Adresse_Collection: number;
 };
 
 export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
@@ -101,6 +107,24 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
     {
         accessorKey: "nombre_sous_couverte",
         header: "Nombre Sous Couvert",
+        cell: ({ row }) => {
+
+            return <ClientsCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+        },
+    },
+    {
+        accessorKey: "Adresse_Livraison",
+        header: "Nombre Adresse livraison",
+        cell: ({ row }) => {
+            return <LVDCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+        },
+    },
+    {
+        accessorKey: "Adresse_Collection",
+        header: "Nombre Adresse Collections",
+        cell: ({ row }) => {
+            return <ColectionCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+        },
     },
     {
         accessorKey: "abonnement_penalite",
@@ -109,5 +133,11 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
     {
         accessorKey: "Date_abonnement",
         header: "Date Abonnement",
+    },
+    {
+        header: "Facture",
+        cell: ({ row }) => {
+            return <FactureCelleAction Name="Facture" Clients={row.original?.id} Nom={row.original?.Nom} />
+        },
     },
 ]
