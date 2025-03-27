@@ -1,21 +1,19 @@
-"use client";
+"use client"
 
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ColumnDef } from "@tanstack/react-table"
+import { ArrowUpDown } from "lucide-react"
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type ListeBpType = {
+export type ListBp = {
   id: string;
-  type: string;
-  numero: string;
-  cle: string;
+  Type: string;
+  Numero: string;
 };
 
-export const ListeBpColumns: ColumnDef<ListeBpType>[] = [
+export const ListeBpColumns: ColumnDef<ListBp>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -39,25 +37,21 @@ export const ListeBpColumns: ColumnDef<ListeBpType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "type",
+    accessorKey: "Numero",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Type
+          Numero Boite postale
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      );
+      )
     },
   },
   {
-    accessorKey: "numero",
-    header: "N°Boite Postal",
+    accessorKey: "Type",
+    header: "Type",
   },
-  {
-    accessorKey: "cle",
-    header: "cle",
-  },
-];
+]

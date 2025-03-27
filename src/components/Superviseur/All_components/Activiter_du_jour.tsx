@@ -56,7 +56,7 @@ const Activiter_du_jour: React.FC = () => {
       <h2 className="text-2xl font-bold mb-4 text-gray-800">
         Activités du Jour
       </h2>
-      <div className="grid grid-cols-3 gap-6">
+      <div className="flex flex-col gap-6">
         {[
           { title: "Redevance", data: ActivityRedevance },
           { title: "Sous Couvert", data: ActivitySousCouvert },

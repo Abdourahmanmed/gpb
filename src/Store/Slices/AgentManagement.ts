@@ -4,11 +4,12 @@ import { FetchAllAgents } from "@/actions/FetchAgents";
 // Définir le type des clients
 interface AgentsManagement {
     id: string;
-    nom: string;
-    email: string;
+    Nom: string;
+    Email: string;
     password: string;
     Telephone: string;
     Adresse: string;
+    Role: string;
 }
 
 interface AgentsState {
@@ -42,7 +43,13 @@ export const fetchAgents = createAsyncThunk(
 const AgentsSlice = createSlice({
     name: "AgentsManagementFetch",
     initialState,
-    reducers: {}, // Pas de reducers nécessaires pour l'instant
+    reducers: {
+        updateAgent: (state, action: PayloadAction<AgentsManagement>) => {
+            state.agents = state.agents.map(agent =>
+                agent.id === action.payload.id ? action.payload : agent
+            );
+        }
+    }, // Pas de reducers nécessaires pour l'instant
     extraReducers: (builder) => {
         builder
             // Quand la requête est en cours
@@ -65,6 +72,8 @@ const AgentsSlice = createSlice({
             });
     },
 });
+// Export des actions et du reducer
+export const { updateAgent } = AgentsSlice.actions;
 
 // Exporter uniquement le reducer (pas les actions, car `fetchClients` est un thunk)
 export default AgentsSlice.reducer;

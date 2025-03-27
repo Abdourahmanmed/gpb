@@ -36,7 +36,7 @@ export const EditAgentSchema = z.object({
   Email: z.string().email({
     message: "l'email est obligatoire",
   }),
-  Password: z.string().min(1, {
+  password: z.string().min(1, {
     message: "le password est obligatoire.",
   }),
   Telephone: z.string().min(1, {
@@ -44,6 +44,9 @@ export const EditAgentSchema = z.object({
   }),
   Adresse: z.string().min(1, {
     message: "l'adresse est obligatoire.",
+  }),
+  Role: z.string().min(1, {
+    message: "le role  est obligatoire.",
   }),
 });
 

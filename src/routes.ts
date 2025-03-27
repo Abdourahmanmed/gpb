@@ -95,4 +95,10 @@ export const AgentGuichetRoutes = [
     "/Agent_guiche/Ajout_sous_couverte",
     "/Agent_guiche/Ajout_livraison",
     "/Agent_guiche/Ajout_collection",
+    "/Agent_guiche/Recaputilations/Ajoute_client",
+    "/Agent_guiche/Recaputilations/Changer_nom",
+    "/Agent_guiche/Recaputilations/Achat_cle",
+    "/Agent_guiche/Recaputilations/Ajout_sous_couverte",
+    "/Agent_guiche/Recaputilations/Ajout_livraison",
+    "/Agent_guiche/Recaputilations/Ajout_collection",
 ];

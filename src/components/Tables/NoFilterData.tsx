@@ -167,19 +167,74 @@ export function NoFilterDataTable<TData, TValue>({
           </>
         )}
 
+        {/* c'est uniquement pour les agents commercials  */}
+
+        {path && path === "/Agent_commercial/Recaputilation" && (
+          <>
+            <Input
+              placeholder="Filtrer par Nom"
+              value={table.getColumn("Nom")?.getFilterValue()?.toString() ?? ""}
+              onChange={(event) => table.getColumn("Nom")?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+            <Input
+              placeholder="Filtrer par Date"
+              value={table.getColumn("Date_resilier")?.getFilterValue()?.toString() ?? ""}
+              onChange={(event) => table.getColumn("Date_resilier")?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+            {/* <Button className="bg-primary">Exportation en excel</Button> */}
+          </>
+        )}
 
         {/* c'est uniquement la page superviseur du gestion agent */}
         {path && path === '/Superviseur/Les_Agents' && (
-          <Input
-            placeholder="filtre par nom"
-            value={(table.getColumn(typeName)?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn(typeName)?.setFilterValue(event.target.value)}
-            className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-          />
+          <>
+            <Input
+              placeholder="filtre par nom"
+              value={(table.getColumn(typeName)?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn(typeName)?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+            <Input
+              placeholder="filtre par Telephone"
+              value={(table.getColumn("Telephone")?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn("Telephone")?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+            <Input
+              placeholder="filtre par Role"
+              value={(table.getColumn("Role")?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn("Role")?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+          </>
+        )}
+        {path && path === '/Superviseur/Les_Abonnes' && (
+          <>
+            <Input
+              placeholder="Filtrer par N. Boîte postale"
+              value={table.getColumn("boite_postal_numero")?.getFilterValue()?.toString() ?? ""}
+              onChange={(event) => table.getColumn("boite_postal_numero")?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+            <Input
+              placeholder="Filtrer par statut d'abonnement"
+              value={table.getColumn("abonnement_status")?.getFilterValue()?.toString() ?? ""}
+              onChange={(event) => table.getColumn("abonnement_status")?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+            <Input
+              placeholder="Filtrer par nom"
+              value={table.getColumn(typeName)?.getFilterValue()?.toString() ?? ""}
+              onChange={(event) => table.getColumn(typeName)?.setFilterValue(event.target.value)}
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+          </>
         )}
         {path && path === '/Superviseur/Liste_Boite_Postal' && (
           <Input
-            placeholder="filtre par nom"
+            placeholder="filtre par Numero"
             value={(table.getColumn(typeName)?.getFilterValue() as string) ?? ""}
             onChange={(event) => table.getColumn(typeName)?.setFilterValue(event.target.value)}
             className="max-w-sm focus:ring-2 focus:ring-blue text-blue"

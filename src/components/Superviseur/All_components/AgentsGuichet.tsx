@@ -22,7 +22,7 @@ const AgentsGuichet = () => {
       ) : error ? (
         <p>{error}</p> // Affichage de l'erreur si elle existe
       ) : (
-        <NoFilterDataTable data={agents} columns={AgentsColumns} typeName="nom" />
+        <NoFilterDataTable data={agents} columns={AgentsColumns} typeName="Nom" />
       )}
     </div>
 
