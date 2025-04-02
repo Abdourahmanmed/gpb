@@ -1,26 +1,29 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  ActiveClient,
-  ActiveClientColumns,
-} from "../columns/ActivityClientCol";
+
 import { NoFilterDataTable } from "@/components/Tables/NoFilterData";
+import { ActiveClient, ActiveClientColumns } from "../columns/ActivityCols/ActivityClientCol";
+import { SCouvertClientColumns, Sous_couvert } from "../columns/ActivityCols/SousCouvertCol";
+import { Ldc, LdcClientColumns } from "../columns/ActivityCols/LdcCols";
+import { CllClientColumns, Collection } from "../columns/ActivityCols/CollectionCols";
+import { ChangeName, ChangeNameClientColumns } from "../columns/ActivityCols/Changement_Nom_cols";
+import { AchatCle, CleClientColumns } from "../columns/ActivityCols/Achat_Cle_cols";
 
 const Activiter_du_jour: React.FC = () => {
   const [ActivityRedevance, setActivityRedevance] = useState<ActiveClient[]>(
     []
   );
   const [ActivitySousCouvert, setActivitySousCouvert] = useState<
-    ActiveClient[]
+  Sous_couvert[]
   >([]);
-  const [ActivityLD, setActivityLd] = useState<ActiveClient[]>([]);
-  const [ActivityCollection, setActivityCollection] = useState<ActiveClient[]>(
+  const [ActivityLD, setActivityLd] = useState<Ldc[]>([]);
+  const [ActivityCollection, setActivityCollection] = useState<Collection[]>(
     []
   );
-  const [ActivityChangeName, setActivityChangeName] = useState<ActiveClient[]>(
+  const [ActivityChangeName, setActivityChangeName] = useState<ChangeName[]>(
     []
   );
-  const [ActivityAchatCle, setActivityAchatCle] = useState<ActiveClient[]>([]);
+  const [ActivityAchatCle, setActivityAchatCle] = useState<AchatCle[]>([]);
 
   const fetchActivities = async () => {
     const urls = [
@@ -58,21 +61,21 @@ const Activiter_du_jour: React.FC = () => {
       </h2>
       <div className="flex flex-col gap-6">
         {[
-          { title: "Redevance", data: ActivityRedevance },
-          { title: "Sous Couvert", data: ActivitySousCouvert },
-          { title: "Livraison à Domicile", data: ActivityLD },
-          { title: "Collection", data: ActivityCollection },
-          { title: "Changement de Nom", data: ActivityChangeName },
-          { title: "Achat Clé", data: ActivityAchatCle },
-        ].map(({ title, data }, index) => (
+          { title: "Redevance", data: ActivityRedevance,cols:ActiveClientColumns,Nom:"client_nom" },
+          { title: "Sous Couvert", data: ActivitySousCouvert,cols: SCouvertClientColumns,Nom:"client_nom" },
+          { title: "Livraison à Domicile", data: ActivityLD,cols: LdcClientColumns,Nom:"client_nom" },
+          { title: "Collection", data: ActivityCollection,cols: CllClientColumns,Nom:"client_nom" },
+          { title: "Changement de Nom", data: ActivityChangeName,cols: ChangeNameClientColumns,Nom:"client_nom" },
+          { title: "Achat Clé", data: ActivityAchatCle,cols: CleClientColumns,Nom:"client_nom" },
+        ].map(({ title, data, cols, Nom }, index) => (
           <div key={index} className="p-4 bg-white rounded-lg shadow-md">
             <h1 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">
               {title}
             </h1>
             <NoFilterDataTable
               data={data}
-              columns={ActiveClientColumns}
-              typeName="client_nom"
+              columns={cols}
+              typeName={Nom}
             />
           </div>
         ))}
