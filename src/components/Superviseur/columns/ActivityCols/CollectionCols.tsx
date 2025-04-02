@@ -4,22 +4,22 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 
 export type Collection = {
-    client_nom: string;
-    utilisateur_nom: string;
-    paiement_type: string;
-    penalites: number;
-    montant_redevence: number;
-    methode_payment: string;
-    reference_general: string;
-    date_paiement: string;
-    categorie: string;
-    detail_montant: number;
-    detail_methode: string;
-    type_wallet: string | null;
-    numero_wallet: string | null;
-    numero_cheque: string | null;
-    nom_banque: string | null;
-    reference: string;
+    id: string,
+    Nom: string,
+    Email: string,
+    Adresse: string,
+    Adresse_collections: string,
+    TypeClient: string,
+    Telephone: string,
+    Id_boite_postale: string,
+    Date_abonnement: string,
+    id_user: string,
+    updated_by: string,
+    abonnement_status: string,
+    Agent: string,
+    Date_creation: string,
+    abonnement_penalite: string,
+    annee_abonnement: string
 };
 
 export const CllClientColumns: ColumnDef<Collection>[] = [
@@ -46,7 +46,7 @@ export const CllClientColumns: ColumnDef<Collection>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "client_nom",
+        accessorKey: "Nom",
         header: ({ column }) => (
             <Button
                 variant="ghost"
@@ -58,64 +58,47 @@ export const CllClientColumns: ColumnDef<Collection>[] = [
         ),
     },
     {
-        accessorKey: "utilisateur_nom",
-        header: "creer par",
+        accessorKey: "Email",
+        header: "Email",
     },
     {
-        accessorKey: "paiement_type",
-        header: "Type de Paiement",
+        accessorKey: "Adresse",
+        header: "Adresse",
     },
     {
-        accessorKey: "penalites",
-        header: "Pénalités",
+        accessorKey: "TypeClient",
+        header: "Type Client",
     },
     {
-        accessorKey: "montant_redevence",
-        header: "Montant Redevance",
+        accessorKey: "Telephone",
+        header: "Telephone",
     },
     {
-        accessorKey: "methode_payment",
-        header: "Méthode de Paiement",
+        accessorKey: "Date_abonnement",
+        header: "Date abonnement",
     },
     {
-        accessorKey: "reference_general",
-        header: "Référence Générale",
+        accessorKey: "abonnement_status",
+        header: "Status",
     },
     {
-        accessorKey: "date_paiement",
-        header: "Date de Paiement",
+        accessorKey: "abonnement_penalite",
+        header: "penalite",
     },
     {
-        accessorKey: "categorie",
-        header: "Catégorie",
+        accessorKey: "Adresse_livraison",
+        header: "Adresse livraison",
     },
     {
-        accessorKey: "detail_montant",
-        header: "Montant Détail",
+        accessorKey: "annee_abonnement",
+        header: "Abonnement",
     },
     {
-        accessorKey: "detail_methode",
-        header: "Méthode Détail",
+        accessorKey: "Date_creation",
+        header: "Date creation lvd",
     },
     {
-        accessorKey: "type_wallet",
-        header: "Type Wallet",
+        accessorKey: "Agent",
+        header: "Creer par",
     },
-    {
-        accessorKey: "numero_wallet",
-        header: "Numéro Wallet",
-    },
-    {
-        accessorKey: "numero_cheque",
-        header: "Numéro Chèque",
-    },
-    {
-        accessorKey: "nom_banque",
-        header: "Nom Banque",
-    },
-    {
-        accessorKey: "reference",
-        header: "Référence",
-    },
-    
 ];

@@ -19,7 +19,7 @@ const LVDCellAction: React.FC<ModelProps> = ({ Nbr, Clients, Nom }) => {
     const [FetcNbrLvdInfo, SetFetcNbrLvdInfo] = useState<LvdInfo[]>([]);
     const [Error, SetError] = useState<string | null>(null);
     const [Loading, SetLoading] = useState<boolean>(false);
-    console.log(Clients)
+    // console.log(Clients)
 
     const FetchSousCouvert = async (): Promise<void> => {
         const api = `http://localhost/gbp_backend/api.php?method=GetLDVInfo&ClientId=${Clients}`;

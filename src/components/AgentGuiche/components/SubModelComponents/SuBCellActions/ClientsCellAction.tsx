@@ -22,7 +22,7 @@ const ClientsCellAction: React.FC<ModelProps> = ({ Nbr, Clients, Nom }) => {
     const [FetcNbrSCInfo, SetFetcNbrSCInfo] = useState<SousCouvertInfo[]>([]);
     const [Error, SetError] = useState<string | null>(null);
     const [Loading, SetLoading] = useState<boolean>(false);
-    console.log(Clients)
+    // console.log(Clients)
 
     const FetchSousCouvert = async (): Promise<void> => {
         const api = `http://localhost/gbp_backend/api.php?method=GetSousCouvertInfo&ClientId=${Clients}`;

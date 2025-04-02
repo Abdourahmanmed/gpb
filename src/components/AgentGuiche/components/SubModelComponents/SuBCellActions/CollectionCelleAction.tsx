@@ -19,7 +19,7 @@ const ColectionCellAction: React.FC<ModelProps> = ({ Nbr, Clients, Nom }) => {
     const [FetcNbrCllInfo, SetFetcNbrCllInfo] = useState<CollectionInfo[]>([]);
     const [Error, SetError] = useState<string | null>(null);
     const [Loading, SetLoading] = useState<boolean>(false);
-    console.log(Clients)
+    // console.log(Clients)
 
     const FetchSousCouvert = async (): Promise<void> => {
         const api = `http://localhost/gbp_backend/api.php?method=GetCollectionInfo&ClientId=${Clients}`;

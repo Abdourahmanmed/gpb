@@ -4,22 +4,24 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 
 export type ActiveClient = {
-    client_nom: string;
-    utilisateur_nom: string;
-    paiement_type: string;
-    penalites: number;
-    montant_redevence: number;
-    methode_payment: string;
-    reference_general: string;
-    date_paiement: string;
-    categorie: string;
-    detail_montant: number;
-    detail_methode: string;
-    type_wallet: string | null;
-    numero_wallet: string | null;
-    numero_cheque: string | null;
-    nom_banque: string | null;
-    reference: string;
+    id: number;
+    Nom: string;
+    Email: string;
+    Adresse: string;
+    TypeClient: string;
+    Telephone: string;
+    Id_boite_postale: number;
+    Date_abonnement: string;
+    id_user: number;
+    updated_by: number;
+    abonnement_status: string;
+    Agent: string;
+    abonnement_penalite: string;
+    annee_abonnement: number;
+    boite_postal_numero: string;
+    nombre_sous_couverte: number;
+    Adresse_Livraison: number;
+    Adresse_Collection: number;
 };
 
 export const ActiveClientColumns: ColumnDef<ActiveClient>[] = [
@@ -46,76 +48,34 @@ export const ActiveClientColumns: ColumnDef<ActiveClient>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "client_nom",
+        accessorKey: "Nom",
         header: ({ column }) => (
             <Button
                 variant="ghost"
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-                Nom du Client
+                Nom
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
     },
+    { accessorKey: "Email", header: "Email" },
+    { accessorKey: "Adresse", header: "Adresse" },
+    { accessorKey: "TypeClient", header: "Type de Client" },
+    { accessorKey: "Telephone", header: "Téléphone" },
+    { accessorKey: "Id_boite_postale", header: "ID Boîte Postale" },
+    { accessorKey: "Date_abonnement", header: "Date d'Abonnement" },
+    { accessorKey: "id_user", header: "ID Utilisateur" },
+    { accessorKey: "updated_by", header: "Mis à jour par" },
+    { accessorKey: "abonnement_status", header: "Statut de l'Abonnement" },
+    { accessorKey: "abonnement_penalite", header: "Pénalité Abonnement" },
+    { accessorKey: "annee_abonnement", header: "Année d'Abonnement" },
+    { accessorKey: "boite_postal_numero", header: "Numéro Boîte Postale" },
+    { accessorKey: "nombre_sous_couverte", header: "Nombre de Sous-Couvertes" },
+    { accessorKey: "Adresse_Livraison", header: "Adresse de Livraison" },
+    { accessorKey: "Adresse_Collection", header: "Adresse de Collection" },
     {
-        accessorKey: "utilisateur_nom",
-        header: "creer par",
+        accessorKey: "Agent",
+        header: "Creer par",
     },
-    {
-        accessorKey: "paiement_type",
-        header: "Type de Paiement",
-    },
-    {
-        accessorKey: "penalites",
-        header: "Pénalités",
-    },
-    {
-        accessorKey: "montant_redevence",
-        header: "Montant Redevance",
-    },
-    {
-        accessorKey: "methode_payment",
-        header: "Méthode de Paiement",
-    },
-    {
-        accessorKey: "reference_general",
-        header: "Référence Générale",
-    },
-    {
-        accessorKey: "date_paiement",
-        header: "Date de Paiement",
-    },
-    {
-        accessorKey: "categorie",
-        header: "Catégorie",
-    },
-    {
-        accessorKey: "detail_montant",
-        header: "Montant Détail",
-    },
-    {
-        accessorKey: "detail_methode",
-        header: "Méthode Détail",
-    },
-    {
-        accessorKey: "type_wallet",
-        header: "Type Wallet",
-    },
-    {
-        accessorKey: "numero_wallet",
-        header: "Numéro Wallet",
-    },
-    {
-        accessorKey: "numero_cheque",
-        header: "Numéro Chèque",
-    },
-    {
-        accessorKey: "nom_banque",
-        header: "Nom Banque",
-    },
-    {
-        accessorKey: "reference",
-        header: "Référence",
-    },
-    
 ];

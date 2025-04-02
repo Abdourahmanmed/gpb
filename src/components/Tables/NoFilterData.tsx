@@ -345,34 +345,7 @@ export function NoFilterDataTable<TData, TValue>({
                 documents
               </DialogContent>
             </Dialog>
-            {/* le boutons pour le filtrage des date a date */}
-            {isFiltDateDialogOpen == true ? (
-              ""
-            ) : (
-              <button
-                className="w-full bg-blue-700 text-white hover:bg-blue-500 duration-500 rounded-lg p-1"
-                onClick={() => setIsFiltDateDialogOpen(true)}
-              >
-                Date à date
-              </button>
-            )}
-            {/* Filtrage date à date dialog */}
-            <Dialog
-              open={isFiltDateDialogOpen}
-              onOpenChange={setIsFiltDateDialogOpen}
-            >
-              <DialogContent className="bg-white w-auto max-w-full p-6">
-                <DialogHeader>
-                  <DialogTitle className="text-blue text-2xl mb-1 text-center">
-                    Filtrage de date à date
-                  </DialogTitle>
-                  <DialogDescription></DialogDescription>
-                </DialogHeader>
-                <div className="w-full flex justify-center">
-                  <DateToDate />
-                </div>
-              </DialogContent>
-            </Dialog>
+           
           </>
         )}
         {path && path === "/Superviseur/Liste_Boite_Postal" && (
@@ -391,16 +364,6 @@ export function NoFilterDataTable<TData, TValue>({
           <>
             <Input
               placeholder="filtre par Nom agents"
-              value={
-                (table.getColumn(typeName)?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn(typeName)?.setFilterValue(event.target.value)
-              }
-              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-            />
-            <Input
-              placeholder="filtre par Date"
               value={
                 (table.getColumn(typeName)?.getFilterValue() as string) ?? ""
               }

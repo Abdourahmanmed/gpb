@@ -90,8 +90,8 @@ export const ClientColumns: ColumnDef<ClientType>[] = [
         header: "N° Boîte Postale",
     },
     {
-        accessorKey: "Annee_abonnement",
-        header: "Année Abonnement",
+        accessorKey: "annee_abonnement",
+        header: "Abonnement",
     },
     {
         accessorKey: "abonnement_status",

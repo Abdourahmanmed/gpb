@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-
 import { NoFilterDataTable } from "@/components/Tables/NoFilterData";
 import { ActiveClient, ActiveClientColumns } from "../columns/ActivityCols/ActivityClientCol";
 import { SCouvertClientColumns, Sous_couvert } from "../columns/ActivityCols/SousCouvertCol";
@@ -10,34 +9,32 @@ import { ChangeName, ChangeNameClientColumns } from "../columns/ActivityCols/Cha
 import { AchatCle, CleClientColumns } from "../columns/ActivityCols/Achat_Cle_cols";
 
 const Activiter_du_jour: React.FC = () => {
-  const [ActivityRedevance, setActivityRedevance] = useState<ActiveClient[]>(
-    []
-  );
-  const [ActivitySousCouvert, setActivitySousCouvert] = useState<
-  Sous_couvert[]
-  >([]);
+  const [ActivityRedevance, setActivityRedevance] = useState<ActiveClient[]>([]);
+  const [ActivitySousCouvert, setActivitySousCouvert] = useState<Sous_couvert[]>([]);
   const [ActivityLD, setActivityLd] = useState<Ldc[]>([]);
-  const [ActivityCollection, setActivityCollection] = useState<Collection[]>(
-    []
-  );
-  const [ActivityChangeName, setActivityChangeName] = useState<ChangeName[]>(
-    []
-  );
+  const [ActivityCollection, setActivityCollection] = useState<Collection[]>([]);
+  const [ActivityChangeName, setActivityChangeName] = useState<ChangeName[]>([]);
   const [ActivityAchatCle, setActivityAchatCle] = useState<AchatCle[]>([]);
 
   const fetchActivities = async () => {
     const urls = [
-      "http://192.168.0.15/gbp_backend/api.php?method=GetToDayActivity",
-      "http://192.168.0.15/gbp_backend/api.php?method=GetToDayActivitySousCouverte",
-      "http://192.168.0.15/gbp_backend/api.php?method=GetToDayActivityLD",
-      "http://192.168.0.15/gbp_backend/api.php?method=GetToDayActivityAchatCle",
-      "http://192.168.0.15/gbp_backend/api.php?method=GetToDayActivityCollections",
-      "http://192.168.0.15/gbp_backend/api.php?method=GetToDayActivityChagementName",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivity",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivitySousCouverte",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivityLD",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivityAchatCle",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivityCollections",
+      "http://localhost/gbp_backend/api.php?method=GetToDayActivityChagementName",
     ];
 
     try {
       const responses = await Promise.all(urls.map((url) => fetch(url)));
-      const data = await Promise.all(responses.map((res) => res.json()));
+      const data = await Promise.all(responses.map(async (res) => {
+        if (!res.ok) {
+          console.error("Erreur de réseau", res.statusText);
+          return [];
+        }
+        return res.json();
+      }));
 
       setActivityRedevance(data[0] || []);
       setActivitySousCouvert(data[1] || []);
@@ -61,12 +58,12 @@ const Activiter_du_jour: React.FC = () => {
       </h2>
       <div className="flex flex-col gap-6">
         {[
-          { title: "Redevance", data: ActivityRedevance,cols:ActiveClientColumns,Nom:"client_nom" },
-          { title: "Sous Couvert", data: ActivitySousCouvert,cols: SCouvertClientColumns,Nom:"client_nom" },
-          { title: "Livraison à Domicile", data: ActivityLD,cols: LdcClientColumns,Nom:"client_nom" },
-          { title: "Collection", data: ActivityCollection,cols: CllClientColumns,Nom:"client_nom" },
-          { title: "Changement de Nom", data: ActivityChangeName,cols: ChangeNameClientColumns,Nom:"client_nom" },
-          { title: "Achat Clé", data: ActivityAchatCle,cols: CleClientColumns,Nom:"client_nom" },
+          { title: "Redevance", data: ActivityRedevance, cols: ActiveClientColumns, Nom: "Agent" },
+          { title: "Sous Couvert", data: ActivitySousCouvert, cols: SCouvertClientColumns, Nom: "Agent" },
+          { title: "Livraison à Domicile", data: ActivityLD, cols: LdcClientColumns, Nom: "Agent" },
+          { title: "Collection", data: ActivityCollection, cols: CllClientColumns, Nom: "Agent" },
+          { title: "Changement de Nom", data: ActivityChangeName, cols: ChangeNameClientColumns, Nom: "Agent" },
+          { title: "Achat Clé", data: ActivityAchatCle, cols: CleClientColumns, Nom: "Agent" },
         ].map(({ title, data, cols, Nom }, index) => (
           <div key={index} className="p-4 bg-white rounded-lg shadow-md">
             <h1 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">
@@ -75,7 +72,7 @@ const Activiter_du_jour: React.FC = () => {
             <NoFilterDataTable
               data={data}
               columns={cols}
-              typeName={Nom}
+              typeName={Nom}  // Assuming "Nom" refers to the field to filter or show in the table
             />
           </div>
         ))}
