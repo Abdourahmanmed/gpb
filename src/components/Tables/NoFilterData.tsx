@@ -105,7 +105,6 @@ export function NoFilterDataTable<TData, TValue>({
   const path = usePathname();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDocsDialogOpen, setIsDocsDialogOpen] = useState(false);
-  const [isFiltDateDialogOpen, setIsFiltDateDialogOpen] = useState(false);
   const [isPending] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const form = useForm<z.infer<typeof EditUserSchema>>({
