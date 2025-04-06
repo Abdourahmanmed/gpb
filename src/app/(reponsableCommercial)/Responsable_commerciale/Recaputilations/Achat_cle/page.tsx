@@ -1,4 +1,4 @@
-import RecapAchatCle from '@/components/AgentGuiche/components/Recap/RecapAchatCle'
+import RecapAchatCle from '@/components/ResponsableCommercial/Recap/RecapAchatCle'
 import React from 'react'
 
 const page = () => {

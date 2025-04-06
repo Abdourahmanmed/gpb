@@ -44,7 +44,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             url: "/Agent_guiche/Recaputilations",
             icon: "FolderPen",
             submenu: [
-                { title: "Recap Ajout client", url: "/Agent_guiche/Recaputilations/Ajoute_client" },
+                { title: "Recap redevance", url: "/Agent_guiche/Recaputilations/Ajoute_client" },
                 { title: "Recap Modification Nom", url: "/Agent_guiche/Recaputilations/Changer_nom" },
                 { title: "Recap Acheter un cle ", url: "/Agent_guiche/Recaputilations/Achat_cle" },
                 { title: "Recap Ajouter un sous couvert", url: "/Agent_guiche/Recaputilations/Ajout_sous_couverte" },

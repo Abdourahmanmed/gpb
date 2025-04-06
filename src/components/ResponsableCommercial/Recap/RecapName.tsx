@@ -1,15 +1,15 @@
 "use client";
-import { useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react'
-import { RecapLdvcols, RLdv } from './recapCols/Ldc';
 import { NoFilterDataTable } from '@/components/Tables/NoFilterData';
+import React, { useEffect, useState } from 'react'
+import { RecapNamecols, RName } from './recapCols/Name';
+import { useSession } from 'next-auth/react';
 
-const RecapAjoutLdc = () => {
+const RecapName = () => {
   const { data: session } = useSession();
-  const [recapLdc, SetRecapLdc] = useState<RLdv[]>([]);
+  const [recapName, SetRecapName] = useState<RName[]>([]);
 
   const FetchRecap = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=GetToDayActivityLDById&IdRecpUser=${session?.user?.id}`;
+    const api = `http://localhost/gbp_backend/api.php?method=GetAllActivityChagementName`;
     try {
       const responses = await fetch(api, {
         method: 'GET',
@@ -21,7 +21,7 @@ const RecapAjoutLdc = () => {
       if (responseData.error) {
         throw Error(responseData.error);
       }
-      SetRecapLdc(responseData);
+      SetRecapName(responseData);
     } catch (error) {
       console.log(error);
     }
@@ -30,13 +30,14 @@ const RecapAjoutLdc = () => {
   useEffect(() => {
     FetchRecap()
   }, [])
+
   return (
     <NoFilterDataTable
-      data={recapLdc}
-      columns={RecapLdvcols}
+      data={recapName}
+      columns={RecapNamecols}
       typeName="Nom"
     />
   )
 }
 
-export default RecapAjoutLdc
+export default RecapName

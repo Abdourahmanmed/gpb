@@ -1,8 +1,9 @@
+import RecapAjoutColl from '@/components/AgentGuiche/components/Recap/RecapAjoutColl'
 import React from 'react'
 
 const page = () => {
   return (
-    <div>Recap Ajout Collections</div>
+    <RecapAjoutColl />
   )
 }
 

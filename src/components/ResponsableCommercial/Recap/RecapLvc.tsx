@@ -1,15 +1,15 @@
 "use client";
-import { useSession } from 'next-auth/react';
+import { NoFilterDataTable } from '@/components/Tables/NoFilterData';
 import React, { useEffect, useState } from 'react'
 import { RecapLdvcols, RLdv } from './recapCols/Ldc';
-import { NoFilterDataTable } from '@/components/Tables/NoFilterData';
+import { useSession } from 'next-auth/react';
 
-const RecapAjoutLdc = () => {
+const RecapLvc = () => {
   const { data: session } = useSession();
   const [recapLdc, SetRecapLdc] = useState<RLdv[]>([]);
 
   const FetchRecap = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=GetToDayActivityLDById&IdRecpUser=${session?.user?.id}`;
+    const api = `http://localhost/gbp_backend/api.php?method=GetAllActivityLD`;
     try {
       const responses = await fetch(api, {
         method: 'GET',
@@ -39,4 +39,4 @@ const RecapAjoutLdc = () => {
   )
 }
 
-export default RecapAjoutLdc
+export default RecapLvc

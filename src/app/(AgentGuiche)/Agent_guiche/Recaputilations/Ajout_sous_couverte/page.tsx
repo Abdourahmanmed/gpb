@@ -1,8 +1,9 @@
+import RecapAjoutSousCo from '@/components/AgentGuiche/components/Recap/RecapAjoutSousCo'
 import React from 'react'
 
 const page = () => {
     return (
-        <div>Recap ajouter sous couvert</div>
+        <RecapAjoutSousCo />
     )
 }
 

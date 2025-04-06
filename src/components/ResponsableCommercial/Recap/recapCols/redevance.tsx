@@ -1,19 +1,17 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import Detail from "@/components/Detail"
-import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction"
-import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction"
-import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction"
-import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction";
+import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction";
+import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction";
+import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Les_abonnesCommerce = {
+
+export type Rdv = {
     id: number;
     Nom: string;
     Email: string;
@@ -33,7 +31,7 @@ export type Les_abonnesCommerce = {
     Adresse_Collection: number;
 };
 
-export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
+export const RecapRvcols: ColumnDef<Rdv>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -92,7 +90,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         header: "N° Boîte Postale",
     },
     {
-        accessorKey: "annee_abonnement",
+        accessorKey: "Annee_abonnement",
         header: "Année Abonnement",
     },
     {
@@ -140,4 +138,5 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
             return <FactureCelleAction Name="Facture" Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
-]
+
+];

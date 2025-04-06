@@ -61,12 +61,13 @@ export const AgentRsponsableRoutes = [
     "/Responsable_commerciale/Dashbord",
     "/Responsable_commerciale/Creation_des_utilisateur",
     "/Responsable_commerciale/Les_Abonnes",
-    "/Responsable_commerciale/Tous_les_resiliations",
-    "/Responsable_commerciale/Tous_les_changement_Nom",
-    "/Responsable_commerciale/Tous_les_changement_cle",
     "/Responsable_commerciale/Enleve_les_penalites",
-    "/Responsable_commerciale/Tous_les_demande_livraison",
-    "/Responsable_commerciale/Accepter_paiement_annee",
+    "/Responsable_commerciale/Recaputilations/Redevance",
+    "/Responsable_commerciale/Recaputilations/Changer_nom",
+    "/Responsable_commerciale/Recaputilations/Achat_cle",
+    "/Responsable_commerciale/Recaputilations/Sous_couverte",
+    "/Responsable_commerciale/Recaputilations/Livraison",
+    "/Responsable_commerciale/Recaputilations/Collection",
 ];
 
 /**

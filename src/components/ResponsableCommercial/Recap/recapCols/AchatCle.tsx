@@ -1,19 +1,13 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import Detail from "@/components/Detail"
-import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction"
-import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction"
-import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction"
-import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Les_abonnesCommerce = {
+export type RCle = {
     id: number;
     Nom: string;
     Email: string;
@@ -33,7 +27,7 @@ export type Les_abonnesCommerce = {
     Adresse_Collection: number;
 };
 
-export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
+export const RecapAchatcols: ColumnDef<RCle>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -84,10 +78,6 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         header: "Téléphone",
     },
     {
-        accessorKey: "Id_boite_postale",
-        header: "ID Boîte Postale",
-    },
-    {
         accessorKey: "boite_postal_numero",
         header: "N° Boîte Postale",
     },
@@ -104,28 +94,28 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
             </p>
         ),
     },
-    {
-        accessorKey: "nombre_sous_couverte",
-        header: "Nombre Sous Couvert",
-        cell: ({ row }) => {
+    // {
+    //     accessorKey: "nombre_sous_couverte",
+    //     header: "Nombre Sous Couvert",
+    //     cell: ({ row }) => {
 
-            return <ClientsCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
-        },
-    },
-    {
-        accessorKey: "Adresse_Livraison",
-        header: "Nombre Adresse livraison",
-        cell: ({ row }) => {
-            return <LVDCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
-        },
-    },
-    {
-        accessorKey: "Adresse_Collection",
-        header: "Nombre Adresse Collections",
-        cell: ({ row }) => {
-            return <ColectionCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
-        },
-    },
+    //         return <ClientsCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+    //     },
+    // },
+    // {
+    //     accessorKey: "Adresse_Livraison",
+    //     header: "Nombre Adresse livraison",
+    //     cell: ({ row }) => {
+    //         return <LVDCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+    //     },
+    // },
+    // {
+    //     accessorKey: "Adresse_Collection",
+    //     header: "Nombre Adresse Collections",
+    //     cell: ({ row }) => {
+    //         return <ColectionCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+    //     },
+    // },
     {
         accessorKey: "abonnement_penalite",
         header: "Pénalités",
@@ -140,4 +130,5 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
             return <FactureCelleAction Name="Facture" Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
-]
+
+];
