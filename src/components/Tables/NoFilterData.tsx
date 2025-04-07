@@ -215,6 +215,115 @@ export function NoFilterDataTable<TData, TValue>({
             </>
           )}
 
+        {/* c'est uniqument pour les responsable  */}
+        {path &&
+          [
+            "/Responsable_commerciale/Enleve_les_penalites",
+            "/Responsable_commerciale/Recaputilations/Redevance",
+            "/Responsable_commerciale/Recaputilations/Changer_nom",
+            "/Responsable_commerciale/Recaputilations/Achat_cle",
+            "/Responsable_commerciale/Recaputilations/Sous_couverte",
+            "/Responsable_commerciale/Recaputilations/Livraison",
+            "/Responsable_commerciale/Recaputilations/Collection",
+            "/Responsable_commerciale/Les_Abonnes",
+          ].includes(path) && (
+            <>
+              <Input
+                placeholder="Filtrer par N. Boîte postale"
+                value={
+                  table
+                    .getColumn("boite_postal_numero")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("boite_postal_numero")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par statut d'abonnement"
+                value={
+                  table
+                    .getColumn("abonnement_status")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("abonnement_status")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par nom"
+                value={
+                  table.getColumn(typeName)?.getFilterValue()?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn(typeName)?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+            </>
+          )}
+        {/* c'est uniqument pour les agents guichets  */}
+        {path &&
+          [
+            "/Agent_guiche/Recaputilations/Ajoute_client",
+            "/Agent_guiche/Recaputilations/Changer_nom",
+            "/Agent_guiche/Recaputilations/Achat_cle",
+            "/Agent_guiche/Recaputilations/Ajout_sous_couverte",
+            "/Agent_guiche/Recaputilations/Ajout_livraison",
+            "/Agent_guiche/Recaputilations/Ajout_collection",
+          ].includes(path) && (
+            <>
+              <Input
+                placeholder="Filtrer par N. Boîte postale"
+                value={
+                  table
+                    .getColumn("boite_postal_numero")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("boite_postal_numero")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par statut d'abonnement"
+                value={
+                  table
+                    .getColumn("abonnement_status")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("abonnement_status")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par nom"
+                value={
+                  table.getColumn(typeName)?.getFilterValue()?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn(typeName)?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+            </>
+          )}
+
         {/* c'est uniquement pour les agents commercials  */}
 
         {path && path === "/Agent_commercial/Recaputilation" && (
@@ -344,7 +453,7 @@ export function NoFilterDataTable<TData, TValue>({
                 documents
               </DialogContent>
             </Dialog>
-           
+
           </>
         )}
         {path && path === "/Superviseur/Liste_Boite_Postal" && (
@@ -594,9 +703,9 @@ export function NoFilterDataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>

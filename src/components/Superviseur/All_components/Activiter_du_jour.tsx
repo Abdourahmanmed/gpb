@@ -43,7 +43,7 @@ const Activiter_du_jour: React.FC = () => {
       setActivityCollection(data[4] || []);
       setActivityChangeName(data[5] || []);
     } catch (error) {
-      console.error("Erreur lors de la récupération des données :", error);
+      console.log("Erreur lors de la récupération des données :", error);
     }
   };
 

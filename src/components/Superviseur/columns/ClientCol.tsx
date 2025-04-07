@@ -82,10 +82,6 @@ export const ClientColumns: ColumnDef<ClientType>[] = [
         header: "Téléphone",
     },
     {
-        accessorKey: "Id_boite_postale",
-        header: "ID Boîte Postale",
-    },
-    {
         accessorKey: "boite_postal_numero",
         header: "N° Boîte Postale",
     },
