@@ -80,7 +80,13 @@ export const AgentCommercialRoutes = [
     "/Agent_commercial/Les_abonnes",
     "/Agent_commercial/Voir_les_depots",
     "/Agent_commercial/Resiliation",
-    "/Agent_commercial/Recaputilation",
+    "/Agent_commercial/Recaputilation/Rapport/Resilier",
+    "/Agent_commercial/Recaputilation/Rapport/Redevance",
+    "/Agent_commercial/Recaputilation/Rapport/Changer_nom",
+    "/Agent_commercial/Recaputilation/Rapport/Achat_cle",
+    "/Agent_commercial/Recaputilation/Rapport/Sous_couverte",
+    "/Agent_commercial/Recaputilation/Rapport/Livraison",
+    "/Agent_commercial/Recaputilation/Rapport/Collection",
 ];
 /**
  * An array of routes used for authenticated users with the role "Agent Guichet".

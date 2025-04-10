@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { FetchAllUsers } from "@/actions/FetchAllUsers";
+import { FetchAllUserAdminCrud } from "@/actions/FetchAdminUser";
 
 // Définir le type des clients
 interface CrudUserManagement {
@@ -31,6 +32,20 @@ export const fetchCrudUsers = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await FetchAllUsers(); // Appel à FetchAllClients
+            return response; // Retourner les données récupérées
+        } catch (error) {
+            console.log(error);
+            return rejectWithValue("Erreur lors de la récupération des données");
+        }
+    }
+);
+
+// Créer un thunk pour appeler Fetch 
+export const fetchUserAdmin = createAsyncThunk(
+    "CrudUserManagementFetch/fetchCrudUsers",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await FetchAllUserAdminCrud(); // Appel à FetchAllClients
             return response; // Retourner les données récupérées
         } catch (error) {
             console.log(error);

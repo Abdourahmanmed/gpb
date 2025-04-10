@@ -215,7 +215,6 @@ const StepFourForme = () => {
                             {donnees && (
                                 <div className="p-6 space-y-6 w-full">
                                     <div className="mt-4 text-xl py-4 font-semibold flex justify-between items-center border-b">
-                                        <h2 className="text-2xl font-bold text-gray-800">Résumé</h2>
                                         <div>
                                             <span className="text-gray-600">Numéro de reçu :</span>
                                             <span className="text-blue-700 font-medium ml-2">
@@ -226,6 +225,9 @@ const StepFourForme = () => {
 
                                     {/* Tableau pour afficher les données */}
                                     <div className="">
+                                        {/* <h1 className="text-primary text-3xl font-bold mb-3">
+                                            {donnees.Reference_Rdv}
+                                        </h1> */}
                                         <table className="min-w-full border-collapse border border-gray-300 rounded-md">
                                             <thead className="bg-blue-50">
                                                 <tr>
@@ -238,114 +240,39 @@ const StepFourForme = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {Object.entries(donnees)
-                                                    .filter(([key, value]) => {
-                                                        // Ignorer les champs inutiles comme 'step'
-                                                        if (key === "step") return false;
-
-                                                        // Vérifier les objets pour des données valides
-                                                        if (typeof value === "object" && value !== null) {
-                                                            // Vérifier si 'sousCouvertures' contient des données valides
-                                                            if (key === "sousCouvertures" && Array.isArray(value)) {
-                                                                return value.some(
-                                                                    (item) => Object.values(item).some((v) => v && v.toString().trim() !== "")
-                                                                );
-                                                            }
-                                                            // Pour les autres objets, on vérifie s'ils ont des valeurs valides
-                                                            return Object.values(value).some(
-                                                                (v) => v && v.toString().trim() !== ""
-                                                            );
-                                                        }
-
-                                                        // Vérifier les chaînes non vides
-                                                        if (typeof value === "string") {
-                                                            return value.trim() !== "";
-                                                        }
-
-                                                        // Vérifier les tableaux non vides
-                                                        if (Array.isArray(value)) {
-                                                            return value.length > 0;
-                                                        }
-
-                                                        return false; // Ignorer tout autre type de données
-                                                    })
-                                                    .map(([key, value], index) => (
-                                                        <tr key={index} className="even:bg-gray-50">
-                                                            <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
-                                                                {key.replace(/_/g, " ")}
-                                                            </td>
-                                                            <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
-                                                                {Array.isArray(value) ? (
-                                                                    // Gérer le cas des tableaux
-                                                                    <ul className="pl-4 list-disc">
-                                                                        {value.map((item, idx) => (
-                                                                            <div key={idx} >
-                                                                                <li className="text-sm text-gray-600">
-                                                                                    {typeof item === "object" && item !== null ? (
-                                                                                        // Afficher les objets imbriqués de manière plus lisible
-                                                                                        <div>
-                                                                                            {Object.entries(item).map(([subKey, subValue]) => (
-                                                                                                <div key={subKey}>
-                                                                                                    <strong>{subKey.replace(/_/g, " ")}:</strong> <span>{typeof subValue === 'string' || typeof subValue === 'number' ? subValue : "N/A"}</span>
-                                                                                                </div>
-                                                                                            ))}
-                                                                                        </div>
-                                                                                    ) : (
-                                                                                        item || "N/A"
-                                                                                    )}
-                                                                                </li>
-                                                                                <hr className="font-semibold" />
-                                                                            </div>
-                                                                        ))}
-                                                                    </ul>
-                                                                ) : typeof value === "object" && value !== null ? (
-                                                                    // Gérer les objets imbriqués
-                                                                    <pre className="bg-gray-100 p-2 rounded text-sm">
-                                                                        {Object.entries(value).map(([subKey, subValue]) => (
-                                                                            <div key={subKey}>
-                                                                                <strong>{subKey.replace(/_/g, " ")}:</strong> <span>{typeof subValue === 'string' || typeof subValue === 'number' ? subValue : "N/A"}</span>
-                                                                            </div>
-                                                                        ))}
-                                                                    </pre>
-                                                                ) : (
-                                                                    <span>{value || "N/A"}</span>
-                                                                )}
-                                                            </td>
+                                                <tr>
+                                                    <td>Nom</td>
+                                                    <td>{donnees.Nom}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Methode de paiement</td>
+                                                    <td>{donnees.Methode_de_paiement}</td>
+                                                </tr>
+                                                {donnees.Methode_de_paiement === "cheque" && (
+                                                    <>
+                                                        <tr>
+                                                            <td>Numero cheque</td>
+                                                            <td>{donnees.Numero_cheque}</td>
                                                         </tr>
-                                                    ))}
+                                                        <tr>
+                                                            <td>Nom</td>
+                                                            <td>{donnees.Nom_Banque}</td>
+                                                        </tr>
+                                                    </>
+                                                )}
+                                                {donnees.Methode_de_paiement === "wallet" && (
+                                                    <>
+                                                        <tr>
+                                                            <td>Type wallet </td>
+                                                            <td>{donnees.wallet}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Numero telephone</td>
+                                                            <td>{donnees.Numero_wallet}</td>
+                                                        </tr>
+                                                    </>
+                                                )}
                                                 {/* Ajout des montants et de la somme totale */}
-                                                <tr className="even:bg-gray-50">
-                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
-                                                        Montant Rd
-                                                    </td>
-                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
-                                                        {donnees?.montantRd || 0}
-                                                    </td>
-                                                </tr>
-                                                <tr className="even:bg-gray-50">
-                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
-                                                        Montant Ld
-                                                    </td>
-                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
-                                                        {donnees?.montantLd || 0}
-                                                    </td>
-                                                </tr>
-                                                <tr className="even:bg-gray-50">
-                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
-                                                        Montant Cll
-                                                    </td>
-                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
-                                                        {donnees?.montantCll || 0}
-                                                    </td>
-                                                </tr>
-                                                <tr className="even:bg-gray-50">
-                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
-                                                        Montant SC
-                                                    </td>
-                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
-                                                        {donnees?.montantSC || 0}
-                                                    </td>
-                                                </tr>
                                                 <tr className="bg-gray-100">
                                                     <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800 font-bold">
                                                         Somme Totale

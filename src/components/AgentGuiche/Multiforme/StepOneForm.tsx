@@ -37,7 +37,7 @@ const StepOneForm = () => {
         resolver: zodResolver(NouveauClientSchemaStepOne),
         defaultValues: {
             ...multiFormState,
-            montantRd: 40000,
+            montantRd: 25000,
             Reference_Rdv: ""
         } // Charger les valeurs initiales depuis Redux
     });

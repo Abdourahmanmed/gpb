@@ -64,13 +64,26 @@ import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Store/store";
 import { addUserSuccess } from "@/Store/Slices/CrudUserManagement";
-import DateToDate from "../Superviseur/All_components/DateToDate";
+import * as XLSX from "xlsx"; // Importer la librairie SheetJS
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   typeName: string;
 }
+
+// Exemple de type pour les données de la ligne
+interface RowData {
+  id: number;
+  // autres propriétés ici si nécessaire
+}
+
+interface DocumentData {
+  Abonnement: string;
+  Identite: string;
+  Patent_Quitance: string;
+}
+
 
 export function NoFilterDataTable<TData, TValue>({
   columns,
@@ -107,6 +120,7 @@ export function NoFilterDataTable<TData, TValue>({
   const [isDocsDialogOpen, setIsDocsDialogOpen] = useState(false);
   const [isPending] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const [documents, setDocuments] = useState<DocumentData | null>(null);
   const form = useForm<z.infer<typeof EditUserSchema>>({
     resolver: zodResolver(EditUserSchema),
     defaultValues: {
@@ -161,115 +175,66 @@ export function NoFilterDataTable<TData, TValue>({
     }
   };
 
+  // Fonction d'exportation des données en Excel
+  const exportToExcel = () => {
+    const exportData = table.getRowModel().rows.map((row) =>
+      row.getVisibleCells().reduce((acc, cell) => {
+        acc[cell.column.id] = cell.getContext().getValue()
+        return acc
+      }, {} as { [key: string]: any })
+    )
+
+    const wb = XLSX.utils.book_new()
+    const ws = XLSX.utils.json_to_sheet(exportData)
+    XLSX.utils.book_append_sheet(wb, ws, "Raport")
+    XLSX.writeFile(wb, "Raport.xlsx")
+  }
+
+
+  // Fonction pour récupérer l'ID des lignes sélectionnées
+  const getSelectedRowIds = (): number[] => {
+    return table.getRowModel().rows
+      .filter((row, index) => rowSelection[index as keyof typeof rowSelection])
+      .map((row) => (row.original as RowData).id);
+  };
+
+  const AfficherDocument = async () => {
+    const selectedRowIds = getSelectedRowIds();
+    if (selectedRowIds.length === 0) return;
+
+    const clientId = selectedRowIds[0]; // on prend le premier client sélectionné
+    const apiUrl = `http://localhost/gbp_backend/api.php?method=AfficherDocument&Id=${clientId}`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.error("Erreur lors de l'exécution de la requête.");
+        return;
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.error) {
+        console.error(responseData.error);
+      } else {
+        setDocuments(responseData[0]); // car c'est un tableau avec un objet
+        setIsDocsDialogOpen(true);
+      }
+    } catch (error) {
+      console.error("Erreur :", error);
+    }
+  };
+
   return (
     <ScrollArea className="h-full w-[98%] rounded">
       <div className="flex items-center gap-8 bg-white w-full h-max rounded-lg shadow-blue p-2">
         {/* <ToastContainer /> */}
-        {/* c'est uniquement pour les agent commercial  */}
-        {path &&
-          [
-            "/Agent_commercial/Les_abonnes",
-            "/Agent_commercial/Resiliation",
-          ].includes(path) && (
-            <>
-              <Input
-                placeholder="Filtrer par N. Boîte postale"
-                value={
-                  table
-                    .getColumn("boite_postal_numero")
-                    ?.getFilterValue()
-                    ?.toString() ?? ""
-                }
-                onChange={(event) =>
-                  table
-                    .getColumn("boite_postal_numero")
-                    ?.setFilterValue(event.target.value)
-                }
-                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-              />
-              <Input
-                placeholder="Filtrer par statut d'abonnement"
-                value={
-                  table
-                    .getColumn("abonnement_status")
-                    ?.getFilterValue()
-                    ?.toString() ?? ""
-                }
-                onChange={(event) =>
-                  table
-                    .getColumn("abonnement_status")
-                    ?.setFilterValue(event.target.value)
-                }
-                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-              />
-              <Input
-                placeholder="Filtrer par nom"
-                value={
-                  table.getColumn(typeName)?.getFilterValue()?.toString() ?? ""
-                }
-                onChange={(event) =>
-                  table.getColumn(typeName)?.setFilterValue(event.target.value)
-                }
-                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-              />
-            </>
-          )}
-
-        {/* c'est uniqument pour les responsable  */}
-        {path &&
-          [
-            "/Responsable_commerciale/Enleve_les_penalites",
-            "/Responsable_commerciale/Recaputilations/Redevance",
-            "/Responsable_commerciale/Recaputilations/Changer_nom",
-            "/Responsable_commerciale/Recaputilations/Achat_cle",
-            "/Responsable_commerciale/Recaputilations/Sous_couverte",
-            "/Responsable_commerciale/Recaputilations/Livraison",
-            "/Responsable_commerciale/Recaputilations/Collection",
-            "/Responsable_commerciale/Les_Abonnes",
-          ].includes(path) && (
-            <>
-              <Input
-                placeholder="Filtrer par N. Boîte postale"
-                value={
-                  table
-                    .getColumn("boite_postal_numero")
-                    ?.getFilterValue()
-                    ?.toString() ?? ""
-                }
-                onChange={(event) =>
-                  table
-                    .getColumn("boite_postal_numero")
-                    ?.setFilterValue(event.target.value)
-                }
-                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-              />
-              <Input
-                placeholder="Filtrer par statut d'abonnement"
-                value={
-                  table
-                    .getColumn("abonnement_status")
-                    ?.getFilterValue()
-                    ?.toString() ?? ""
-                }
-                onChange={(event) =>
-                  table
-                    .getColumn("abonnement_status")
-                    ?.setFilterValue(event.target.value)
-                }
-                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-              />
-              <Input
-                placeholder="Filtrer par nom"
-                value={
-                  table.getColumn(typeName)?.getFilterValue()?.toString() ?? ""
-                }
-                onChange={(event) =>
-                  table.getColumn(typeName)?.setFilterValue(event.target.value)
-                }
-                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-              />
-            </>
-          )}
         {/* c'est uniqument pour les agents guichets  */}
         {path &&
           [
@@ -325,33 +290,132 @@ export function NoFilterDataTable<TData, TValue>({
           )}
 
         {/* c'est uniquement pour les agents commercials  */}
+        {path &&
+          [
+            "/Agent_commercial/Les_abonnes",
+            "/Agent_commercial/Resiliation",
+          ].includes(path) && (
+            <>
+              <Input
+                placeholder="Filtrer par N. Boîte postale"
+                value={
+                  table
+                    .getColumn("boite_postal_numero")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("boite_postal_numero")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par statut d'abonnement"
+                value={
+                  table
+                    .getColumn("abonnement_status")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("abonnement_status")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par nom"
+                value={
+                  table.getColumn(typeName)?.getFilterValue()?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn(typeName)?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+            </>
+          )}
 
-        {path && path === "/Agent_commercial/Recaputilation" && (
+        {path && [
+          "/Agent_commercial/Recaputilation/Rapport/Redevance",
+          "/Agent_commercial/Recaputilation/Rapport/Changer_nom",
+          "/Agent_commercial/Recaputilation/Rapport/Achat_cle",
+          "/Agent_commercial/Recaputilation/Rapport/Sous_couverte",
+          "/Agent_commercial/Recaputilation/Rapport/Livraison",
+          "/Agent_commercial/Recaputilation/Rapport/Collection",
+        ].includes(path) && (
+            <>
+
+              <Input
+                placeholder="Filtrer par N. Boîte postale"
+                value={
+                  table
+                    .getColumn("boite_postal_numero")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("boite_postal_numero")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par statut d'abonnement"
+                value={
+                  table
+                    .getColumn("abonnement_status")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("abonnement_status")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par nom"
+                value={
+                  table.getColumn(typeName)?.getFilterValue()?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn(typeName)?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+
+              <Button className="bg-primary" onClick={exportToExcel}>Exportation en excel</Button>
+            </>
+          )}
+        {path && path === "/Agent_commercial/Recaputilation/Rapport/Resilier" && (
           <>
             <Input
-              placeholder="Filtrer par Nom"
-              value={table.getColumn("Nom")?.getFilterValue()?.toString() ?? ""}
+              placeholder="filtre par nom"
+              value={
+                (table.getColumn(typeName)?.getFilterValue() as string) ?? ""
+              }
               onChange={(event) =>
-                table.getColumn("Nom")?.setFilterValue(event.target.value)
+                table.getColumn(typeName)?.setFilterValue(event.target.value)
               }
               className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
             />
             <Input
-              placeholder="Filtrer par Date"
+              placeholder="filtre par Date"
               value={
-                table
-                  .getColumn("Date_resilier")
-                  ?.getFilterValue()
-                  ?.toString() ?? ""
+                (table.getColumn("Date_resilier")?.getFilterValue() as string) ?? ""
               }
               onChange={(event) =>
-                table
-                  .getColumn("Date_resilier")
-                  ?.setFilterValue(event.target.value)
+                table.getColumn("Date_resilier")?.setFilterValue(event.target.value)
               }
               className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
             />
-            {/* <Button className="bg-primary">Exportation en excel</Button> */}
+            <Button className="bg-primary" onClick={exportToExcel}>Exportation en excel</Button>
           </>
         )}
 
@@ -436,21 +500,56 @@ export function NoFilterDataTable<TData, TValue>({
 
             <button
               className="w-full bg-blue-700 text-white hover:bg-blue-500 duration-500 rounded-lg p-1"
-              onClick={() => setIsDocsDialogOpen(true)}
+              onClick={() => {
+                AfficherDocument(); // exécute ta fonction
+              }}
             >
-              voir le documents
+              Voir les documents
             </button>
             {/* Document dialog */}
             <Dialog open={isDocsDialogOpen} onOpenChange={setIsDocsDialogOpen}>
-              <DialogContent className="bg-white">
+              <DialogContent className="bg-white max-h-[90vh] overflow-y-auto">
                 <ToastContainer />
                 <DialogHeader>
-                  <DialogTitle className="text-blue text-2xl mb-1 ml-[15%]">
-                    Les document du client
+                  <DialogTitle className="text-blue text-2xl mb-1 text-center">
+                    Les documents du client
                   </DialogTitle>
-                  <DialogDescription></DialogDescription>
+                  <DialogDescription />
                 </DialogHeader>
-                documents
+
+                {documents ? (
+                  <div className="space-y-6">
+                    {[
+                      { label: "Abonnement", file: documents.Abonnement },
+                      { label: "Identité", file: documents.Identite },
+                      { label: "Patente / Quittance", file: documents.Patent_Quitance },
+                    ].map(({ label, file }, index) => {
+                      const fileUrl = `http://localhost/gbp_backend/${file}`;
+                      const isPDF = file.toLowerCase().endsWith(".pdf");
+
+                      return (
+                        <div key={index}>
+                          <p className="font-semibold">{label} :</p>
+                          {isPDF ? (
+                            <iframe
+                              src={fileUrl}
+                              title={label}
+                              className="w-full h-[500px] border rounded"
+                            />
+                          ) : (
+                            <img
+                              src={fileUrl}
+                              alt={label}
+                              className="w-full max-w-md border rounded"
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-center">Chargement ou aucun document trouvé.</p>
+                )}
               </DialogContent>
             </Dialog>
 
@@ -482,6 +581,8 @@ export function NoFilterDataTable<TData, TValue>({
             />
           </>
         )}
+
+        {/* c'est uniquement pour les responsable */}
         {path &&
           path === "/Responsable_commerciale/Creation_des_utilisateur" && (
             <>
@@ -661,6 +762,62 @@ export function NoFilterDataTable<TData, TValue>({
                   </Form>
                 </DialogContent>
               </Dialog>
+            </>
+          )}
+        {path &&
+          [
+            "/Responsable_commerciale/Enleve_les_penalites",
+            "/Responsable_commerciale/Recaputilations/Redevance",
+            "/Responsable_commerciale/Recaputilations/Changer_nom",
+            "/Responsable_commerciale/Recaputilations/Achat_cle",
+            "/Responsable_commerciale/Recaputilations/Sous_couverte",
+            "/Responsable_commerciale/Recaputilations/Livraison",
+            "/Responsable_commerciale/Recaputilations/Collection",
+            "/Responsable_commerciale/Les_Abonnes",
+          ].includes(path) && (
+            <>
+              <Input
+                placeholder="Filtrer par N. Boîte postale"
+                value={
+                  table
+                    .getColumn("boite_postal_numero")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("boite_postal_numero")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par statut d'abonnement"
+                value={
+                  table
+                    .getColumn("abonnement_status")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("abonnement_status")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par nom"
+                value={
+                  table.getColumn(typeName)?.getFilterValue()?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn(typeName)?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+
+              <Button className="bg-primary" onClick={exportToExcel}>Exportation en excel</Button>
             </>
           )}
 
