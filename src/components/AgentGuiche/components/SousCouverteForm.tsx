@@ -46,6 +46,7 @@ interface SousCouverteFormProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
     IdClient: string;
+    TypeClient: string;
     Nbp: string;
 }
 
@@ -53,9 +54,10 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
     isOpen,
     setIsOpen,
     IdClient,
+    TypeClient,
     Nbp
 }) => {
-    const montantParSousCouverture = 30000;
+    const [montantParSousCouverture, SetmontantParSousCouverture] = useState(0);
     const [TotalMontant, setTotalMontant] = useState(montantParSousCouverture);
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
     const [donnees, setDonnees] = useState<SousCouvertFormValues | null>(null);
@@ -64,6 +66,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
     const confettiRef = useRef<ConfettiRef>(null);
     const [isSucessOpen, setisSucessOpen] = useState(false);
     const [message, setMessage] = useState('');
+    const [Amount, setAmount] = useState(0);
 
     // État pour gérer l'incrément du numéro
     const [currentNumber] = useState(1);
@@ -126,6 +129,18 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
         }
     }, []);
 
+    useEffect(() => {
+        //verification de client 
+        if (TypeClient == "Particulier") {
+            setAmount(3500);
+            SetmontantParSousCouverture(3500)
+            setTotalMontant(3500)
+        } else {
+            setAmount(10000);
+            SetmontantParSousCouverture(10000)
+            setTotalMontant(10000)
+        }
+    }, [TypeClient])
 
     const form = useForm<SousCouvertFormValues>({
         resolver: zodResolver(SousCouvertSchema),
@@ -171,6 +186,12 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                 console.error("La référence n'est pas générée.");
                 return;
             }
+            // //verification de client 
+            // if (TypeClient == "Particulier") {
+            //     FinalAmount = 3500;
+            // } else {
+            //     FinalAmount = 10000;
+            // }
             // Ajouter la référence dans les données avant d'envoyer la requête
             const finalData = {
                 ...values,
@@ -179,6 +200,8 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                 NBp: Nbp,
                 totalMontant: TotalMontant,
             };
+
+            console.log(finalData);
 
             // Logique d'enregistrement (par exemple, sauvegarde des données)
             console.log("Données soumises :", finalData);
@@ -202,7 +225,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
 
         try {
             // Envoi des données pour enregistrement
-            const enregistrement = await SousCouvertPaiement(IdClient,session?.user?.id, donnees);
+            const enregistrement = await SousCouvertPaiement(IdClient, session?.user?.id, donnees);
 
             if (enregistrement?.success) {
                 setMessage(enregistrement?.success);
@@ -502,7 +525,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
                         </DialogHeader>
 
                         {/* Section à imprimer */}
-                        <div  className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
+                        <div className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
                             <HeaderImprimary />
                             {donnees && (
                                 <Imprimery donnees={donnees} recueNumber={recueNumber} NomRecue="Sous couverte" totalMontant={TotalMontant} />

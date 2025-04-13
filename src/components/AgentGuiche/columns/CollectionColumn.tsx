@@ -127,8 +127,11 @@ export const CollectionCoulmns: ColumnDef<Collection>[] = [
     cell: ({ row }) => {
       const ClientId = row?.original?.id;
       const Nbp = row?.original?.boite_postal_numero;
+      const TypeClient = row?.original?.TypeClient;
 
-      return <CollectionColAction ClientId={ClientId} Nbp={Nbp} />;
+      if(TypeClient=="Entreprise"){
+        return <CollectionColAction ClientId={ClientId} Nbp={Nbp} />;
+      }
     },
   },
 ];

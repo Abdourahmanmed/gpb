@@ -2,7 +2,7 @@
 
 interface dataType {
     Adresse_Livraison_Domicile: string;
-    Montant: 5000;
+    Montant: 60000;
     Methode_de_paiement: "cheque" | "cash" | "wallet";
     Wallet?: "cac_pay" | "waafi" | "d_money" | "sabapay" | "dahabplaces" | undefined;
     Numero_wallet?: string | undefined;
@@ -13,7 +13,7 @@ interface dataType {
 }
 
 export const ChangementLvdPaiement = async (clientId: string, UserId: string | undefined, data: dataType) => {
-    const api = `http://localhost/gbp_backend/api.php?method=AddLvdClients&id=${UserId}&idClient=${clientId}`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=AddLvdClients&id=${UserId}&idClient=${clientId}`;
     try {
         const response = await fetch(api, {
             method: "POST",

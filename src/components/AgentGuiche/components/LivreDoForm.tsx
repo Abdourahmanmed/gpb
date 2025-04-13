@@ -134,7 +134,7 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({
     resolver: zodResolver(LivreDoSchema),
     defaultValues: {
       Adresse_Livraison_Domicile: "",
-      Montant: 5000,
+      Montant: 60000,
       Methode_de_paiement: undefined,
       Wallet: undefined,
       Numero_wallet: "",

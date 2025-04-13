@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchAllUsers = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=getAllUsers`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=getAllUsers`;
 
     try {
         const response = await fetch(api, {

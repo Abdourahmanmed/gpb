@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchGrandBp = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=GetCountOfBpGrandType`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetCountOfBpGrandType`;
 
     try {
         // Effectuer la requête fetch

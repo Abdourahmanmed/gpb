@@ -129,8 +129,9 @@ export const Achat_CleColumns: ColumnDef<Achat_Cle>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const ClientId = row?.original?.id;
+      const TypeClient = row?.original?.TypeClient;
 
-      return <AchatCleColAction ClientId={ClientId} />;
+      return <AchatCleColAction ClientId={ClientId} TypeClient={TypeClient} />;
     },
   },
 ];

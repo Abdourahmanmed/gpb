@@ -146,7 +146,7 @@ export const SubscribedColumns: ColumnDef<Subscribed>[] = [
 
       const handleEnlever = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Correction de la faute de frappe
-        const apiUrl = `http://localhost/gbp_backend/api.php?method=EnleverPenaliter&id=${client?.id}`;
+        const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=EnleverPenaliter&id=${client?.id}`;
         try {
           const response = await fetch(apiUrl, {
             method: "PUT",

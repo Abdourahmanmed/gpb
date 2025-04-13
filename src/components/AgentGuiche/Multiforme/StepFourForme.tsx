@@ -146,13 +146,13 @@ const StepFourForme = () => {
 
         try {
             const response = await fetch(
-                `http://localhost/gbp_backend/api.php?method=AddClientsAbonnment&id=${session?.user?.id}`,
+                `http://192.168.0.15/gbp_backend/api.php?method=AddClientsAbonnment&id=${session?.user?.id}`,
                 {
                     method: "POST",
                     body: formData, // Envoi des données au format multipart/form-data
                 }
             );
-
+            console.log(formData)
             const result = await response.json();
 
             if (!response.ok) {

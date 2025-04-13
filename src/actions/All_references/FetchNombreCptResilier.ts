@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchNombreabonneResilier = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=GetCountOfClientsResilies`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetCountOfClientsResilies`;
 
     try {
         // Effectuer la requête fetch

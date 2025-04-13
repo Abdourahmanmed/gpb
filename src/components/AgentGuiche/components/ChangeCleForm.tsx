@@ -58,12 +58,14 @@ interface PaymentFormProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   ClientId: string;
+  TypeClient: string;
 }
 
 export const ChangeCleForm: React.FC<PaymentFormProps> = ({
   isOpen,
   setIsOpen,
   ClientId,
+  TypeClient
 }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     MethodePaiement | undefined
@@ -80,6 +82,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
   const confettiRef = useRef<ConfettiRef>(null);
   const [isSucessOpen, setisSucessOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [Amount, setAmount] = useState(0);
 
   useEffect(() => {
     const fetchLastReference = async () => {
@@ -141,7 +144,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
   const form = useForm<PaiementFormValues>({
     resolver: zodResolver(AchatCleSchema),
     defaultValues: {
-      Montant: 2000,
+      Montant: 0,
       Methode_de_paiement: undefined,
       Wallet: undefined,
       Numero_wallet: "",
@@ -156,20 +159,38 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
     defaultValues: { montantSaisi: "" },
   });
 
+  useEffect(() => {
+    //verification de client 
+    if (TypeClient == "Particulier") {
+      setAmount(1500);
+    } else {
+      setAmount(3000);
+    }
+  }, [TypeClient])
+
   const onSubmit = (values: PaiementFormValues) => {
     try {
+      let FinalAmount;
       // Assurez-vous que la référence est bien générée avant de continuer
       if (!recueNumber) {
         console.error("La référence n'est pas générée.");
         return;
       }
+      //verification de client 
+      if (TypeClient == "Particulier") {
+        FinalAmount = 1500;
+      } else {
+        FinalAmount = 3000;
+      }
       // Ajouter la référence dans les données avant d'envoyer la requête
       const finalData = {
         ...values,
+        Montant: FinalAmount,
         ReferenceId: recueNumber, // Assurez-vous d'ajouter la valeur de recueNumber ici
         id_user: session?.user?.id,
       };
 
+      // console.log(finalData);
       // Logique d'enregistrement (par exemple, sauvegarde des données)
       // console.log("Données soumises :", finalData);
       // console.log(recueNumber);
@@ -190,7 +211,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
     }
 
     try {
-      const enregistrement = await ChangementClePaiement(ClientId,session?.user?.id, donnees);
+      const enregistrement = await ChangementClePaiement(ClientId, session?.user?.id, donnees);
 
       if (enregistrement?.success) {
         setMessage(enregistrement?.success);
@@ -246,7 +267,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
                       <FormItem>
                         <FormLabel>Montant</FormLabel>
                         <FormControl>
-                          <Input {...field} value={field.value} disabled />
+                          <Input {...field} value={Amount} disabled />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

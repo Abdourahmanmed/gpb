@@ -129,8 +129,11 @@ export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
     cell: ({ row }) => {
       const ClientId = row?.original?.id;
       const Np = row?.original?.boite_postal_numero;
+      const TypeClient = row?.original?.TypeClient;
 
-      return <LivraisonDColAction ClientId={ClientId} Np={Np} />;
+      if (TypeClient == "Entreprise") {
+        return <LivraisonDColAction ClientId={ClientId} Np={Np} />;
+      }
     },
   },
 ];

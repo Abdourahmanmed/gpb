@@ -5,7 +5,6 @@ import { ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import Detail from "@/components/Detail";
 import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction";
 import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction";
 import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction";
@@ -110,14 +109,14 @@ export const ClientColumns: ColumnDef<ClientType>[] = [
         accessorKey: "Adresse_Livraison",
         header: "Nombre Adresse livraison",
         cell: ({ row }) => {
-            return <LVDCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+            return <LVDCellAction Nbr={row.original?.Adresse_Livraison} Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
     {
         accessorKey: "Adresse_Collection",
         header: "Nombre Adresse Collections",
         cell: ({ row }) => {
-            return <ColectionCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+            return <ColectionCellAction Nbr={row.original?.Adresse_Collection} Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
     {

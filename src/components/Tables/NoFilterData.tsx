@@ -135,7 +135,7 @@ export function NoFilterDataTable<TData, TValue>({
 
   //fonction pour ajouter les informations d'un agents
   const onEditSubmit = async (values: z.infer<typeof EditUserSchema>) => {
-    const api = `http://localhost/gbp_backend/api.php?method=CreateAgentsByResponsable`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=CreateAgentsByResponsable`;
     try {
       const response = await fetch(api, {
         method: "POST",
@@ -524,7 +524,7 @@ export function NoFilterDataTable<TData, TValue>({
                       { label: "Identité", file: documents.Identite },
                       { label: "Patente / Quittance", file: documents.Patent_Quitance },
                     ].map(({ label, file }, index) => {
-                      const fileUrl = `http://localhost/gbp_backend/${file}`;
+                      const fileUrl = `http://192.168.0.15/gbp_backend/${file}`;
                       const isPDF = file.toLowerCase().endsWith(".pdf");
 
                       return (
@@ -818,6 +818,60 @@ export function NoFilterDataTable<TData, TValue>({
               />
 
               <Button className="bg-primary" onClick={exportToExcel}>Exportation en excel</Button>
+              <button
+                className="w-full bg-blue-700 text-white hover:bg-blue-500 duration-500 rounded-lg p-1"
+                onClick={() => {
+                  AfficherDocument(); // exécute ta fonction
+                }}
+              >
+                Voir les documents
+              </button>
+              {/* Document dialog */}
+              <Dialog open={isDocsDialogOpen} onOpenChange={setIsDocsDialogOpen}>
+                <DialogContent className="bg-white max-h-[90vh] overflow-y-auto">
+                  <ToastContainer />
+                  <DialogHeader>
+                    <DialogTitle className="text-blue text-2xl mb-1 text-center">
+                      Les documents du client
+                    </DialogTitle>
+                    <DialogDescription />
+                  </DialogHeader>
+
+                  {documents ? (
+                    <div className="space-y-6">
+                      {[
+                        { label: "Abonnement", file: documents.Abonnement },
+                        { label: "Identité", file: documents.Identite },
+                        { label: "Patente / Quittance", file: documents.Patent_Quitance },
+                      ].map(({ label, file }, index) => {
+                        const fileUrl = `http://192.168.0.15/gbp_backend/${file}`;
+                        const isPDF = file.toLowerCase().endsWith(".pdf");
+
+                        return (
+                          <div key={index}>
+                            <p className="font-semibold">{label} :</p>
+                            {isPDF ? (
+                              <iframe
+                                src={fileUrl}
+                                title={label}
+                                className="w-full h-[500px] border rounded"
+                              />
+                            ) : (
+                              <img
+                                src={fileUrl}
+                                alt={label}
+                                className="w-full max-w-md border rounded"
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text-center">Chargement ou aucun document trouvé.</p>
+                  )}
+                </DialogContent>
+              </Dialog>
             </>
           )}
 

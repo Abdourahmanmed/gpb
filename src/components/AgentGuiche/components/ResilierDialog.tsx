@@ -60,7 +60,7 @@ export const ResilierForm: React.FC<ChangeNameFormProps> = ({ isOpen, setIsOpen,
         }
 
         try {
-            const response = await fetch(`http://localhost/gbp_backend/api.php?method=ResilierClients&id=${session?.user?.id}&idClient=${ClientId}`, {
+            const response = await fetch(`http://192.168.0.15/gbp_backend/api.php?method=ResilierClients&id=${session?.user?.id}&idClient=${ClientId}`, {
                 method: "POST",
                 body: formData
             });

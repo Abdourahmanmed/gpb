@@ -112,10 +112,18 @@ const StepOneForm = () => {
     }, [currentNumber]);
 
     const onSubmit = (values: z.infer<typeof NouveauClientSchemaStepOne>) => {
-
-        const finaldata = {
-            ...values,
-            Reference_Rdv: recueNumber
+        let finaldata;
+        if (values?.Role == "particulier") {
+            finaldata = {
+                ...values,
+                montantRd: 15000,
+                Reference_Rdv: recueNumber
+            }
+        } else {
+            finaldata = {
+                ...values,
+                Reference_Rdv: recueNumber
+            }
         }
         // Mise à jour des champs dans Redux
         Object.entries(finaldata).forEach(([field, value]) => {
@@ -166,6 +174,34 @@ const StepOneForm = () => {
                                                     Aucun numéro disponible
                                                 </SelectItem>
                                             )}
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="TypeBp"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Le Type boite postale:</FormLabel>
+                                <FormControl>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder={isLoading ? "Chargement..." : "Choisir un type BP..."} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Grand">
+                                                Grand
+                                            </SelectItem>
+                                            <SelectItem value="Moyen">
+                                                Moyen
+                                            </SelectItem>
+                                            <SelectItem value="Petite">
+                                                Petite
+                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </FormControl>

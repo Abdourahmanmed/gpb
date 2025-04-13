@@ -56,7 +56,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Cli
     const [Apayer, SetApayer] = useState(0);
 
     const FetApayer = async () => {
-        const api = `http://localhost/gbp_backend/api.php?method=SelectionsLesMontantsImaper&ClientId=${ClientId}`;
+        const api = `http://192.168.0.15/gbp_backend/api.php?method=SelectionsLesMontantsImaper&ClientId=${ClientId}`;
         try {
             const response = await fetch(api);
             const data = await response.json();
@@ -157,11 +157,11 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Cli
                 console.error("La référence n'est pas générée.");
                 return;
             }
-            form.setValue('Montant',Apayer);
+            form.setValue('Montant', Apayer);
             // Ajouter la référence dans les données avant d'envoyer la requête
             const finalData = {
                 ...values,
-                Montant:Apayer,
+                Montant: Apayer,
                 ReferenceId: recueNumber,  // Assurez-vous d'ajouter la valeur de recueNumber ici
                 id_user: session?.user?.id,
             };
@@ -178,14 +178,14 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Cli
     };
 
     const handlePayer = async (value: MontantSaisi) => {
-        
+
         if (parseInt(value.montantSaisi) !== donnees?.Montant) {
             toast.error(`Le montant saisi doit être exactement ${donnees?.Montant} DJF.`);
             return;
         }
 
         try {
-            const enregistrement = await ChangementRdvPaiement(ClientId,session?.user?.id, donnees);
+            const enregistrement = await ChangementRdvPaiement(ClientId, session?.user?.id, donnees);
             if (enregistrement?.success) {
                 setMessage(enregistrement?.success);
                 setisSucessOpen(true);

@@ -125,19 +125,23 @@ export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
     cell: ({ row }) => {
       const [isDialogOpen, setIsDialogOpen] = useState(false);
       const userId = row?.original?.id;
+      const TypeClient = row?.original?.TypeClient;
+      const abonnement_status = row?.original?.abonnement_status;
 
-      return (
-        <div>
-          <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
-            Paiement
-          </Button>
-          <PaymentForm
-            isOpen={isDialogOpen}
-            setIsOpen={setIsDialogOpen}
-            ClientId={userId}
-          />
-        </div>
-      );
+      if (abonnement_status == "impayé") {
+        return (
+          <div>
+            <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
+              Paiement
+            </Button>
+            <PaymentForm
+              isOpen={isDialogOpen}
+              setIsOpen={setIsDialogOpen}
+              ClientId={userId}
+            />
+          </div>
+        );
+      }
     },
   },
 ];

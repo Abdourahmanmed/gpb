@@ -128,8 +128,8 @@ export const AjoutSousCouvertColumns: ColumnDef<AjoutSousCouvert>[] = [
     cell: ({ row }) => {
       const ClientId = row?.original?.id;
       const Nbp = row?.original?.boite_postal_numero;
-
-      return <SousCouvertColAction ClientId={ClientId} Nbp={Nbp} />;
+      const TypeClient = row?.original?.TypeClient;
+      return <SousCouvertColAction ClientId={ClientId} Nbp={Nbp} TypeClient={TypeClient} />;
     },
   },
 ];

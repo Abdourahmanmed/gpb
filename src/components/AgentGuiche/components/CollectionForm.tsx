@@ -139,7 +139,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
     resolver: zodResolver(CollectionSchema),
     defaultValues: {
       Adresse_collection: "",
-      Montant: 5000,
+      Montant: 60000,
       Methode_de_paiement: undefined,
       Wallet: undefined,
       Numero_wallet: "",

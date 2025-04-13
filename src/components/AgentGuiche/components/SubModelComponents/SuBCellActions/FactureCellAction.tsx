@@ -47,7 +47,7 @@ const FactureCelleAction: React.FC<ModelProps> = ({ Name, Clients, Nom }) => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const fetchFactures = async (): Promise<void> => {
-        const apiUrl = `http://localhost/gbp_backend/api.php?method=GetFactureClient&ClientId=${Clients}`;
+        const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=GetFactureClient&ClientId=${Clients}`;
 
         setLoading(true);
         setError(null);

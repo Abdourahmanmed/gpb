@@ -1,7 +1,7 @@
 "use server";
 
 interface dataType {
-    Montant: 2000;
+    Montant: number;
     Methode_de_paiement: "cheque" | "cash" | "wallet";
     Wallet?: "cac_pay" | "waafi" | "d_money" | "sabapay" | "dahabplaces" | undefined;
     Numero_wallet?: string | undefined;
@@ -11,7 +11,7 @@ interface dataType {
 }
 
 export const ChangementClePaiement = async (ClientId:string,userid: string|undefined, data: dataType) => {
-    const api = `http://localhost/gbp_backend/api.php?method=AchatCleForClients&id=${userid}&idClient=${ClientId}`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=AchatCleForClients&id=${userid}&idClient=${ClientId}`;
     try {
         const response = await fetch(api, {
             method: "POST",

@@ -116,14 +116,14 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         accessorKey: "Adresse_Livraison",
         header: "Nombre Adresse livraison",
         cell: ({ row }) => {
-            return <LVDCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+            return <LVDCellAction Nbr={row.original?.Adresse_Livraison} Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
     {
         accessorKey: "Adresse_Collection",
         header: "Nombre Adresse Collections",
         cell: ({ row }) => {
-            return <ColectionCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+            return <ColectionCellAction Nbr={row.original?.Adresse_Collection} Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
     {
