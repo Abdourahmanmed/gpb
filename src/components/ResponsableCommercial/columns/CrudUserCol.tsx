@@ -111,7 +111,7 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
             });
             //fonction pour editer les informations du compagne
             const onEditSubmit = async (values: z.infer<typeof EditUserSchema>) => {
-                const api = `http://localhost/gbp_backend/api.php?method=UpdateUser&id=${user.id}`;
+                const api = `http://192.168.0.15/gbp_backend/api.php?method=UpdateUser&id=${user.id}`;
                 try {
                     const response = await fetch(api, {
                         method: "PUT",
@@ -138,7 +138,7 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
 
             //fonction pour recupere les information d'un compagne par son id 
             const fetchUser = async (id: string) => {
-                const apiUrl = `http://localhost/gbp_backend/api.php?method=GetUser&id=${id}`;
+                const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=GetUser&id=${id}`;
                 try {
                     const response = await fetch(apiUrl, {
                         method: "GET",
@@ -164,7 +164,7 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
 
             const handleDeleteUser = async (e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault(); // Correction de la faute de frappe
-                const apiUrl = `http://localhost/gbp_backend/api.php?method=DeleteUser&id=${user?.id}`;
+                const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=DeleteUser&id=${user?.id}`;
                 console.log(user?.id)
                 try {
                     const response = await fetch(apiUrl, {
