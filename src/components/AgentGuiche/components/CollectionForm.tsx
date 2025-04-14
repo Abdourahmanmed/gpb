@@ -41,7 +41,7 @@ import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 interface ChangeNameFormProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  UserId: string;
+  ClientId: string;
   Nbp: string;
 }
 // Typages
@@ -57,7 +57,7 @@ type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 export const CollectForm: React.FC<ChangeNameFormProps> = ({
   isOpen,
   setIsOpen,
-  UserId,
+  ClientId,
   Nbp,
 }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
@@ -139,7 +139,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
     resolver: zodResolver(CollectionSchema),
     defaultValues: {
       Adresse_collection: "",
-      Montant: 5000,
+      Montant: 60000,
       Methode_de_paiement: undefined,
       Wallet: undefined,
       Numero_wallet: "",
@@ -171,7 +171,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
 
       // Logique d'enregistrement (par exemple, sauvegarde des données)
       console.log("Données soumises :", finalData);
-      console.log(recueNumber, UserId);
+      console.log(recueNumber, ClientId);
 
       // Met à jour les états nécessaires
       setDonnees(finalData); // Sauvegarde les valeurs dans un état
@@ -189,8 +189,8 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
     }
 
     try {
-      const enregistrement = await CollectionPaiement(UserId, donnees);
-      console.log(UserId);
+      const enregistrement = await CollectionPaiement(ClientId,session?.user?.id, donnees);
+      console.log(ClientId);
 
       if (enregistrement?.success) {
         setMessage(enregistrement?.success);

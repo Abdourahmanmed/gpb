@@ -36,7 +36,7 @@ export const EditAgentSchema = z.object({
   Email: z.string().email({
     message: "l'email est obligatoire",
   }),
-  Password: z.string().min(1, {
+  password: z.string().min(1, {
     message: "le password est obligatoire.",
   }),
   Telephone: z.string().min(1, {
@@ -44,6 +44,9 @@ export const EditAgentSchema = z.object({
   }),
   Adresse: z.string().min(1, {
     message: "l'adresse est obligatoire.",
+  }),
+  Role: z.string().min(1, {
+    message: "le role  est obligatoire.",
   }),
 });
 
@@ -75,6 +78,7 @@ export const NouveauClientSchemaStepOne = z.object({
   Nom: z.string().min(1, { message: "Le nom est obligatoire." }),
   Email: z.string().email({ message: "L'email est obligatoire." }),
   Telephone: z.string().min(1, { message: "Le téléphone est obligatoire." }),
+  TypeBp: z.string().min(1, { message: "Le type du boite postale est obligatoire." }),
   Adresse: z.string().min(1, { message: "L'adresse est obligatoire." }),
   Role: z.string().min(1, { message: "Choisir un type de client." }),
   montantRd: z.number().optional(),
@@ -219,7 +223,7 @@ export const LivreDoSchema = z.object({
   Adresse_Livraison_Domicile: z
     .string()
     .min(1, { message: "L'adresse est obligatoire." }),
-  Montant: z.literal(5000),
+  Montant: z.literal(60000),
   Methode_de_paiement: z.enum(["cheque", "cash", "wallet"], {
     required_error: "Veuillez sélectionner une méthode de paiement.",
   }),
@@ -237,7 +241,7 @@ export const CollectionSchema = z.object({
   Adresse_collection: z
     .string()
     .min(1, { message: "L'adresse est obligatoire." }),
-  Montant: z.literal(5000),
+  Montant: z.literal(60000),
   Methode_de_paiement: z.enum(["cheque", "cash", "wallet"], {
     required_error: "Veuillez sélectionner une méthode de paiement.",
   }),
@@ -284,7 +288,7 @@ export const MontantSaiasiSchema = z.object({
 
 // Schéma de validation avec zod
 export const PaiementSchema = z.object({
-  Montant: z.literal(40000),
+  Montant: z.number(),
   Methode_de_paiement: z.enum(["cheque", "cash", "wallet"], {
     required_error: "Veuillez sélectionner une méthode de paiement.",
   }),
@@ -299,7 +303,7 @@ export const PaiementSchema = z.object({
 
 // Schéma de validation avec zod
 export const AchatCleSchema = z.object({
-  Montant: z.literal(2000),
+  Montant: z.number(),
   Methode_de_paiement: z.enum(["cheque", "cash", "wallet"], {
     required_error: "Veuillez sélectionner une méthode de paiement.",
   }),

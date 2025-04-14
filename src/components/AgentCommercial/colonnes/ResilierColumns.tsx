@@ -7,39 +7,31 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import ResilierColAction from "@/components/ActionCellColumns/ResilierColAction"
 import Detail from "@/components/Detail"
+import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction"
+import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction"
+import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction"
+import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type ResilierClient = {
-    id: string;
+    id: number;
     Nom: string;
+    Email: string;
     Adresse: string;
     TypeClient: string;
-    NBp: string;
-    Type_boite_postale: string;
     Telephone: string;
-    annee_abonnement: string;
-    Paiement_Type: string;
-    Penalites: string;
-    Montant_Redevance: string;
-    Methode_Paiement: string;
-    Reference_General: string;
-    Date_Paiement: string;
-    Etat: string;
-    sous_couvert: string;
-    Document_Type: string;
-    Patente_Quitance: string;
-    Identite_Gerant: string;
-    Abonnement_Unique: string;
-    Document_Created_At: string;
-    Paiement_Categories: string;
-    Paiement_Montants: string;
-    Paiement_Methodes: string;
-    Type_Wallets: string;
-    Numero_Wallets: string;
-    Numero_Cheques: string;
-    Nom_Banques: string;
-    Paiement_References: string;
+    Id_boite_postale: number;
+    Date_abonnement: string;
+    id_user: number;
+    updated_by: number;
+    abonnement_status: string;
+    abonnement_penalite: number;
+    Annee_abonnement: number;
+    boite_postal_numero: string;
+    nombre_sous_couverte: number;
+    Adresse_Livraison: number;
+    Adresse_Collection: number;
 };
 
 export const ResilierClientColumns: ColumnDef<ResilierClient>[] = [
@@ -77,141 +69,71 @@ export const ResilierClientColumns: ColumnDef<ResilierClient>[] = [
         ),
     },
     {
+        accessorKey: "Email",
+        header: "Email",
+    },
+    {
         accessorKey: "Adresse",
         header: "Adresse",
     },
     {
         accessorKey: "TypeClient",
-        header: "Type Client",
-    },
-    {
-        accessorKey: "NBp",
-        header: "N° Boite Postale",
-    },
-    {
-        accessorKey: "Type_boite_postale",
-        header: "Type Boîte Postale",
+        header: "Client",
     },
     {
         accessorKey: "Telephone",
         header: "Téléphone",
     },
     {
-        accessorKey: "annee_abonnement",
+        accessorKey: "Id_boite_postale",
+        header: "ID Boîte Postale",
+    },
+    {
+        accessorKey: "boite_postal_numero",
+        header: "N° Boîte Postale",
+    },
+    {
+        accessorKey: "Annee_abonnement",
         header: "Année Abonnement",
     },
     {
-        accessorKey: "Etat",
+        accessorKey: "abonnement_status",
         header: "État Abonnement",
         cell: ({ row }) => (
-            <p >
-                {row.original.Etat}
+            <p>
+                {row.original.abonnement_status}
             </p>
         ),
     },
     {
-        accessorKey: "sous_couvert",
-        header: "Sous Couvert",
-    },
-    {
-        accessorKey: "Document_Type",
-        header: "Type Document",
-    },
-    {
-        accessorKey: "Patente_Quitance",
-        header: "Patente/Quitance",
+        accessorKey: "nombre_sous_couverte",
+        header: "Nombre Sous Couvert",
         cell: ({ row }) => {
-            const FilePath = row.original.Patente_Quitance; // Récupère le chemin du fichier
-            const fileUrl = FilePath
-                ? `http://localhost/gbp_backend/${FilePath}`
-                : null;
 
-            return (
-                <div className="flex justify-center">
-                    {fileUrl ? (
-                        <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-                            Voir le document Patente/Quitance
-                        </a>
-                    ) : (
-                        <span className="text-gray-500 italic">Aucun document</span>
-                    )}
-                </div>
-            );
+            return <ClientsCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
     {
-        accessorKey: "Identite_Gerant",
-        header: "Identité",
+        accessorKey: "Adresse_Livraison",
+        header: "Nombre Adresse livraison",
         cell: ({ row }) => {
-            const FilePath = row.original.Identite_Gerant; // Récupère le chemin du fichier
-            const fileUrl = FilePath
-                ? `http://localhost/gbp_backend/${FilePath}`
-                : null;
-
-            return (
-                <div className="flex justify-center">
-                    {fileUrl ? (
-                        <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-                            Voir le document Identité
-                        </a>
-                    ) : (
-                        <span className="text-gray-500 italic">Aucun document</span>
-                    )}
-                </div>
-            );
+            return <LVDCellAction Nbr={row.original?.Adresse_Livraison} Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
     {
-        accessorKey: "Abonnement_Unique",
-        header: "Abonnement",
+        accessorKey: "Adresse_Collection",
+        header: "Nombre Adresse Collections",
         cell: ({ row }) => {
-            const FilePath = row.original.Abonnement_Unique; // Récupère le chemin du fichier
-            const fileUrl = FilePath
-                ? `http://localhost/gbp_backend/${FilePath}`
-                : null;
-
-            return (
-                <div className="flex justify-center">
-                    {fileUrl ? (
-                        <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-                            Voir le document Abonnement
-                        </a>
-                    ) : (
-                        <span className="text-gray-500 italic">Aucun document</span>
-                    )}
-                </div>
-            );
+            return <ColectionCellAction Nbr={row.original?.Adresse_Collection} Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
     {
-        accessorKey: "Penalites",
+        accessorKey: "abonnement_penalite",
         header: "Pénalités",
-        cell: ({ row }) => {
-            const idClient = row?.original?.id;
-            const nom = row?.original?.Nom;
-            return <Detail IdClient={idClient} Nom={nom} />; // Retourner le composant ici
-        },
     },
     {
-        accessorKey: "Montant_Redevance",
-        header: "Montant Redevance",
-    },
-
-    {
-        accessorKey: "Reference_General",
-        header: "Référence Générale",
-    },
-    {
-        accessorKey: "Date_Paiement",
-        header: "Date Paiement",
-    },
-    {
-        header: "Detais du paiements",
-        cell: ({ row }) => {
-            const idClient = row?.original?.id;
-            const nom = row?.original?.Nom;
-            return <Detail IdClient={idClient} Nom={nom} />; // Retourner le composant ici
-        },
+        accessorKey: "Date_abonnement",
+        header: "Date Abonnement",
     },
     {
         id: "actions",
@@ -219,8 +141,8 @@ export const ResilierClientColumns: ColumnDef<ResilierClient>[] = [
         cell: ({ row }) => {
             const clientid = row?.original?.id;
             const clientname = row?.original?.Nom;
-            const numerobp = row?.original?.NBp;
-            const etat = row?.original?.Etat;
+            const numerobp = row?.original?.Id_boite_postale;
+            const etat = row?.original?.abonnement_status;
             return <ResilierColAction clientid={clientid} clientname={clientname} numerobp={numerobp} etat={etat} />
         },
     }

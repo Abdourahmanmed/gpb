@@ -26,7 +26,7 @@ const ListeBp = () => {
         <NoFilterDataTable
           data={ListBp}
           columns={ListeBpColumns}
-          typeName="type"
+          typeName="Numero"
         />
       )}
     </div>

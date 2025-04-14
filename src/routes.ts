@@ -61,12 +61,13 @@ export const AgentRsponsableRoutes = [
     "/Responsable_commerciale/Dashbord",
     "/Responsable_commerciale/Creation_des_utilisateur",
     "/Responsable_commerciale/Les_Abonnes",
-    "/Responsable_commerciale/Tous_les_resiliations",
-    "/Responsable_commerciale/Tous_les_changement_Nom",
-    "/Responsable_commerciale/Tous_les_changement_cle",
     "/Responsable_commerciale/Enleve_les_penalites",
-    "/Responsable_commerciale/Tous_les_demande_livraison",
-    "/Responsable_commerciale/Accepter_paiement_annee",
+    "/Responsable_commerciale/Recaputilations/Redevance",
+    "/Responsable_commerciale/Recaputilations/Changer_nom",
+    "/Responsable_commerciale/Recaputilations/Achat_cle",
+    "/Responsable_commerciale/Recaputilations/Sous_couverte",
+    "/Responsable_commerciale/Recaputilations/Livraison",
+    "/Responsable_commerciale/Recaputilations/Collection",
 ];
 
 /**
@@ -79,6 +80,13 @@ export const AgentCommercialRoutes = [
     "/Agent_commercial/Les_abonnes",
     "/Agent_commercial/Voir_les_depots",
     "/Agent_commercial/Resiliation",
+    "/Agent_commercial/Recaputilation/Rapport/Resilier",
+    "/Agent_commercial/Recaputilation/Rapport/Redevance",
+    "/Agent_commercial/Recaputilation/Rapport/Changer_nom",
+    "/Agent_commercial/Recaputilation/Rapport/Achat_cle",
+    "/Agent_commercial/Recaputilation/Rapport/Sous_couverte",
+    "/Agent_commercial/Recaputilation/Rapport/Livraison",
+    "/Agent_commercial/Recaputilation/Rapport/Collection",
 ];
 /**
  * An array of routes used for authenticated users with the role "Agent Guichet".
@@ -94,4 +102,10 @@ export const AgentGuichetRoutes = [
     "/Agent_guiche/Ajout_sous_couverte",
     "/Agent_guiche/Ajout_livraison",
     "/Agent_guiche/Ajout_collection",
+    "/Agent_guiche/Recaputilations/Ajoute_client",
+    "/Agent_guiche/Recaputilations/Changer_nom",
+    "/Agent_guiche/Recaputilations/Achat_cle",
+    "/Agent_guiche/Recaputilations/Ajout_sous_couverte",
+    "/Agent_guiche/Recaputilations/Ajout_livraison",
+    "/Agent_guiche/Recaputilations/Ajout_collection",
 ];

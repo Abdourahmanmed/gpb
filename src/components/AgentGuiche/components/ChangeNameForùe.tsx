@@ -41,7 +41,7 @@ import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 interface ChangeNameFormProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  UserId: string;
+  ClientId: string;
 }
 // Typages
 type MethodePaiement = "cheque" | "cash" | "wallet";
@@ -56,7 +56,7 @@ type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
   isOpen,
   setIsOpen,
-  UserId
+  ClientId
 }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     MethodePaiement | undefined
@@ -166,7 +166,7 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
 
       // Logique d'enregistrement (par exemple, sauvegarde des données)
       console.log("Données soumises :", finalData);
-      console.log(recueNumber, UserId);
+      // console.log(recueNumber, ClientId);
 
       // Met à jour les états nécessaires
       setDonnees(finalData); // Sauvegarde les valeurs dans un état
@@ -186,7 +186,7 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
     }
 
     try {
-      const enregistrement = await ChangementNamePaiement(UserId, donnees);
+      const enregistrement = await ChangementNamePaiement(ClientId,session?.user?.id, donnees);
 
       if (enregistrement?.success) {
         setMessage(enregistrement?.success);

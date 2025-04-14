@@ -21,7 +21,7 @@ const Detail = ({ IdClient, Nom }: DetailProps) => {
 
     useEffect(() => {
         const fetchDetail = async () => {
-            const api = `http://192.168.0.15/gbp_backend/api.php?method=GetDetailsPaiement&id=${IdClient}`;
+            const api = `http://localhost/gbp_backend/api.php?method=GetDetailsPaiement&id=${IdClient}`;
 
             try {
                 const response = await fetch(api, {

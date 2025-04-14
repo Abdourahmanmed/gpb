@@ -1,0 +1,76 @@
+*****************************pour afficher les informations de nouveau abonner ***********
+ {Object.entries(donnees)
+                                                    .filter(([key, value]) => {
+                                                        // Ignorer les champs inutiles comme 'step'
+                                                        if (key === "step") return false;
+
+                                                        // Vérifier les objets pour des données valides
+                                                        if (typeof value === "object" && value !== null) {
+                                                            // Vérifier si 'sousCouvertures' contient des données valides
+                                                            if (key === "sousCouvertures" && Array.isArray(value)) {
+                                                                return value.some(
+                                                                    (item) => Object.values(item).some((v) => v && v.toString().trim() !== "")
+                                                                );
+                                                            }
+                                                            // Pour les autres objets, on vérifie s'ils ont des valeurs valides
+                                                            return Object.values(value).some(
+                                                                (v) => v && v.toString().trim() !== ""
+                                                            );
+                                                        }
+
+                                                        // Vérifier les chaînes non vides
+                                                        if (typeof value === "string") {
+                                                            return value.trim() !== "";
+                                                        }
+
+                                                        // Vérifier les tableaux non vides
+                                                        if (Array.isArray(value)) {
+                                                            return value.length > 0;
+                                                        }
+
+                                                        return false; // Ignorer tout autre type de données
+                                                    })
+                                                    .map(([key, value], index) => (
+                                                        <tr key={index} className="even:bg-gray-50">
+                                                            <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
+                                                                {key.replace(/_/g, " ")}
+                                                            </td>
+                                                            <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
+                                                                {Array.isArray(value) ? (
+                                                                    // Gérer le cas des tableaux
+                                                                    <ul className="pl-4 list-disc">
+                                                                        {value.map((item, idx) => (
+                                                                            <div key={idx} >
+                                                                                <li className="text-sm text-gray-600">
+                                                                                    {typeof item === "object" && item !== null ? (
+                                                                                        // Afficher les objets imbriqués de manière plus lisible
+                                                                                        <div>
+                                                                                            {Object.entries(item).map(([subKey, subValue]) => (
+                                                                                                <div key={subKey}>
+                                                                                                    <strong>{subKey.replace(/_/g, " ")}:</strong> <span>{typeof subValue === 'string' || typeof subValue === 'number' ? subValue : "N/A"}</span>
+                                                                                                </div>
+                                                                                            ))}
+                                                                                        </div>
+                                                                                    ) : (
+                                                                                        item || "N/A"
+                                                                                    )}
+                                                                                </li>
+                                                                                <hr className="font-semibold" />
+                                                                            </div>
+                                                                        ))}
+                                                                    </ul>
+                                                                ) : typeof value === "object" && value !== null ? (
+                                                                    // Gérer les objets imbriqués
+                                                                    <pre className="bg-gray-100 p-2 rounded text-sm">
+                                                                        {Object.entries(value).map(([subKey, subValue]) => (
+                                                                            <div key={subKey}>
+                                                                                <strong>{subKey.replace(/_/g, " ")}:</strong> <span>{typeof subValue === 'string' || typeof subValue === 'number' ? subValue : "N/A"}</span>
+                                                                            </div>
+                                                                        ))}
+                                                                    </pre>
+                                                                ) : (
+                                                                    <span>{value || "N/A"}</span>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))}

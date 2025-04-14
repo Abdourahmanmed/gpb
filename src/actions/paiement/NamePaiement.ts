@@ -11,8 +11,8 @@ interface dataType {
     ReferenceId?: string | undefined;
 }
 
-export const ChangementNamePaiement = async (userid: string, data: dataType) => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=updateClientNameAndAddPayment&id=${userid}`;
+export const ChangementNamePaiement = async (clientId: string, UserId: string | undefined, data: dataType) => {
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=ChangeClientName&id=${UserId}&idClient=${clientId}`;
     try {
         const response = await fetch(api, {
             method: "POST",
@@ -32,11 +32,11 @@ export const ChangementNamePaiement = async (userid: string, data: dataType) => 
 
         if (result?.error) {
             console.log(result?.error);
-            return {error:result?.error};
+            return { error: result?.error };
 
         }
         console.log("Réponse réussie :", result);
-        return {success:result?.success};
+        return { success: result?.success };
     } catch (error) {
         console.error("Erreur réseau :", error);
         return { success: false, error: "Erreur réseau" };

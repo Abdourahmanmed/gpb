@@ -15,8 +15,8 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import { useSelector } from "react-redux";
-import { RootState } from "@/Store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/Store/store";
 import { GetLastReferenceOfRdv } from "@/actions/All_references/GetLastReferenceOfRdv";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Importer les styles de react-toastify
@@ -25,12 +25,14 @@ import { useSession } from "next-auth/react";
 import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { resetStep } from "@/Store/Slices/Multi-formSlice";
 
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 
 const StepFourForme = () => {
     const [recueNumber, setRecueNumber] = useState(""); // Ceci peut être utilisé pour afficher le numéro de reçu plus tard
     const donnees = useSelector((state: RootState) => state.multiForm); // Vérifiez la structure de 'multiForm' dans Redux
+    const dispatch = useDispatch<AppDispatch>();
     const [currentNumber] = useState(1); // État pour gérer l'incrément du numéro
     const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
     const printAreaRef = useRef<HTMLDivElement>(null);
@@ -121,21 +123,22 @@ const StepFourForme = () => {
 
         const formData = new FormData();
 
-        // Ajout des données texte au formulaire
+        // Convertir sousCouvertures en JSON valide avant de l'ajouter à formData
+        formData.append("sousCouvertures", JSON.stringify(donnees.sousCouvertures));
+
+        // Ajouter les autres données texte
         Object.entries(donnees).forEach(([key, val]) => {
-            if (val !== undefined && val !== null) {
+            if (key !== "sousCouvertures" && val !== undefined && val !== null) {
                 formData.append(key, val);
             }
         });
 
         // Ajout des fichiers si disponibles
-        if (files[0]?.Abonnement) formData.append("Abonnement1", files[0].Abonnement);
-        if (files[0]?.patent_quitance) formData.append("patent_quitance1", files[0].patent_quitance);
-        if (files[0]?.Identiter) formData.append("Identiter1", files[0].Identiter);
+        if (files[0]?.Abonnement) formData.append("Abonnement", files[0].Abonnement);
+        if (files[0]?.patent_quitance) formData.append("patent_quitance", files[0].patent_quitance);
+        if (files[0]?.Identiter) formData.append("Identiter", files[0].Identiter);
 
-        // formData.append("userid", session?.user?.id);
-
-        // Affichage du contenu de formData dans la console
+        // Affichage du contenu de formData dans la console pour débogage
         console.log("FormData content:");
         for (let [key, value] of formData.entries()) {
             console.log(`${key}:`, value);
@@ -143,13 +146,13 @@ const StepFourForme = () => {
 
         try {
             const response = await fetch(
-                `http://localhost/gbp_backend/api.php?method=insertAndAssignBoitePostaleToClient&id=${session?.user?.id}`,
+                `http://192.168.0.15/gbp_backend/api.php?method=AddClientsAbonnment&id=${session?.user?.id}`,
                 {
                     method: "POST",
                     body: formData, // Envoi des données au format multipart/form-data
                 }
             );
-
+            console.log(formData)
             const result = await response.json();
 
             if (!response.ok) {
@@ -168,6 +171,7 @@ const StepFourForme = () => {
         }
     };
 
+
     const handleImprimary = () => {
         // Vérification que PrintJS est chargé et que l'élément à imprimer est bien disponible
         // Vérification que PrintJS est chargé et que le DOM est prêt
@@ -178,6 +182,7 @@ const StepFourForme = () => {
                 targetStyles: ["*"],
             });
         }
+        dispatch(resetStep()); // reinitialisation de l'étape
     };
 
 
@@ -210,7 +215,6 @@ const StepFourForme = () => {
                             {donnees && (
                                 <div className="p-6 space-y-6 w-full">
                                     <div className="mt-4 text-xl py-4 font-semibold flex justify-between items-center border-b">
-                                        <h2 className="text-2xl font-bold text-gray-800">Résumé</h2>
                                         <div>
                                             <span className="text-gray-600">Numéro de reçu :</span>
                                             <span className="text-blue-700 font-medium ml-2">
@@ -221,6 +225,9 @@ const StepFourForme = () => {
 
                                     {/* Tableau pour afficher les données */}
                                     <div className="">
+                                        {/* <h1 className="text-primary text-3xl font-bold mb-3">
+                                            {donnees.Reference_Rdv}
+                                        </h1> */}
                                         <table className="min-w-full border-collapse border border-gray-300 rounded-md">
                                             <thead className="bg-blue-50">
                                                 <tr>
@@ -233,95 +240,39 @@ const StepFourForme = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {Object.entries(donnees)
-                                                    .filter(([key, value]) => {
-                                                        // Ignorer les champs inutiles comme 'step'
-                                                        if (key === "step") return false;
-
-                                                        // Vérifier les objets pour des données valides
-                                                        if (typeof value === "object" && value !== null) {
-                                                            return Object.values(value).some(
-                                                                (v) => v && v.toString().trim() !== ""
-                                                            );
-                                                        }
-
-                                                        // Vérifier les chaînes non vides
-                                                        if (typeof value === "string") {
-                                                            return value.trim() !== "";
-                                                        }
-
-                                                        // Vérifier les tableaux non vides
-                                                        if (Array.isArray(value)) {
-                                                            return value.length > 0;
-                                                        }
-
-                                                        return false; // Ignorer tout autre type de données
-                                                    })
-                                                    .map(([key, value], index) => (
-                                                        <tr key={index} className="even:bg-gray-50">
-                                                            <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
-                                                                {key.replace(/_/g, " ")}
-                                                            </td>
-                                                            <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
-                                                                {Array.isArray(value) ? (
-                                                                    <ul className="pl-4 list-disc">
-                                                                        {value.map((item, idx) => (
-                                                                            <li key={idx} className="text-sm text-gray-600">
-                                                                                {JSON.stringify(item, null, 2)}
-                                                                            </li>
-                                                                        ))}
-                                                                    </ul>
-                                                                ) : typeof value === "object" && value !== null ? (
-                                                                    <pre className="bg-gray-100 p-2 rounded text-sm">
-                                                                        {JSON.stringify(
-                                                                            Object.fromEntries(
-                                                                                Object.entries(value).filter(
-                                                                                    ([, v]) => v && v.toString().trim() !== ""
-                                                                                )
-                                                                            ),
-                                                                            null,
-                                                                            2
-                                                                        )}
-                                                                    </pre>
-                                                                ) : (
-                                                                    <span>{value}</span>
-                                                                )}
-                                                            </td>
+                                                <tr>
+                                                    <td>Nom</td>
+                                                    <td>{donnees.Nom}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Methode de paiement</td>
+                                                    <td>{donnees.Methode_de_paiement}</td>
+                                                </tr>
+                                                {donnees.Methode_de_paiement === "cheque" && (
+                                                    <>
+                                                        <tr>
+                                                            <td>Numero cheque</td>
+                                                            <td>{donnees.Numero_cheque}</td>
                                                         </tr>
-                                                    ))}
+                                                        <tr>
+                                                            <td>Nom</td>
+                                                            <td>{donnees.Nom_Banque}</td>
+                                                        </tr>
+                                                    </>
+                                                )}
+                                                {donnees.Methode_de_paiement === "wallet" && (
+                                                    <>
+                                                        <tr>
+                                                            <td>Type wallet </td>
+                                                            <td>{donnees.wallet}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Numero telephone</td>
+                                                            <td>{donnees.Numero_wallet}</td>
+                                                        </tr>
+                                                    </>
+                                                )}
                                                 {/* Ajout des montants et de la somme totale */}
-                                                <tr className="even:bg-gray-50">
-                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
-                                                        Montant Rd
-                                                    </td>
-                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
-                                                        {donnees?.montantRd || 0}
-                                                    </td>
-                                                </tr>
-                                                <tr className="even:bg-gray-50">
-                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
-                                                        Montant Ld
-                                                    </td>
-                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
-                                                        {donnees?.montantLd || 0}
-                                                    </td>
-                                                </tr>
-                                                <tr className="even:bg-gray-50">
-                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
-                                                        Montant Cll
-                                                    </td>
-                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
-                                                        {donnees?.montantCll || 0}
-                                                    </td>
-                                                </tr>
-                                                <tr className="even:bg-gray-50">
-                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800">
-                                                        Montant SC
-                                                    </td>
-                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
-                                                        {donnees?.montantSC || 0}
-                                                    </td>
-                                                </tr>
                                                 <tr className="bg-gray-100">
                                                     <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800 font-bold">
                                                         Somme Totale
@@ -385,6 +336,13 @@ const StepFourForme = () => {
 
                                             // Vérifier les objets pour des données valides
                                             if (typeof value === "object" && value !== null) {
+                                                // Vérifier si 'sousCouvertures' contient des données valides
+                                                if (key === "sousCouvertures" && Array.isArray(value)) {
+                                                    return value.some(
+                                                        (item) => Object.values(item).some((v) => v && v.toString().trim() !== "")
+                                                    );
+                                                }
+                                                // Pour les autres objets, on vérifie s'ils ont des valeurs valides
                                                 return Object.values(value).some(
                                                     (v) => v && v.toString().trim() !== ""
                                                 );
@@ -409,27 +367,39 @@ const StepFourForme = () => {
                                                 </td>
                                                 <td className="px-4 py-2 border-b border-gray-300 text-gray-600">
                                                     {Array.isArray(value) ? (
+                                                        // Gérer le cas des tableaux
                                                         <ul className="pl-4 list-disc">
                                                             {value.map((item, idx) => (
-                                                                <li key={idx} className="text-sm text-gray-600">
-                                                                    {JSON.stringify(item, null, 2)}
-                                                                </li>
+                                                                <div key={idx} >
+                                                                    <li className="text-sm text-gray-600">
+                                                                        {typeof item === "object" && item !== null ? (
+                                                                            // Afficher les objets imbriqués de manière plus lisible
+                                                                            <div>
+                                                                                {Object.entries(item).map(([subKey, subValue]) => (
+                                                                                    <div key={subKey}>
+                                                                                        <strong>{subKey.replace(/_/g, " ")}:</strong> <span>{typeof subValue === 'string' || typeof subValue === 'number' ? subValue : "N/A"}</span>
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        ) : (
+                                                                            item || "N/A"
+                                                                        )}
+                                                                    </li>
+                                                                    <hr className="font-semibold" />
+                                                                </div>
                                                             ))}
                                                         </ul>
                                                     ) : typeof value === "object" && value !== null ? (
+                                                        // Gérer les objets imbriqués
                                                         <pre className="bg-gray-100 p-2 rounded text-sm">
-                                                            {JSON.stringify(
-                                                                Object.fromEntries(
-                                                                    Object.entries(value).filter(
-                                                                        ([, v]) => v && v.toString().trim() !== ""
-                                                                    )
-                                                                ),
-                                                                null,
-                                                                2
-                                                            )}
+                                                            {Object.entries(value).map(([subKey, subValue]) => (
+                                                                <div key={subKey}>
+                                                                    <strong>{subKey.replace(/_/g, " ")}:</strong> <span>{typeof subValue === 'string' || typeof subValue === 'number' ? subValue : "N/A"}</span>
+                                                                </div>
+                                                            ))}
                                                         </pre>
                                                     ) : (
-                                                        <span>{value}</span>
+                                                        <span>{value || "N/A"}</span>
                                                     )}
                                                 </td>
                                             </tr>

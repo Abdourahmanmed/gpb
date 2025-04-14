@@ -42,7 +42,7 @@ import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 interface ChangeNameFormProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  UserId: string;
+  ClientId: string;
   Np: string;
 }
 // Typages
@@ -53,7 +53,7 @@ type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 export const LivreDoForm: React.FC<ChangeNameFormProps> = ({
   isOpen,
   setIsOpen,
-  UserId,
+  ClientId,
   Np,
 }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
@@ -134,7 +134,7 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({
     resolver: zodResolver(LivreDoSchema),
     defaultValues: {
       Adresse_Livraison_Domicile: "",
-      Montant: 5000,
+      Montant: 60000,
       Methode_de_paiement: undefined,
       Wallet: undefined,
       Numero_wallet: "",
@@ -186,7 +186,7 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({
     }
 
     try {
-      const enregistrement = await ChangementLvdPaiement(UserId, donnees);
+      const enregistrement = await ChangementLvdPaiement(ClientId,session?.user?.id, donnees);
 
       if (enregistrement?.success) {
         setMessage(enregistrement?.success);

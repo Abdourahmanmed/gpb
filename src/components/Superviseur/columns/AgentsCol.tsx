@@ -23,16 +23,21 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { EditAgentSchema } from "@/Schema/schema"
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useDispatch } from "react-redux"
+import { AppDispatch } from "@/Store/store"
+import { updateAgent } from "@/Store/Slices/AgentManagement"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Agents = {
     id: string;
-    nom: string;
-    email: string;
+    Nom: string;
+    Email: string;
     Telephone: string;
     Adresse: string;
     password: string;
+    Role: string;
 };
 
 export const AgentsColumns: ColumnDef<Agents>[] = [
@@ -59,7 +64,7 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "nom",
+        accessorKey: "Nom",
         header: ({ column }) => {
             return (
                 <Button
@@ -73,7 +78,7 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
         },
     },
     {
-        accessorKey: "email",
+        accessorKey: "Email",
         header: "Email",
     },
     {
@@ -85,31 +90,66 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
         header: "Adresse",
     },
     {
+        accessorKey: "Role",
+        header: "Role",
+    },
+    {
         id: "actions",
         header: "Actions",
         cell: ({ row }) => {
             const user = row.original;
             const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-            const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+            // const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+            const dispatch = useDispatch<AppDispatch>();
             const [isPending, setIsPending] = useState(false);
             const form = useForm<z.infer<typeof EditAgentSchema>>({
                 resolver: zodResolver(EditAgentSchema),
                 defaultValues: {
                     Nom: '',
                     Email: '',
-                    Password: '',
+                    password: '',
                     Telephone: '',
                     Adresse: '',
+                    Role: '',
                 },
             });
-            //fonction pour editer les informations du compagne
-            const onEditSubmit = (values: z.infer<typeof EditAgentSchema>) => {
-                console.log(values);
+            // Fonction pour éditer les informations du compagne
+            const onEditSubmit = async (values: z.infer<typeof EditAgentSchema>) => {
+                const api = `http://192.168.0.15/gbp_backend/api.php?method=UpdateAgentByResponsable&id=${user?.id}`;
+                console.log(values)
+                try {
+                    const response = await fetch(api, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(values),
+                    });
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(`Erreur lors de la mise à jour : ${response.statusText}`);
+                    }
+
+                    if (data?.error) {
+                        toast.error(data?.error);
+                    }
+                    const agents = {
+                        ...values,
+                        id: user?.id
+                    }
+                    toast.success(data?.success);
+                    dispatch(updateAgent(agents))
+                    // Ajoute ici une logique pour mettre à jour l'UI après modification (ex: recharger les données)
+                } catch (error) {
+                    console.error("Erreur lors de la mise à jour :", error);
+                }
             };
+
 
             //fonction pour recupere les information d'un compagne par son id 
             const fetchUser = async (id: string) => {
-                const apiUrl = `http://localhost/gbp_backend/api.php?method=GetUser&id=${id}`;
+                const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=GetUsersById&id=${id}`;
                 try {
                     const response = await fetch(apiUrl, {
                         method: "GET",
@@ -121,38 +161,39 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
                         toast.error(responseData.error || "Network error detected.");
                     } else {
                         // Set form default values with the fetched data
-                        form.setValue("Nom", responseData.nom);
-                        form.setValue("Email", responseData.email);
-                        form.setValue("Password", responseData.password);
+                        form.setValue("Nom", responseData.Nom);
+                        form.setValue("Email", responseData.Email);
+                        form.setValue("password", responseData.password);
                         form.setValue("Telephone", responseData.Telephone);
                         form.setValue("Adresse", responseData.Adresse);
+                        form.setValue("Role", responseData.Role);
                     }
                 } catch (error) {
                     console.log(error);
                 }
             };
 
-            const handleDeleteUser = async (e: React.FormEvent<HTMLFormElement>) => {
-                e.preventDefault(); // Correction de la faute de frappe
-                const apiUrl = `http://localhost/gbp_backend/api.php?method=DeleteUser&id=${user?.id}`;
-                console.log(user?.id)
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: "DELETE",
-                    });
+            // const handleDeleteUser = async (e: React.FormEvent<HTMLFormElement>) => {
+            //     e.preventDefault(); // Correction de la faute de frappe
+            //     const apiUrl = `http://localhost/gbp_backend/api.php?method=DeleteUser&id=${user?.id}`;
+            //     console.log(user?.id)
+            //     try {
+            //         const response = await fetch(apiUrl, {
+            //             method: "DELETE",
+            //         });
 
-                    const responseData = await response.json();
+            //         const responseData = await response.json();
 
-                    if (!response.ok || responseData.error) {
-                        toast.error(responseData.error || "Network error detected.");
-                    }
+            //         if (!response.ok || responseData.error) {
+            //             toast.error(responseData.error || "Network error detected.");
+            //         }
 
-                    toast.success(responseData?.success);
+            //         toast.success(responseData?.success);
 
-                } catch (error) {
-                    console.error("Erreur lors de la suppression de l'utilisateur :", error);
-                }
-            };
+            //     } catch (error) {
+            //         console.error("Erreur lors de la suppression de l'utilisateur :", error);
+            //     }
+            // };
 
             //appeller la fonction fetchCompagne ici
             useEffect(() => {
@@ -168,7 +209,7 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
                             <Ellipsis className="" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuLabel>My Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
                                 <button
@@ -178,14 +219,14 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
                                     Editer
                                 </button>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            {/* <DropdownMenuItem>
                                 <button
                                     className="w-full bg-red-500 text-blanc hover:bg-red-500/90 hover:text-blanc duration-500 rounded-lg p-1"
                                     onClick={() => setIsDeleteDialogOpen(true)}
                                 >
                                     Supprimer
                                 </button>
-                            </DropdownMenuItem>
+                            </DropdownMenuItem> */}
                         </DropdownMenuContent>
                     </DropdownMenu>
 
@@ -229,10 +270,10 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="Password"
+                                            name="password"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel className="text-blue">Password</FormLabel>
+                                                    <FormLabel className="text-blue">password</FormLabel>
                                                     <FormControl>
                                                         <Input {...field} placeholder="***********" type="password" disabled={isPending} className="text-blue font-bold" />
                                                     </FormControl>
@@ -266,6 +307,30 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
                                                 </FormItem>
                                             )}
                                         />
+                                        <FormField
+                                            control={form.control}
+                                            name="Role"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-blue">Adresse</FormLabel>
+                                                    <FormControl>
+                                                        <Select
+                                                            onValueChange={(value) => field.onChange(value)}
+                                                            value={field.value}
+                                                        >
+                                                            <SelectTrigger className="w-full">
+                                                                <SelectValue placeholder="Choisissez une méthode" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="agent_commercial">agent commerciale</SelectItem>
+                                                                <SelectItem value="agent_guichet">agent guichets</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                     </div>
                                     <Button type="submit" className="w-full mt-2 bg-blue-700 text-white" disabled={isPending}>Enregistrer</Button>
                                 </form>
@@ -275,7 +340,7 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
                     </Dialog>
 
                     {/* Delete dialog */}
-                    <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                    {/* <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                         <DialogContent className="bg-white">
                         <ToastContainer />
                             <DialogHeader>
@@ -301,7 +366,7 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
                                 </div>
                             </form>
                         </DialogContent>
-                    </Dialog>
+                    </Dialog> */}
                 </div>
             );
         },

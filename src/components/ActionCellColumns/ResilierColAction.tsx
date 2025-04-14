@@ -3,9 +3,9 @@ import { Button } from '../ui/button';
 import { ResilierForm } from '../AgentGuiche/components/ResilierDialog';
 
 interface ResilierColAction {
-    clientid: string,
+    clientid: number,
     clientname: string,
-    numerobp: string,
+    numerobp: number,
     etat: string,
 }
 

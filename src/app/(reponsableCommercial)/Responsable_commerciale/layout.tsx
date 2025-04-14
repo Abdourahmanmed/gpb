@@ -33,33 +33,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       },
     },
     {
-      title: "Tous les resiliations",
-      url: "/Responsable_commerciale/Tous_les_resiliations",
-      icon: "UserRoundCog",
-      RoleName: {
-        Prefix: "",
-        Suffix: "",
-      },
-    },
-    {
-      title: "Tous les changement Nom",
-      url: "/Responsable_commerciale/Tous_les_changement_Nom",
-      icon: "ScrollText",
-      RoleName: {
-        Prefix: "",
-        Suffix: "",
-      },
-    },
-    {
-      title: "Tous les changement cle",
-      url: "/Responsable_commerciale/Tous_les_changement_cle",
-      icon: "ListCheck",
-      RoleName: {
-        Prefix: "",
-        Suffix: "",
-      },
-    },
-    {
       title: "Enlever le penalite",
       url: "/Responsable_commerciale/Enleve_les_penalites",
       icon: "ListX",
@@ -69,23 +42,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       },
     },
     {
-      title: "Tous les demandes livraison",
-      url: "/Responsable_commerciale/Tous_les_demande_livraison",
-      icon: "ListFilter",
+      title: "Rapports",
+      url: "/Responsable_commerciale/Tous_les_resiliations",
+      icon: "UserRoundCog",
+      submenu: [
+        { title: "Recap redevance", url: "/Responsable_commerciale/Recaputilations/Redevance" },
+        { title: "Recap Modification Nom", url: "/Responsable_commerciale/Recaputilations/Changer_nom" },
+        { title: "Recap Acheter un cle ", url: "/Responsable_commerciale/Recaputilations/Achat_cle" },
+        { title: "Recap Ajouter un sous couvert", url: "/Responsable_commerciale/Recaputilations/Sous_couverte" },
+        { title: "Recap Ajouter une demande livraison", url: "/Responsable_commerciale/Recaputilations/Livraison" },
+        { title: "Recap Ajouter une collection", url: "/Responsable_commerciale/Recaputilations/Collection" },
+      ],
       RoleName: {
         Prefix: "",
         Suffix: "",
       },
     },
-    {
-      title: "Accepter paiemnet d'une année",
-      url: "/Responsable_commerciale/Accepter_paiement_annee",
-      icon: "ListX",
-      RoleName: {
-        Prefix: "",
-        Suffix: "",
-      },
-    },
+
+
   ];
   return (
     <SidebarProvider

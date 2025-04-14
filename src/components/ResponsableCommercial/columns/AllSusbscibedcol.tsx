@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown} from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,24 +12,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
-import {useState } from "react";
+import { useState } from "react";
+import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction";
+import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction";
+import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Subscribed = {
-  id: string;
+  id: number;
   Nom: string;
-  NBp: string;
-  Etat: string;
-  Telephone: string;
-  Redevance: string;
-  sous_couvert: string;
-  Domocile: string;
-  Date_abonnement: string;
+  Email: string;
   Adresse: string;
   TypeClient: string;
-  Type_boite_postale: string;
+  Telephone: string;
+  Id_boite_postale: number;
+  Date_abonnement: string;
+  id_user: number;
+  updated_by: number;
+  abonnement_status: string;
+  abonnement_penalite: number;
+  Annee_abonnement: number;
+  boite_postal_numero: string;
+  nombre_sous_couverte: number;
+  Adresse_Livraison: number;
+  Adresse_Collection: number;
 };
 
 export const SubscribedColumns: ColumnDef<Subscribed>[] = [
@@ -57,76 +65,106 @@ export const SubscribedColumns: ColumnDef<Subscribed>[] = [
   },
   {
     accessorKey: "Nom",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nom
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Nom <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
   },
   {
-    accessorKey: "NBp",
-    header: "N°Boite Postal",
+    accessorKey: "Email",
+    header: "Email",
   },
   {
-    accessorKey: "Etat",
-    header: "Etat",
+    accessorKey: "Adresse",
+    header: "Adresse",
+  },
+  {
+    accessorKey: "TypeClient",
+    header: "Client",
   },
   {
     accessorKey: "Telephone",
-    header: "Telephone",
+    header: "Téléphone",
   },
   {
-    accessorKey: "Redevance",
-    header: "Redevance",
+    accessorKey: "boite_postal_numero",
+    header: "N° Boîte Postale",
   },
   {
-    accessorKey: "sous_couvert",
-    header: "sous couvert",
+    accessorKey: "annee_abonnement",
+    header: "Abonnement",
   },
   {
-    accessorKey: "Domocile",
-    header: "Livraison à Domocile",
+    accessorKey: "abonnement_status",
+    header: "État Abonnement",
+    cell: ({ row }) => (
+      <p>
+        {row.original.abonnement_status}
+      </p>
+    ),
+  },
+  {
+    accessorKey: "nombre_sous_couverte",
+    header: "Nombre Sous Couvert",
+    cell: ({ row }) => {
+
+      return <ClientsCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+    },
+  },
+  {
+    accessorKey: "Adresse_Livraison",
+    header: "Nombre Adresse livraison",
+    cell: ({ row }) => {
+      return <LVDCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+    },
+  },
+  {
+    accessorKey: "Adresse_Collection",
+    header: "Nombre Adresse Collections",
+    cell: ({ row }) => {
+      return <ColectionCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+    },
+  },
+  {
+    accessorKey: "abonnement_penalite",
+    header: "Pénalités",
   },
   {
     accessorKey: "Date_abonnement",
-    header: "Date abonnement",
+    header: "Date Abonnement",
   },
   {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const user = row.original;
+      const client = row.original;
       const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-      // const [isPending, setIsPending] = useState(false);
 
-      const handleDeleteUser = async (e: React.FormEvent<HTMLFormElement>) => {
+      const handleEnlever = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Correction de la faute de frappe
-        // const apiUrl = `http://localhost/gbp_backend/api.php?method=DeleteUser&id=${user?.id}`;
-        console.log(user?.id);
-        // try {
-        //   const response = await fetch(apiUrl, {
-        //     method: "DELETE",
-        //   });
+        const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=EnleverPenaliter&id=${client?.id}`;
+        try {
+          const response = await fetch(apiUrl, {
+            method: "PUT",
+          });
 
-        //   const responseData = await response.json();
+          const responseData = await response.json();
 
-        //   if (!response.ok || responseData.error) {
-        //     toast.error(responseData.error || "Network error detected.");
-        //   }
+          if (!response.ok || responseData.error) {
+            toast.error(responseData.error || "Network error detected.");
+          }
 
-        //   toast.success(responseData?.success);
-        // } catch (error) {
-        //   console.error(
-        //     "Erreur lors de la suppression de l'utilisateur :",
-        //     error
-        //   );
-        // }
+          toast.success(responseData?.success);
+        } catch (error) {
+          console.error(
+            "Erreur lors de la suppression de l'utilisateur :",
+            error
+          );
+        }
       };
 
       return (
@@ -156,7 +194,7 @@ export const SubscribedColumns: ColumnDef<Subscribed>[] = [
                 className="w-full max-w-xs mx-auto"
                 onSubmit={(e) => {
                   e.preventDefault(); // Empêche le rechargement de la page
-                  handleDeleteUser(e); // Remplacez "123" par l'id réel
+                  handleEnlever(e); // Remplacez "123" par l'id réel
                 }}
               >
                 <h1> Etes-vous sure d&#39;enlever ???</h1>

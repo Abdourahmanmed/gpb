@@ -1,15 +1,16 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { FetchAllUsers } from "@/actions/FetchAllUsers";
+import { FetchAllUserAdminCrud } from "@/actions/FetchAdminUser";
 
 // Définir le type des clients
 interface CrudUserManagement {
     id: string;
-    nom: string;
-    email: string;
+    Nom: string;
+    Email: string;
     Telephone: string;
     Adresse: string;
     password: string;
-    role: string;
+    Role: string;
 }
 
 interface CrudUserState {
@@ -39,11 +40,37 @@ export const fetchCrudUsers = createAsyncThunk(
     }
 );
 
+// Créer un thunk pour appeler Fetch 
+export const fetchUserAdmin = createAsyncThunk(
+    "CrudUserManagementFetch/fetchCrudUsers",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await FetchAllUserAdminCrud(); // Appel à FetchAllClients
+            return response; // Retourner les données récupérées
+        } catch (error) {
+            console.log(error);
+            return rejectWithValue("Erreur lors de la récupération des données");
+        }
+    }
+);
+
 // Création du slice avec les actions nécessaires
 const UsersCrudSlice = createSlice({
     name: "CrudUserManagementFetch",
     initialState,
-    reducers: {}, // Pas de reducers nécessaires pour l'instant
+    reducers: {
+        addUserSuccess: (state, action: PayloadAction<CrudUserManagement>) => {
+            state.users.push(action.payload); // ✅ Ajouter immédiatement dans Redux
+        },
+        deleteUserSuccess: (state, action: PayloadAction<string>) => {
+            state.users = state.users.filter(user => user.id !== action.payload); // ✅ Supprimer
+        },
+        updateUserSuccess: (state, action: PayloadAction<CrudUserManagement>) => {
+            state.users = state.users.map(user =>
+                user.id === action.payload.id ? action.payload : user
+            ); // ✅ Mettre à jour
+        }
+    },
     extraReducers: (builder) => {
         builder
             // Quand la requête est en cours
@@ -67,5 +94,6 @@ const UsersCrudSlice = createSlice({
     },
 });
 
+export const { addUserSuccess, deleteUserSuccess, updateUserSuccess } = UsersCrudSlice.actions; // Exporter l'action
 // Exporter uniquement le reducer (pas les actions, car `fetchClients` est un thunk)
 export default UsersCrudSlice.reducer;

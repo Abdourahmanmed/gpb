@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/Store/store";
 import LoadingSpinner from "@/components/Spinner";
 import { CrudUsersColumns } from "./columns/CrudUserCol";
-import { fetchCrudUsers } from "@/Store/Slices/CrudUserManagement";
+import {fetchUserAdmin } from "@/Store/Slices/CrudUserManagement";
 
 const CrudUsers = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,7 +14,7 @@ const CrudUsers = () => {
   );
   // Utiliser le thunk pour charger les clients
   useEffect(() => {
-    dispatch(fetchCrudUsers()); // Appeler le thunk pour récupérer les clients
+    dispatch(fetchUserAdmin()); // Appeler le thunk pour récupérer les clients
   }, [dispatch]);
   return (
     <div>
@@ -26,7 +26,7 @@ const CrudUsers = () => {
         <NoFilterDataTable
           data={users}
           columns={CrudUsersColumns}
-          typeName="nom"
+          typeName="Nom"
         />
       )}
     </div>

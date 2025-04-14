@@ -22,15 +22,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Suffix: "Commercial"
             }
         },
-        // {
-        //     title: "Voir les depots",
-        //     url: "/Agent_commercial/Voir_les_depots",
-        //     icon: "FolderPen",
-        //     RoleName: {
-        //         Prefix: "Agent du ",
-        //         Suffix: "Commercial"
-        //     }
-        // },
         {
             title: "Resiliation",
             url: "/Agent_commercial/Resiliation",
@@ -40,7 +31,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Suffix: "Commercial"
             }
         },
-
+        {
+            title: "Recaputilation",
+            url: "/Agent_commercial/Recaputilation",
+            icon: "FolderPen",
+            submenu: [
+                { title: "Recap resiliations", url: "/Agent_commercial/Recaputilation/Rapport/Resilier" },
+                { title: "Recap redevance", url: "/Agent_commercial/Recaputilation/Rapport/Redevance" },
+                { title: "Recap Modification Nom", url: "/Agent_commercial/Recaputilation/Rapport/Changer_nom" },
+                { title: "Recap Acheter un cle ", url: "/Agent_commercial/Recaputilation/Rapport/Achat_cle" },
+                { title: "Recap Ajouter un sous couvert", url: "/Agent_commercial/Recaputilation/Rapport/Sous_couverte" },
+                { title: "Recap Ajouter une demande livraison", url: "/Agent_commercial/Recaputilation/Rapport/Livraison" },
+                { title: "Recap Ajouter une collection", url: "/Agent_commercial/Recaputilation/Rapport/Collection" },
+            ],
+            RoleName: {
+                Prefix: "Agent du ",
+                Suffix: "Commercial"
+            }
+        },
     ]
     return (
         <SidebarProvider style={

@@ -67,21 +67,21 @@ export function DataTable<TData, TValue>({
   );
 
   return (
-    <ScrollArea className="h-full max-w-[80%]">
+    <ScrollArea className="h-full w-[98%] rounded">
       <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 bg-white w-full h-max rounded-lg shadow-blue p-2">
         {/* Filtres dynamiques selon le type */}
         {path &&
           (path.includes("Agent_guiche") ||
             path.includes("Agent_commercial")) && (
             <div className="w-full flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
-              {[{ placeholder: "Filtrer par Nom...", column: typeName }]
+              {[{ placeholder: "Filtrer par N° Boîte Postale...", column: "boite_postal_numero" },{ placeholder: "Filtrer par Nom...", column: typeName }]
                 .concat(
-                  path === "/Agent_guiche/Rechercher"
+                  path === "/Agent_guiche/Rechercher" || "/Agent_guiche/Paiement"
                     ? [
-                      { placeholder: "Filtrer par Etat...", column: "Etat" },
+                      { placeholder: "Filtrer par Etat...", column: "abonnement_status" },
                       {
-                        placeholder: "Filtrer par sous couvert...",
-                        column: "sous_couvert",
+                        placeholder: "Filtrer par Nombre sous couvert...",
+                        column: "nombre_sous_couverte",
                       },
                     ]
                     : []

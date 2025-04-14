@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchAllUsers = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetAllUsers`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=getAllUsers`;
 
     try {
         const response = await fetch(api, {
@@ -38,7 +38,7 @@ export const GetUserByEmail = async (email: string) => {
         const users = await FetchAllUsers();
 
         // Recherche de l'utilisateur par email
-        const user = users.find(user => user.email.toLowerCase() === email.toLowerCase());
+        const user = users.find(user => user.Email.toLowerCase() === email.toLowerCase());
 
         return user ? user : null;
     } catch (error) {

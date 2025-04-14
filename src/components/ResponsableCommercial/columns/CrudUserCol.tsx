@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, Ellipsis} from "lucide-react"
+import { ArrowUpDown, Ellipsis } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -24,17 +24,20 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { EditAgentSchema, EditUserSchema } from "@/Schema/schema"
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
+import { AppDispatch } from "@/Store/store"
+import { useDispatch } from "react-redux"
+import { deleteUserSuccess, updateUserSuccess } from "@/Store/Slices/CrudUserManagement"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type CrudUsersType = {
     id: string;
-    nom: string;
-    email: string;
+    Nom: string;
+    Email: string;
     Telephone: string;
     Adresse: string;
     password: string;
-    role: string;
+    Role: string;
 };
 
 export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
@@ -61,7 +64,7 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "nom",
+        accessorKey: "Nom",
         header: ({ column }) => {
             return (
                 <Button
@@ -75,7 +78,7 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
         },
     },
     {
-        accessorKey: "email",
+        accessorKey: "Email",
         header: "Email",
     },
     {
@@ -87,7 +90,7 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
         header: "Adresse",
     },
     {
-        accessorKey: "role",
+        accessorKey: "Role",
         header: "Role",
     },
     {
@@ -98,8 +101,9 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
             const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
             const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
             const [isPending, setIsPending] = useState(false);
+            const dispatch = useDispatch<AppDispatch>();
             const form = useForm<z.infer<typeof EditUserSchema>>({
-                resolver: zodResolver(EditAgentSchema),
+                resolver: zodResolver(EditUserSchema),
                 defaultValues: {
                     Nom: '',
                     Email: '',
@@ -111,7 +115,9 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
             });
             //fonction pour editer les informations du compagne
             const onEditSubmit = async (values: z.infer<typeof EditUserSchema>) => {
-                const api = `http://192.168.0.15/gbp_backend/api.php?method=UpdateUser&id=${user.id}`;
+
+                const api = `http://192.168.0.15/gbp_backend/api.php?method=UpdateAgentByResponsable&id=${user.id}`;
+                console.log(values);
                 try {
                     const response = await fetch(api, {
                         method: "PUT",
@@ -129,6 +135,18 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
 
                     if (responseData.success) {
                         toast.success(responseData.success);
+                        // ✅ Mettre à jour Redux immédiatement
+                        dispatch(updateUserSuccess(
+                            {
+                                id: user.id, // 🔥 Générer un ID unique
+                                Nom: values.Nom,
+                                Email: values.Email,
+                                Telephone: values.Telephone,
+                                Adresse: values.Adresse,
+                                password: values.Password, // 🔥 Mettre la bonne casse
+                                Role: values.role, // 🔥 Mettre la bonne casse
+                            }
+                        ));
                     }
 
                 } catch (error) {
@@ -138,7 +156,7 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
 
             //fonction pour recupere les information d'un compagne par son id 
             const fetchUser = async (id: string) => {
-                const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=GetUser&id=${id}`;
+                const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=GetUsersById&id=${id}`;
                 try {
                     const response = await fetch(apiUrl, {
                         method: "GET",
@@ -150,12 +168,12 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
                         toast.error(responseData.error || "Network error detected.");
                     } else {
                         // Set form default values with the fetched data
-                        form.setValue("Nom", responseData.nom);
-                        form.setValue("Email", responseData.email);
+                        form.setValue("Nom", responseData.Nom);
+                        form.setValue("Email", responseData.Email);
                         form.setValue("Password", responseData.password);
                         form.setValue("Telephone", responseData.Telephone);
                         form.setValue("Adresse", responseData.Adresse);
-                        form.setValue("role", responseData.role);
+                        form.setValue("role", responseData.Role);
                     }
                 } catch (error) {
                     console.log(error);
@@ -178,6 +196,7 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
                     }
 
                     toast.success(responseData?.success);
+                    dispatch(deleteUserSuccess(user?.id))
 
                 } catch (error) {
                     console.error("Erreur lors de la suppression de l'utilisateur :", error);
@@ -311,9 +330,9 @@ export const CrudUsersColumns: ColumnDef<CrudUsersType>[] = [
                                                                 <SelectValue placeholder="Choisissez une méthode" />
                                                             </SelectTrigger>
                                                             <SelectContent>
-                                                                <SelectItem value="supersiveur">supersiveur</SelectItem>
-                                                                <SelectItem value="agent_commerciale">agent commerciale</SelectItem>
-                                                                <SelectItem value="agent_guichets">agent guichets</SelectItem>
+                                                                <SelectItem value="superviseur">supersiveur</SelectItem>
+                                                                <SelectItem value="agent_commercial">agent commerciale</SelectItem>
+                                                                <SelectItem value="agent_guichet">agent guichets</SelectItem>
                                                                 <SelectItem value="agent_comptable">agent comptable</SelectItem>
                                                             </SelectContent>
                                                         </Select>

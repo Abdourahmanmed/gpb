@@ -6,9 +6,10 @@ import SousCouverteForm from '../AgentGuiche/components/SousCouverteForm';
 interface SouscouvertPropos {
     ClientId: string,
     Nbp: string
+    TypeClient: string
 }
 
-const SousCouvertColAction = ({ ClientId, Nbp }: SouscouvertPropos) => {
+const SousCouvertColAction = ({ ClientId, Nbp, TypeClient }: SouscouvertPropos) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     return (
@@ -16,7 +17,7 @@ const SousCouvertColAction = ({ ClientId, Nbp }: SouscouvertPropos) => {
             <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
                 Ajouter un sous couverte
             </Button>
-            <SousCouverteForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} IdClient={ClientId} Nbp={Nbp} />
+            <SousCouverteForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} IdClient={ClientId} Nbp={Nbp} TypeClient={TypeClient} />
         </div>
     );
 }

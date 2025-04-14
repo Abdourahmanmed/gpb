@@ -3,18 +3,23 @@ import { FetchAllClients } from "@/actions/FetchClient"; // Assurez-vous que cet
 
 // Définir le type des clients
 interface ClientsManagement {
-    id: string;
+    id: number;
     Nom: string;
-    NBp: string;
-    Etat: string;
-    Telephone: string;
-    Redevance: string;
-    sous_couvert: string;
-    Domocile: string;
-    Date_abonnement: string;
+    Email: string;
     Adresse: string;
     TypeClient: string;
-    Type_boite_postale: string;
+    Telephone: string;
+    Id_boite_postale: number;
+    Date_abonnement: string;
+    id_user: number;
+    updated_by: number;
+    abonnement_status: string;
+    abonnement_penalite: number;
+    Annee_abonnement: number;
+    boite_postal_numero: string;
+    nombre_sous_couverte: number;
+    Adresse_Livraison: number;
+    Adresse_Collection: number;
 }
 
 interface ClientsState {

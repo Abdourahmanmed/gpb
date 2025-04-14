@@ -26,17 +26,26 @@ import { GetLastReferenceOfLDV } from "@/actions/All_references/GetLastReference
 
 type SousCouvertFormValues = z.infer<typeof DynamicSchema>;
 
-const montantBaseLd = 3000;
-const montantBaseCll = 4000;
-const montantBaseSc = 20000;
-
 const FormSousCOptonal = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const multiFormState = useSelector((state: RootState) => state.multiForm);
+    const multiFormState = useSelector((state: RootState) => state.multiForm)
     const [montantTotal, setMontantTotal] = useState(0);
+    const [montantBaseLd, setMontantBaseLd] = useState(0);
+    const [montantBaseCll, setMontantBaseCll] = useState(0);
+    const [montantBaseSc, setMontantBaseSc] = useState(0);
     // État pour gérer l'incrément du numéro pour les souscouverte
     const [currentNumber] = useState(1);
     const [recueNumber, setRecueNumber] = useState('');
+
+    useEffect(() => {
+        if (multiFormState?.Role == "particulier") {
+            setMontantBaseSc(3500);
+        } else {
+            setMontantBaseLd(60000);
+            setMontantBaseCll(60000);
+            setMontantBaseSc(10000);
+        }
+    }, [multiFormState?.Role]);
 
     // État pour gérer l'incrément du numéro pour les livraisons
     const [currentNumberLiv] = useState(1);
@@ -357,94 +366,103 @@ const FormSousCOptonal = () => {
                             </div>
                         )}
                     </div>
-                    {/* Livraison */}
-                    <div className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name={`Have_ld`}
-                            render={({ field: checkboxField }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <div className="flex items-center gap-1">
-                                            <Checkbox
-                                                id={`terms`}
-                                                checked={checkboxField.value || false}
-                                                onCheckedChange={checkboxField.onChange}
-                                            />
-                                            <label
-                                                htmlFor={`terms`}
-                                                className="text-sm font-medium leading-none"
-                                            >
-                                                Je veux une livraison à domicile
-                                            </label>
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        {form.watch("Have_ld") && (
+                    {multiFormState?.Role == "entreprise" ? (
+                        <>
+                            {/* Livraison */}
                             <div className="space-y-4">
                                 <FormField
                                     control={form.control}
-                                    name={`Adresse_Livraison_Domicile`}
-                                    render={({ field }) => (
+                                    name={`Have_ld`}
+                                    render={({ field: checkboxField }) => (
                                         <FormItem>
-                                            <FormLabel>Adresse Livraison à Domicile</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Adresse X" {...field} />
+                                                <div className="flex items-center gap-1">
+                                                    <Checkbox
+                                                        id={`terms`}
+                                                        checked={checkboxField.value || false}
+                                                        onCheckedChange={checkboxField.onChange}
+                                                    />
+                                                    <label
+                                                        htmlFor={`terms`}
+                                                        className="text-sm font-medium leading-none"
+                                                    >
+                                                        Je veux une livraison à domicile
+                                                    </label>
+                                                </div>
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
+                                {form.watch("Have_ld") && (
+                                    <div className="space-y-4">
+                                        <FormField
+                                            control={form.control}
+                                            name={`Adresse_Livraison_Domicile`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Adresse Livraison à Domicile</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="Adresse X" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                    {/* Collection */}
-                    <div className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name={`Have_cll`}
-                            render={({ field: checkboxField }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <div className="flex items-center gap-1">
-                                            <Checkbox
-                                                id={`termsCli`}
-                                                checked={checkboxField.value || false}
-                                                onCheckedChange={checkboxField.onChange}
-                                            />
-                                            <label
-                                                htmlFor={`termsCli`}
-                                                className="text-sm font-medium leading-none"
-                                            >
-                                                Je veux une collection
-                                            </label>
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        {form.watch("Have_cll") && (
+                            {/* Collection */}
                             <div className="space-y-4">
                                 <FormField
                                     control={form.control}
-                                    name={`Adresse_collection`}
-                                    render={({ field }) => (
+                                    name={`Have_cll`}
+                                    render={({ field: checkboxField }) => (
                                         <FormItem>
-                                            <FormLabel>Adresse de collection</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Adresse collection X" {...field} />
+                                                <div className="flex items-center gap-1">
+                                                    <Checkbox
+                                                        id={`termsCli`}
+                                                        checked={checkboxField.value || false}
+                                                        onCheckedChange={checkboxField.onChange}
+                                                    />
+                                                    <label
+                                                        htmlFor={`termsCli`}
+                                                        className="text-sm font-medium leading-none"
+                                                    >
+                                                        Je veux une collection
+                                                    </label>
+                                                </div>
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
+                                {form.watch("Have_cll") && (
+                                    <div className="space-y-4">
+                                        <FormField
+                                            control={form.control}
+                                            name={`Adresse_collection`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Adresse de collection</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="Adresse collection X" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
+                        </>
+                    ) : (
+                        <div>
+                            
+                        </div>
+                    )}
+
                 </div>
                 {/* montant du inscriptions  */}
                 <div className="flex justify-end mr-10">

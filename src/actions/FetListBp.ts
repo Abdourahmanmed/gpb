@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchAllBp = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetBoitesPostales`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetAllBoitPostale`;
 
     try {
         // Effectuer la requête fetch

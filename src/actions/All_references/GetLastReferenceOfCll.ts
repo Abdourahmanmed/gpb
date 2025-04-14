@@ -1,6 +1,6 @@
 "use server"
 export const GetLastReferenceOfCLL = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=getLastReferenceAjoutCollection`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=getLastReferenceCollection`;
 
     try {
         // Effectuer la requête fetch

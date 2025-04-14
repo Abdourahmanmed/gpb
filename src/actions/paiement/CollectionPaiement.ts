@@ -2,7 +2,7 @@
 
 interface dataType {
     Adresse_collection: string;
-    Montant: 5000;
+    Montant: 60000;
     Methode_de_paiement: "cheque" | "cash" | "wallet";
     Wallet?: "cac_pay" | "waafi" | "d_money" | "sabapay" | "dahabplaces" | undefined;
     Numero_wallet?: string | undefined;
@@ -11,8 +11,8 @@ interface dataType {
     ReferenceId?: string | undefined;
 }
 
-export const CollectionPaiement = async (userid: string, data: dataType) => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=insererCollectionEtMettreAJourPaiement&id=${userid}`;
+export const CollectionPaiement = async (clientId: string, UserId: string | undefined, data: dataType) => {
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=AddCollectionClients&id=${UserId}&idClient=${clientId}`;
     try {
         const response = await fetch(api, {
             method: "POST",
