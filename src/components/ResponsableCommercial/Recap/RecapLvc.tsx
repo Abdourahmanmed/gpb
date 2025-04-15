@@ -9,7 +9,7 @@ const RecapLvc = () => {
   const [recapLdc, SetRecapLdc] = useState<RLdv[]>([]);
 
   const FetchRecap = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=GetAllActivityLD`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetAllActivityLD`;
     try {
       const responses = await fetch(api, {
         method: 'GET',

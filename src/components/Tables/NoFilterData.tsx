@@ -204,7 +204,7 @@ export function NoFilterDataTable<TData, TValue>({
     if (selectedRowIds.length === 0) return;
 
     const clientId = selectedRowIds[0]; // on prend le premier client sélectionné
-    const apiUrl = `http://localhost/gbp_backend/api.php?method=AfficherDocument&Id=${clientId}`;
+    const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=AfficherDocument&Id=${clientId}`;
 
     try {
       const response = await fetch(apiUrl, {

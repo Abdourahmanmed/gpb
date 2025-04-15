@@ -9,7 +9,7 @@ const RecapSousCouvert = () => {
   const [recapSc, SetRecapSc] = useState<RSousCouverte[]>([]);
 
   const FetchRecap = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=GetAllActivitySousCouverte`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetAllActivitySousCouverte`;
     try {
       const responses = await fetch(api, {
         method: 'GET',

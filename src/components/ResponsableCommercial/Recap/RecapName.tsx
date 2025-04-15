@@ -9,7 +9,7 @@ const RecapName = () => {
   const [recapName, SetRecapName] = useState<RName[]>([]);
 
   const FetchRecap = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=GetAllActivityChagementName`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetAllActivityChagementName`;
     try {
       const responses = await fetch(api, {
         method: 'GET',

@@ -9,7 +9,7 @@ const RecapCll = () => {
   const [recapCll, SetRecapCll] = useState<RCll[]>([]);
 
   const FetchRecap = async () => {
-    const api = `http://localhost/gbp_backend/api.php?method=GetAllActivityCollections`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetAllActivityCollections`;
     try {
       const responses = await fetch(api, {
         method: 'GET',

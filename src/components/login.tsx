@@ -61,7 +61,7 @@ export default function LoginPage() {
                             height={50}
                             className=""
                         />
-                        Gestions Des Boits Postals
+                        Gestion De Boite Postale
                     </h2>
                     <p className="pt-4 pb-4 w-full ml-5 text-sm text-blue-900 mb-4">
                         Bienvenue dans le système de gestion des boîtes postales. <br /> Veuillez procéder à votre identification pour continuer.
