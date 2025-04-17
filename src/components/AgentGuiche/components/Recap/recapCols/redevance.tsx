@@ -133,8 +133,11 @@ export const RecapRvcols: ColumnDef<Rdv>[] = [
     },
     {
         header: "Facture",
+    },
+    {
+        header: "Reçue",
         cell: ({ row }) => {
-            return <FactureCelleAction Name="Facture" Clients={row.original?.id} Nom={row.original?.Nom} />
+            return <FactureCelleAction Name="Reçue" Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
 

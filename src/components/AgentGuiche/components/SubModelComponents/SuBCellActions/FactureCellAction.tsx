@@ -92,7 +92,7 @@ const FactureCelleAction: React.FC<ModelProps> = ({ Name, Clients, Nom }) => {
             data={factures}
             loading={loading}
             error={error}
-            Titre="Factures"
+            Titre="Reçue"
         />
     );
 };

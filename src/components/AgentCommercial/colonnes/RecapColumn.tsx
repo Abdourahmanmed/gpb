@@ -21,6 +21,7 @@ export type Recaputilation = {
     TypeClient: string;
     Telephone: string;
     Id_boite_postale: number;
+    Numero: number;
     Date_abonnement: string;
     id_user: number;
     updated_by: number;
@@ -82,6 +83,10 @@ export const RecapReslierCol: ColumnDef<Recaputilation>[] = [
         header: "Téléphone",
     },
     {
+        accessorKey: "Numero",
+        header: "Numero boite postale",
+    },
+    {
         accessorKey: "Date_abonnement",
         header: "Date Abonnement",
     },
@@ -93,6 +98,6 @@ export const RecapReslierCol: ColumnDef<Recaputilation>[] = [
         accessorKey: "Date_resilier",
         header: "Date de Résiliation",
     },
-    
+
 ];
 

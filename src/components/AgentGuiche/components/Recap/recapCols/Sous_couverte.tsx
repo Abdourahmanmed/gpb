@@ -80,7 +80,7 @@ export const RecapSccols: ColumnDef<RSousCouverte>[] = [
         accessorKey: "Telephone",
         header: "Téléphone",
     },
-    
+
     {
         accessorKey: "boite_postal_numero",
         header: "N° Boîte Postale",
@@ -130,8 +130,11 @@ export const RecapSccols: ColumnDef<RSousCouverte>[] = [
     },
     {
         header: "Facture",
+    },
+    {
+        header: "Reçue",
         cell: ({ row }) => {
-            return <FactureCelleAction Name="Facture" Clients={row.original?.id} Nom={row.original?.Nom} />
+            return <FactureCelleAction Name="Reçue" Clients={row.original?.id} Nom={row.original?.Nom} />
         },
     },
 

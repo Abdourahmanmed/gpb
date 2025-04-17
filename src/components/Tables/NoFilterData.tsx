@@ -397,6 +397,16 @@ export function NoFilterDataTable<TData, TValue>({
         {path && path === "/Agent_commercial/Recaputilation/Rapport/Resilier" && (
           <>
             <Input
+              placeholder="filtre par numero boite postale"
+              value={
+                (table.getColumn("Numero")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn("Numero")?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+            />
+            <Input
               placeholder="filtre par nom"
               value={
                 (table.getColumn(typeName)?.getFilterValue() as string) ?? ""
