@@ -62,6 +62,8 @@ export const AgentRsponsableRoutes = [
     "/Responsable_commerciale/Creation_des_utilisateur",
     "/Responsable_commerciale/Les_Abonnes",
     "/Responsable_commerciale/Enleve_les_penalites",
+    "/Responsable_commerciale/Compte_Resilier",
+    "/Responsable_commerciale/Compte_Exonorer",
     "/Responsable_commerciale/Recaputilations/Redevance",
     "/Responsable_commerciale/Recaputilations/Changer_nom",
     "/Responsable_commerciale/Recaputilations/Achat_cle",

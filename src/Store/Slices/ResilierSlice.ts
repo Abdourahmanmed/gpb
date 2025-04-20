@@ -3,10 +3,28 @@ import { FetchAllResiliation } from "@/actions/FetchAllResiliation";
 
 // Définir le type des clients
 interface ResilierManagement {
-  id: string;
-  client_name: string;
-  user_name: string;
-  date_resiliation: string;
+  id: number,
+  Nom: string,
+  Email: string,
+  Adresse: string,
+  TypeClient: string,
+  Telephone: string,
+  Id_boite_postale: string,
+  Date_abonnement: string,
+  id_user: string,
+  updated_by: string,
+  Id_client: string,
+  Lettre_recommandation: string,
+  Date_resilier: string,
+  Resilier_by: string,
+  abonnement_status: string,
+  abonnement_penalite: string,
+  annee_abonnement: string,
+  boite_postal_numero: number,
+  nombre_sous_couverte: number,
+  Adresse_Livraison: number,
+  Adresse_Collection: number,
+  Agents: string
 }
 
 interface ResilierState {
@@ -32,7 +50,7 @@ export const fetchResilier = createAsyncThunk(
     } catch (error) {
       console.log(error);
       return rejectWithValue("Erreur lors de la récupération des données");
-      
+
     }
   }
 );

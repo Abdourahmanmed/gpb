@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchAllResiliation = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=getAllResilations`;
+    const api = `http://192.168.0.15/gbp_backend/api.php?method=TousLesClientsResiliers`;
 
     try {
         // Effectuer la requête fetch
@@ -22,11 +22,11 @@ export const FetchAllResiliation = async () => {
         const responseData = await response.json();
 
         // Vérifier si les données sont valides
-        if (!responseData.resilations || !Array.isArray(responseData.resilations)) {
+        if (!responseData || !Array.isArray(responseData)) {
             throw new Error('Les données reçues ne sont pas valides ou ne sont pas au format attendu.');
         }
 
-        return responseData.resilations; // Retourne les données si tout va bien
+        return responseData; // Retourne les données si tout va bien
     } catch (error) {
         // Gérer les erreurs et les logs
         console.error('Erreur lors de l\'appel API :', error);

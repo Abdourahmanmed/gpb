@@ -42,6 +42,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       },
     },
     {
+      title: "Compte Resilier",
+      url: "/Responsable_commerciale/Compte_Resilier",
+      icon: "Users",
+      RoleName: {
+        Prefix: "",
+        Suffix: "",
+      },
+    },
+    {
+      title: "Compte Exonorer",
+      url: "/Responsable_commerciale/Compte_Exonorer",
+      icon: "Users",
+      RoleName: {
+        Prefix: "",
+        Suffix: "",
+      },
+    },
+    {
       title: "Rapports",
       url: "/Responsable_commerciale/Tous_les_resiliations",
       icon: "UserRoundCog",

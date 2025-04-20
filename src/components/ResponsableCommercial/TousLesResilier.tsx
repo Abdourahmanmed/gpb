@@ -4,9 +4,9 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/Store/store";
 import LoadingSpinner from "@/components/Spinner";
-import { ResilierColumns } from "./columns/ResilierCol";
 import { fetchResilier } from "@/Store/Slices/ResilierSlice";
 import { AppDispatch } from "@/Store/store";
+import { AllResilierColumns } from "./columns/AllResilierCol";
 
 const TousLesResilier = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,7 +26,7 @@ const TousLesResilier = () => {
       ) : (
         <NoFilterDataTable
           data={Resiliers}
-          columns={ResilierColumns}
+          columns={AllResilierColumns}
           typeName="client_name"
         />
       )}
