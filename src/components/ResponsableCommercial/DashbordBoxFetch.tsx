@@ -91,7 +91,7 @@ const DashbordBoxFetch = () => {
             <BoxInfo
                 titre="Montant Totale journalier"
                 Nombre={30000}
-                color="text-primary-3"
+                color="text-primary-8"
             />
             <BoxInfo
                 titre="Boite Postal : Grand"
@@ -107,7 +107,7 @@ const DashbordBoxFetch = () => {
             <BoxInfo
                 titre="Montant Totale Mensuel"
                 Nombre={500000}
-                color="text-primary-3"
+                color="text-primary-8"
             />
             <BoxInfo
                 titre="Nombre des abonnes à jour"
@@ -122,7 +122,7 @@ const DashbordBoxFetch = () => {
             <BoxInfo
                 titre="Montant Totale Annuel"
                 Nombre={7000000}
-                color="text-primary-3"
+                color="text-primary-8"
             />
             <BoxInfo
                 titre="Nombre des comptes resilier"

@@ -6,6 +6,7 @@ import AgentsReducer from "./Slices/AgentManagement";
 import BoitPostalReducer from "./Slices/ListeBpSlice";
 import crudUserReducer from "./Slices/CrudUserManagement";
 import ResilieReducer from "./Slices/ResilierSlice";
+import ExonorerReducer from "./Slices/ExonoreSlice";
 import ChangementNameReducer from "./Slices/NameChangeSlice";
 import LvdReducer from "./Slices/LvdSlice";
 import ChangementCleReducer from "./Slices/ChangementCleSlice";
@@ -20,6 +21,7 @@ const store = configureStore({
     BoitPostal: BoitPostalReducer,
     UsersCrud: crudUserReducer,
     Resilier: ResilieReducer,
+    Exonorer: ExonorerReducer,
     ChangementName: ChangementNameReducer,
     Lvd: LvdReducer,
     ChangementCle: ChangementCleReducer,

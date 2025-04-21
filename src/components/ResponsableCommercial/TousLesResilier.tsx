@@ -27,7 +27,7 @@ const TousLesResilier = () => {
         <NoFilterDataTable
           data={Resiliers}
           columns={AllResilierColumns}
-          typeName="client_name"
+          typeName="Nom"
         />
       )}
     </div>
