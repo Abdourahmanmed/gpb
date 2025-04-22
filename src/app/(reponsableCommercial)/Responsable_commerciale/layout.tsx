@@ -75,10 +75,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       submenu: [
         { title: "Recap redevance", url: "/Responsable_commerciale/Recaputilations/Redevance" },
         { title: "Recap Modification Nom", url: "/Responsable_commerciale/Recaputilations/Changer_nom" },
-        { title: "Recap Acheter un cle ", url: "/Responsable_commerciale/Recaputilations/Achat_cle" },
-        { title: "Recap Ajouter un sous couvert", url: "/Responsable_commerciale/Recaputilations/Sous_couverte" },
-        { title: "Recap Ajouter une demande livraison", url: "/Responsable_commerciale/Recaputilations/Livraison" },
-        { title: "Recap Ajouter une collection", url: "/Responsable_commerciale/Recaputilations/Collection" },
+        { title: "Recap Achat cle ", url: "/Responsable_commerciale/Recaputilations/Achat_cle" },
+        { title: "Recap  sous couvert", url: "/Responsable_commerciale/Recaputilations/Sous_couverte" },
+        { title: "Recap livraison à domocile", url: "/Responsable_commerciale/Recaputilations/Livraison" },
+        { title: "Recap collecte", url: "/Responsable_commerciale/Recaputilations/Collection" },
       ],
       RoleName: {
         Prefix: "",

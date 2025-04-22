@@ -785,6 +785,9 @@ export function NoFilterDataTable<TData, TValue>({
             "/Responsable_commerciale/Recaputilations/Livraison",
             "/Responsable_commerciale/Recaputilations/Collection",
             "/Responsable_commerciale/Les_Abonnes",
+            "/Responsable_commerciale/Exonorer",
+            "/Responsable_commerciale/Compte_Resilier",
+            "/Responsable_commerciale/Compte_Exonorer",
           ].includes(path) && (
             <>
               <Input

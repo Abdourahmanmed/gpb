@@ -27,12 +27,13 @@ interface MychartPropos {
     BpGrand: number
 }
 
-export function PieChartDonutWithText({ BpPetit, BpMoyen,BpGrand }: MychartPropos) {
+export function PieChartDonutWithText({ BpPetit, BpMoyen, BpGrand }: MychartPropos) {
     const chartData = [
-        { browser: "PetitBoitPostal", visitors: BpPetit, fill: "var(--color-PetitBoitPostal)" },
-        { browser: "MoyenBoitPostal", visitors: BpMoyen, fill: "var(--color-MoyenBoitPostal)" },
-        { browser: "GrandBoitPostal", visitors: BpGrand, fill: "var(--color-GrandBoitPostal)" },
+        { browser: "PetitBoitPostal", visitors: Number(BpPetit), fill: "var(--color-PetitBoitPostal)" },
+        { browser: "MoyenBoitPostal", visitors: Number(BpMoyen), fill: "var(--color-MoyenBoitPostal)" },
+        { browser: "GrandBoitPostal", visitors: Number(BpGrand), fill: "var(--color-GrandBoitPostal)" },
     ]
+
 
     const chartConfig = {
         visitors: {
@@ -54,7 +55,7 @@ export function PieChartDonutWithText({ BpPetit, BpMoyen,BpGrand }: MychartPropo
 
     const totalVisitors = React.useMemo(() => {
         return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-    }, [BpPetit, BpMoyen,BpGrand])
+    }, [BpPetit, BpMoyen, BpGrand])
 
     return (
         <Card className="flex flex-col shadow-blue">

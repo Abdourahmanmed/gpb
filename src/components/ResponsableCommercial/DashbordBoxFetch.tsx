@@ -8,6 +8,10 @@ import { FetchNombreabonne } from '@/actions/All_references/FectNombreAbonne';
 import { FetchNombreabonneAjour } from '@/actions/All_references/FetchNbrAbonneAjour';
 import { FetchNombreabonneNonAjour } from '@/actions/All_references/FetchNbrAbonneNonAjour';
 import { FetchNombreabonneResilier } from '@/actions/All_references/FetchNombreCptResilier';
+import { FetchNombreabonneExonorer } from '@/actions/All_references/FetchNbrCptExonorer';
+import { FetchMontantParJour } from '@/actions/All_references/FetchMontantParJour';
+import { FetchMontantParMois } from '@/actions/All_references/FetchMontantParMois';
+import { FetchMontantParAns } from '@/actions/All_references/FetchMontantParAns';
 
 const DashbordBoxFetch = () => {
 
@@ -19,6 +23,9 @@ const DashbordBoxFetch = () => {
     const [NbrAbonneNonAjour, SetNbrAbonneNonAjour] = useState(0);
     const [Nbrresilier, SetNbrresilier] = useState(0);
     const [NbrExonorer, SetNbrExonorer] = useState(0);
+    const [NbrMontantParJour, SetNbrMontantParJour] = useState(0);
+    const [NbrMontantParMois, SetNbrMontantParMois] = useState(0);
+    const [NbrMontantParAns, SetNbrMontantParAns] = useState(0);
 
     const fetctBpG = async () => {
         const result = await FetchGrandBp();
@@ -63,9 +70,27 @@ const DashbordBoxFetch = () => {
         }
     }
     const fetctnbrExonorer = async () => {
-        const result = await FetchNombreabonneResilier();
+        const result = await FetchNombreabonneExonorer();
         if (result) {
             SetNbrExonorer(result);
+        }
+    }
+    const fetctnbrMontantParJour = async () => {
+        const result = await FetchMontantParJour();
+        if (result) {
+            SetNbrMontantParJour(result);
+        }
+    }
+    const fetctnbrMontantParMois = async () => {
+        const result = await FetchMontantParMois();
+        if (result) {
+            SetNbrMontantParMois(result);
+        }
+    }
+    const fetctnbrMontantParAns = async () => {
+        const result = await FetchMontantParAns();
+        if (result) {
+            SetNbrMontantParAns(result);
         }
     }
 
@@ -78,6 +103,9 @@ const DashbordBoxFetch = () => {
         fetctAbonneNonajour();
         fetctnbrResilier();
         fetctnbrExonorer();
+        fetctnbrMontantParJour();
+        fetctnbrMontantParMois();
+        fetctnbrMontantParAns();
     }, [])
 
     return (
@@ -90,7 +118,7 @@ const DashbordBoxFetch = () => {
             />
             <BoxInfo
                 titre="Montant Totale journalier"
-                Nombre={30000}
+                Nombre={NbrMontantParJour}
                 color="text-primary-8"
             />
             <BoxInfo
@@ -106,7 +134,7 @@ const DashbordBoxFetch = () => {
             />
             <BoxInfo
                 titre="Montant Totale Mensuel"
-                Nombre={500000}
+                Nombre={NbrMontantParMois}
                 color="text-primary-8"
             />
             <BoxInfo
@@ -121,7 +149,7 @@ const DashbordBoxFetch = () => {
             />
             <BoxInfo
                 titre="Montant Totale Annuel"
-                Nombre={7000000}
+                Nombre={NbrMontantParAns}
                 color="text-primary-8"
             />
             <BoxInfo
