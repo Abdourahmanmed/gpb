@@ -3,15 +3,15 @@ import React from 'react'
 
 const HeaderImprimary = () => {
     return (
-        <div className="flex items-center gap">
-            <div className="flex items-center">
+        <div className="flex items-center justify-between pt-16">
+            <div className="flex items-center justify-center flex-col">
                 {/* Logo à gauche */}
-                <div className="w-max h-max rounded-full flex items-center justify-center overflow-hidden">
+                <div className="w-max h-max rounded-full flex items-center justify-center overflow-hidden pt-4 gap-2">
                     <Image
                         src="/logoposte.png"
                         alt="Logo"
-                        width={100} // Largeur de 64px
-                        height={100} // Hauteur de 64px
+                        width={70} // Largeur de 64px
+                        height={70} // Hauteur de 64px
                         className="object-cover"
                     />
                 </div>
@@ -34,6 +34,9 @@ const HeaderImprimary = () => {
                     Unité - Égalité - Paix
                 </div>
             </div>
+
+            {/* info poste  */}
+
         </div>
     )
 }

@@ -129,6 +129,7 @@ export function ModelFacture({
                                     <div className="w-full " ref={printAreaRef}>
 
                                         <HeaderImprimary />
+                                        <hr className="mt-4" />
                                         <div className="w-full mt-4">
                                             {/* Itérer sur les paiements */}
                                             {Object.keys(groupedData).map((key) => {
@@ -138,21 +139,20 @@ export function ModelFacture({
                                                 return (
                                                     <div key={key} className="mb-4">
                                                         <div className="flex justify-between items-start mb-6 text-sm md:text-base">
-                                                            {/* Colonne de gauche : Informations de contact */}
-                                                            <div className="text-gray-700 dark:text-gray-300 space-y-1 leading-relaxed">
-                                                                <p><strong>Boulevard de la République</strong></p>
-                                                                <p><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</p>
-                                                                <p><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></p>
-                                                                <p><strong>Site web :</strong> <a href="http://www.laposte.dj" target="_blank" rel="noopener noreferrer" className="underline">www.laposte.dj</a></p>
+                                                            {/* div gauche */}
+                                                            <div className="text-gray-700 dark:text-gray-300 space-y-1 leading-relaxed w-[250px] h-[300px] pl-2 ">
+                                                                <p className="text-[0.2rem]"><strong>Boulevard de la République</strong></p>
+                                                                <p className="text-[0.2rem] mt-5"><strong>Tél :</strong> <span>+253 21 35 48 02 </span><br /><br /><span className='mt-8'>/ +253 21 25 03 12</span></p>
+                                                                <p className="text-[0.2rem] mt-5"><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></p>
+                                                                <p className="text-[0.2rem] mt-5"><strong>Site web :</strong> <a href="http://www.laposte.dj" target="_blank" rel="noopener noreferrer" className="underline">www.laposte.dj</a></p>
                                                             </div>
-
                                                             {/* Colonne de droite : Date et numéro de reçu */}
-                                                            <div className="text-right text-gray-700 dark:text-gray-300 space-y-2">
+                                                            <div className="text-left text-gray-700 dark:text-gray-300 space-y-2 w-[300px]">
                                                                 <p className="italic">Djibouti, le {new Date().toLocaleDateString()}</p>
-                                                                <p className="font-semibold text-lg">N° Reçu : <span className="text-primary">{payment.Reference}</span></p>
+                                                                <p className="font-semibold text-lg">N° Reçu : <span className="text-primary text-[0.8rem]">{payment.Reference}</span></p>
                                                             </div>
                                                         </div>
-
+                                                        <hr className="mt-4 mb-3" />
                                                         <h5 className="font-bold text-xl">Client : {payment.Nom}</h5>
                                                         <table className="w-full border border-gray-300 mt-4">
                                                             <thead className="bg-gray-100">
