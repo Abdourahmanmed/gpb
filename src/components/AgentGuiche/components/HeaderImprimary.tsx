@@ -5,7 +5,7 @@ interface ReferencePropos {
 }
 const HeaderImprimary = ({ Reference }: ReferencePropos) => {
     return (
-        <div className="pt-16">
+        <div className="">
             {/* Texte principal */}
             <div className="flex-1 text-center">
                 <div className="text-lg font-bold">
@@ -16,7 +16,7 @@ const HeaderImprimary = ({ Reference }: ReferencePropos) => {
                 </div>
             </div>
 
-            <div className="flex items-center justify-between ">
+            <div className="flex items-center justify-between bg-ble-500">
                 <div className="flex items-center justify-center flex-col">
                     {/* Logo à gauche */}
                     <div className="w-max h-max rounded-full flex items-center justify-center overflow-hidden pt-4 gap-2">

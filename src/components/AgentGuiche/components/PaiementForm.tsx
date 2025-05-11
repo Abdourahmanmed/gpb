@@ -31,13 +31,19 @@ type WalletOptions = "cac_pay" | "waafi" | "d_money" | "dahabplaces" | "sabapay"
 // Typage du formulaire
 type PaiementFormValues = z.infer<typeof PaiementSchema>;
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
+interface DataClient {
+    ClientId: string,
+    TypeClient: string,
+    Nom: string,
+    Redevance: number
+}
 interface PaymentFormProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-    ClientId: string,
+    dataClient: DataClient,
 }
 
-export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, ClientId }) => {
+export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, dataClient }) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<MethodePaiement | undefined>(undefined);
     const [donnees, setDonnees] = useState<PaiementFormValues | null>(null);
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
@@ -56,7 +62,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Cli
     const [Apayer, SetApayer] = useState(0);
 
     const FetApayer = async () => {
-        const api = `http://192.168.0.15/gbp_backend/api.php?method=SelectionsLesMontantsImaper&ClientId=${ClientId}`;
+        const api = `http://192.168.0.15/gbp_backend/api.php?method=SelectionsLesMontantsImaper&ClientId=${dataClient?.ClientId}`;
         try {
             const response = await fetch(api);
             const data = await response.json();
@@ -73,10 +79,10 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Cli
 
     // Appeler l'API lorsque ClientId change
     useEffect(() => {
-        if (ClientId) {
+        if (dataClient?.ClientId) {
             FetApayer();
         }
-    }, [ClientId]);
+    }, [dataClient?.ClientId]);
 
 
     useEffect(() => {
@@ -185,7 +191,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Cli
         }
 
         try {
-            const enregistrement = await ChangementRdvPaiement(ClientId, session?.user?.id, donnees);
+            const enregistrement = await ChangementRdvPaiement(dataClient?.ClientId, session?.user?.id, donnees);
             if (enregistrement?.success) {
                 setMessage(enregistrement?.success);
                 setisSucessOpen(true);
@@ -379,7 +385,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Cli
             </Dialog>
 
             <Dialog open={isSucessOpen} onOpenChange={setisSucessOpen}>
-                <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
+                <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-[980px]   mx-auto">
                     <DialogHeader className="border-b-2 pb-4 mb-6">
                         <DialogTitle className="text-2xl font-bold text-gray-800">Imprimer</DialogTitle>
                     </DialogHeader>
@@ -394,19 +400,8 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Cli
                         />
                     </div>
                     {/* Section à imprimer */}
-                    <div id="print-area" ref={printAreaRef} className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full">
-                        <div className="flex items-center gap">
-                            {/* Logo à gauche */}
-                            <div className="w-max h-max rounded-full flex items-center justify-center overflow-hidden">
-                                <Image
-                                    src="/logoposte.png"
-                                    alt="Logo"
-                                    width={100} // Largeur de 64px
-                                    height={100} // Hauteur de 64px
-                                    className="object-cover"
-                                />
-                            </div>
-
+                    <div id="print-area" ref={printAreaRef} className="rounded-md  p-4 flex flex-col items-center w-[900px]">
+                        <div className="w-full">
                             {/* Texte principal */}
                             <div className="flex-1 text-center">
                                 <div className="text-lg font-bold">
@@ -415,64 +410,96 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, Cli
                                 <div className="text-sm italic my-1">
                                     Unité - Égalité - Paix
                                 </div>
-                                <div className="text-sm uppercase my-1">
-                                    MINISTÈRE DE LA COMMUNICATION, CHARGÉ DES POSTES ET DES TÉLÉCOMMUNICATIONS
+                            </div>
+
+                            <div className="flex items-center justify-between w-full">
+                                <div className="flex items-center justify-center flex-col">
+                                    {/* Logo à gauche */}
+                                    <div className="w-max h-max rounded-full flex items-center justify-center overflow-hidden pt-4 gap-2">
+                                        <Image
+                                            src="/logoposte.png"
+                                            alt="Logo"
+                                            width={70} // Largeur de 64px
+                                            height={70} // Hauteur de 64px
+                                            className="object-cover"
+                                        />
+                                    </div>
+                                    <div className="">
+                                        <div className="text-blue-500 font-bold mt-4 text-lg">
+                                            LA POSTE DE DJIBOUTI S.A
+                                        </div>
+                                        <div className="text-sm uppercase">
+                                            DIRECTION COMMERCIALE
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="text-blue-500 font-bold mt-4 text-lg">
-                                    LA POSTE DE DJIBOUTI S.A
-                                </div>
-                                <div className="text-sm uppercase">
-                                    DIRECTION COMMERCIALE
+
+
+
+
+                                {/* Colonne de droite : Date et numéro de reçu */}
+                                <div className="text-left text-gray-700 dark:text-gray-300 space-y-2 w-[300px] mt-24">
+                                    <p className="italic">Djibouti, le {new Date().toLocaleDateString()}</p>
+                                    <p className="font-semibold text-lg">N° Reçu : <span className="text-primary text-[0.8rem]">{recueNumber}</span></p>
                                 </div>
                             </div>
                         </div>
+                        <div className="flex flex-col mt-4 mb-2 text-gray-700 dark:text-gray-300 w-full ">
+                            <strong className="text-[0.4rem]">Boulevard de la République</strong>
+                            <span className="text-[0.4rem] mt-2"><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</span>
+                            <span className="text-[0.4rem] mt-2"><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></span>
+                            <span className="text-[0.4rem] mt-2"><strong>Site web :</strong> <a href="http://www.laposte.dj" className="underline" target="_blank" rel="noopener noreferrer">www.laposte.dj</a></span>
+                        </div>
+                        <h5 className="font-bold text-xl mt-6 mb-4 w-full">Client : {dataClient?.Nom}</h5>
                         {donnees && (
-                            <div className="h-max w-full p-4 ">
-                                <h1 className="text-2xl font-bold text-gray-800 mb-4">Reçue du paiement Redevence</h1>
-                                {/* Numéro de reçu */}
-                                <div className="mt-4 text-xl py-4 font-semibold">
-                                    <span>Numéro de reçu : </span>
-                                    <span className="text-blue-700">{recueNumber}</span>
-                                </div>
-                                <div className="space-y-6">
-                                    {/* Méthode de Paiement */}
-                                    <div className="space-y-2">
-                                        <div className="text-lg font-semibold text-gray-700">
-                                            <strong>Méthode de paiement :</strong> {donnees.Methode_de_paiement}
-                                        </div>
-                                        {donnees.Wallet ? (
-                                            <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-md">
-                                                <div className="text-sm text-gray-800">
-                                                    <strong>Wallet :</strong> {donnees.Wallet}
-                                                </div>
-                                                <div className="text-sm text-gray-800">
-                                                    <strong>Telephone :</strong> {donnees.Numero_wallet}
-                                                </div>
-                                                <div className="text-sm text-gray-800">
-                                                    <strong>Montant :</strong> {donnees.Montant}  Djf
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-md">
-                                                {donnees?.Methode_de_paiement === "cheque" && (
-                                                    <>
+                            <div className="h-max w-full p-4">
+                                <table className="w-full border border-gray-200 text-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Redevance</th>
+                                            <th>Type Client</th>
+                                            <th>Méthode de paiement</th>
+                                            <th>Montant</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="text-center">{dataClient?.Redevance}</td>
+                                            <td className="text-center">{dataClient?.TypeClient}</td>
+                                            <td className="flex gap-2 items-center text-center">
+                                                <div className="mb-2"> {donnees.Methode_de_paiement}</div>
+                                                {donnees.Wallet ? (
+                                                    <div className="flex justify-between items-center  gap-4 p-4 bg-gray-50 rounded-md shadow-md">
                                                         <div className="text-sm text-gray-800">
-                                                            <strong>Cheque :</strong> {donnees.Numero_cheque}
+                                                            <strong>Wallet :</strong> {donnees.Wallet}
                                                         </div>
                                                         <div className="text-sm text-gray-800">
-                                                            <strong>Banque :</strong> {donnees.Nom_Banque}
+                                                            <strong>Téléphone :</strong> {donnees.Numero_wallet}
                                                         </div>
-                                                    </>
+                                                    </div>
+                                                ) : (
+                                                    donnees?.Methode_de_paiement === "cheque" && (
+                                                        <div className="flex justify-between items-center gap-4 p-4 bg-gray-50 rounded-md shadow-md">
+                                                            <div className="text-sm text-gray-800">
+                                                                <strong>Chèque :</strong> {donnees.Numero_cheque}
+                                                            </div>
+                                                            <div className="text-sm text-gray-800">
+                                                                <strong>Banque :</strong> {donnees.Nom_Banque}
+                                                            </div>
+                                                        </div>
+                                                    )
                                                 )}
-                                                <div className="text-sm text-gray-800">
-                                                    <strong>Montant :</strong> {donnees.Montant} Djf
-                                                </div>
-
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                                            </td>
+                                            <td className="text-center">{donnees.Montant} Djf</td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={3} className="text-right pr-3">Montant Total :</td>
+                                            <td className="text-center" >{donnees.Montant} Djf</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
+
                         )}
                     </div>
                     <div className="flex justify-end space-y-2">

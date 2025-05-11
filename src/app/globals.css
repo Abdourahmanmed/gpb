@@ -91,3 +91,28 @@ body {
     /* Désactive le défilement */
   }
 }
+
+
+@media print {
+  table {
+    font-size: 10px;
+    /* Définit une petite taille de police pour l'impression */
+  }
+
+  td,
+  th {
+    font-size: 10px;
+    /* Applique cette taille à toutes les cellules du tableau */
+  }
+
+  /* Spécifie des tailles de police différentes pour certaines cellules si nécessaire */
+  .small-print {
+    font-size: 1px;
+    /* Pour des éléments où tu veux vraiment une petite taille */
+  }
+
+  .large-print {
+    font-size: 12px;
+    /* Pour des éléments plus grands */
+  }
+}

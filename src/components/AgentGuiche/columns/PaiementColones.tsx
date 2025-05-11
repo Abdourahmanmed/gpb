@@ -21,7 +21,7 @@ export type Le_Paiement = {
   updated_by: number;
   abonnement_status: string;
   abonnement_penalite: string;
-  Annee_abonnement: number;
+  annee_abonnement: number;
   boite_postal_numero: string;
   nombre_sous_couverte: number;
   Adresse_Livraison: number;
@@ -87,7 +87,7 @@ export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
     header: "N° Boîte Postale",
   },
   {
-    accessorKey: "Annee_abonnement",
+    accessorKey: "annee_abonnement",
     header: "Année Abonnement",
   },
   {
@@ -124,8 +124,12 @@ export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const [isDialogOpen, setIsDialogOpen] = useState(false);
-      const userId = row?.original?.id;
-      const TypeClient = row?.original?.TypeClient;
+      const dataClient = {
+        ClientId : row?.original?.id,
+        TypeClient : row?.original?.TypeClient,
+        Redevance : row?.original?.annee_abonnement,
+        Nom : row?.original?.Nom,
+      }
       const abonnement_status = row?.original?.abonnement_status;
 
       if (abonnement_status == "impayé") {
@@ -137,7 +141,7 @@ export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
             <PaymentForm
               isOpen={isDialogOpen}
               setIsOpen={setIsDialogOpen}
-              ClientId={userId}
+              dataClient={dataClient}
             />
           </div>
         );

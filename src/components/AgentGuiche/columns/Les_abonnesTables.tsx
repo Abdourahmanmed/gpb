@@ -135,9 +135,16 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
   },
   {
     header: "Facture",
-    cell: ({ row }) => {
-      return <FactureCelleAction Name="Facture" Clients={row.original?.id} Nom={row.original?.Nom} />
-    },
+  },
+  {
+    header: "Reçue",
+    cell: ({ row }) => (
+      <FactureCelleAction
+        Name="Reçue"
+        Clients={row.original?.id}
+        Nom={row.original?.Nom}
+      />
+    ),
   },
 
 ];

@@ -3,7 +3,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import HeaderImprimary from "../HeaderImprimary";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from "./animated-modal";
 import { useEffect, useRef, useState } from "react";
-// Définition du type pour chaque catégorie
+import { Check, X } from "lucide-react";
+import css from "styled-jsx/css";
+
+// Types
 interface Category {
     Categorie: string;
     Methode_Paiement_Categorie: string;
@@ -14,93 +17,154 @@ interface Category {
     Montant_categorie: number;
 }
 
-// Définition du type pour un paiement
 interface Payment {
     Redevance: string;
     Nom: string;
     Reference: string;
     Methode_de_paiement_anne: string;
+    TypeClient: string;
     Montant_Redevance: number;
     Wallet_de_redevance: string;
     Numero_wallet: string;
     Banque: string;
     Numero_cheque: string;
-    Categorie: string; // Ajout de la propriété "Categorie" (elle manquait)
-    Methode_Paiement_Categorie: string; // Ajout de la propriété "Methode_Paiement_Categorie"
-    Wallet_de_Categorie: string; // Ajout de la propriété "Wallet_de_Categorie"
-    Numero_Telephone_categorie: string; // Ajout de la propriété "Numero_Telephone_categorie"
-    Nom_banque_categorie: string; // Ajout de la propriété "Nom_banque_categorie"
-    Numero_banque_categorie: string; // Ajout de la propriété "Numero_banque_categorie"
-    Montant_categorie: number; // Ajout de la propriété "Montant_categorie"
-    categories: Category[]; // Liste des catégories associées à ce paiement
+    Categorie: string;
+    Methode_Paiement_Categorie: string;
+    Wallet_de_Categorie: string;
+    Numero_Telephone_categorie: string;
+    Nom_banque_categorie: string;
+    Numero_banque_categorie: string;
+    Montant_categorie: number;
+    categories: Category[];
 }
 
-// Définition des types pour les props de la fonction `ModelFacture`
 interface ModelProps {
     Name: string;
     Nom: string;
-    data: Payment[]; // Données des paiements
+    data: Payment[];
     loading: boolean;
     error: string | null;
     Titre: string;
 }
 
-export function ModelFacture({
-    Name,
-    Nom,
-    data,
-    loading,
-    error,
-    Titre,
-}: ModelProps) {
-    const [PrintJS, setPrintJS] = useState<any>(null);  // Référence à printJS
+export function ModelFacture({ Name, Nom, data, loading, error, Titre }: ModelProps) {
+    const [PrintJS, setPrintJS] = useState<any>(null);
     const printAreaRef = useRef<HTMLDivElement>(null);
 
-    //importe le module print-js
     useEffect(() => {
         if (typeof window !== "undefined") {
-            // Importer printJS uniquement côté client
             import("print-js").then((module) => {
                 setPrintJS(() => module.default);
             });
         }
     }, []);
 
-    //fonction pour imprimer 
     const handleImprimary = () => {
-        // Vérification que PrintJS est chargé et que l'élément à imprimer est bien disponible
-        // Vérification que PrintJS est chargé et que le DOM est prêt
         if (PrintJS && printAreaRef.current) {
             PrintJS({
                 printable: printAreaRef.current,
                 type: "html",
                 targetStyles: ["*"],
+                // css: ["https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css"]
             });
         }
     };
 
-    // Grouper les catégories par paiement
     const groupedData = data.reduce((acc: { [key: string]: Payment }, item) => {
-        // Crée une clé unique pour chaque paiement
         const key = `${item.Reference}-${item.Methode_de_paiement_anne}`;
         if (!acc[key]) {
             acc[key] = { ...item, categories: [] };
         }
-        // Ajoute les informations de catégorie à chaque paiement
         acc[key].categories.push({
             Categorie: item.Categorie,
-            Methode_Paiement_Categorie: item.Methode_Paiement_Categorie || "", // Valeur par défaut si non précisé
-            Wallet_de_Categorie: item.Wallet_de_Categorie || "N", // Valeur par défaut
-            Numero_Telephone_categorie: item.Numero_Telephone_categorie || "", // Valeur par défaut
-            Nom_banque_categorie: item.Nom_banque_categorie || "", // Valeur par défaut
-            Numero_banque_categorie: item.Numero_banque_categorie || "", // Valeur par défaut
-            Montant_categorie: item.Montant_categorie || 0 // Valeur par défaut pour Montant_categorie
+            Methode_Paiement_Categorie: item.Methode_Paiement_Categorie || "",
+            Wallet_de_Categorie: item.Wallet_de_Categorie || "N",
+            Numero_Telephone_categorie: item.Numero_Telephone_categorie || "",
+            Nom_banque_categorie: item.Nom_banque_categorie || "",
+            Numero_banque_categorie: item.Numero_banque_categorie || "",
+            Montant_categorie: item.Montant_categorie || 0,
         });
         return acc;
     }, {});
 
+    const FactureContent = (payment: Payment, total: number) => (
+        <div className="p-4 rounded-md shadow-sm bg-white dark:bg-neutral-900 w-full">
+            <HeaderImprimary Reference={payment.Reference} />
+
+            <div className="flex flex-col mt-4 mb-2 text-gray-700 dark:text-gray-300">
+                <strong  className="text-[0.4rem]">Boulevard de la République</strong>
+                <span className="text-[0.4rem]"><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</span>
+                <span className="text-[0.4rem]"><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></span>
+                <span className="text-[0.4rem]"><strong>Site web :</strong> <a href="http://www.laposte.dj" className="underline" target="_blank" rel="noopener noreferrer">www.laposte.dj</a></span>
+            </div>
+
+            <h5 className="font-bold text-xl mt-6">Client : {payment.Nom}</h5>
+
+            <table className="w-full border border-gray-300 mt-4 text-sm">
+                <thead>
+                    <tr className="bg-gray-100">
+                        <th className="p-2 border" rowSpan={2}>Redevance</th>
+                        <th className="p-2 border" rowSpan={2}>Type</th>
+                        <th className="p-2 border" colSpan={5}>Service additionnel</th>
+                        <th className="p-2 border" colSpan={6}>Méthode de Paiement</th>
+                        <th className="p-2 border" rowSpan={2}>Montant</th>
+                    </tr>
+                    <tr className="bg-gray-100">
+                        <th className="p-2 border">SC</th>
+                        <th className="p-2 border">Ld</th>
+                        <th className="p-2 border">Coll</th>
+                        <th className="p-2 border">AClé</th>
+                        <th className="p-2 border">CNom</th>
+                        <th className="p-2 border">Rd</th>
+                        <th className="p-2 border">SC</th>
+                        <th className="p-2 border">Ld</th>
+                        <th className="p-2 border">Coll</th>
+                        <th className="p-2 border">AClé</th>
+                        <th className="p-2 border">CNom</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td className="p-2 border font-semibold">{payment.Redevance}</td>
+                        <td className="p-2 border font-semibold">{payment.TypeClient}</td>
+                        {["sous_couverte", "livraison_a_domicile", "collecte", "Achat_cle", "Changement_Nom"].map((categoryName) => {
+                            const hasCategory = payment.categories.some(cat => cat.Categorie === categoryName);
+                            return (
+                                <td key={categoryName} className="p-2 border text-center">
+                                    {hasCategory ? <Check /> : <X />}
+                                </td>
+                            );
+                        })}
+
+                        {/* Méthodes */}
+                        <td className="p-2 border text-center" colSpan={6}>{payment.Methode_de_paiement_anne}</td>
+
+                        {/* Montant */}
+                        <td className="p-2 border font-bold text-center w-[300px]">
+                            {payment.Montant_Redevance} <br />
+                            {["sous_couverte", "livraison_a_domicile", "collecte", "Achat_cle", "Changement_Nom"].map((categoryName) => {
+                                const category = payment.categories.find(cat => cat.Categorie === categoryName);
+                                return (
+                                    <span key={categoryName} className="p-2">
+                                        {category ? (<>{category.Montant_categorie} <br /></>) : ""}
+                                    </span>
+                                );
+                            })}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colSpan={13} className="p-2 border text-right font-bold">Total</td>
+                        <td colSpan={6} className="p-2 border font-bold text-right">{total} <span className="text-[0.5rem]">FDJ</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    );
+
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center bg-red-500">
             <Modal>
                 <ModalTrigger className="bg-primary dark:bg-white dark:text-black text-white flex justify-center group/modal-btn">
                     <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500">{Name}</span>
@@ -110,90 +174,50 @@ export function ModelFacture({
                 </ModalTrigger>
 
                 <ModalBody>
-                    <ModalContent className="">
+                    <ModalContent className="w-full">
                         <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">
-                            Les informations{" "}
-                            <span className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 border border-gray-200">
-                                {Titre}
-                            </span>{" "}
-                            du client {Nom}
+                            Les informations <span className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 border border-gray-200">{Titre}</span> du client {Nom}
                         </h4>
-                        <ScrollArea className="h-[400px] w-full rounded-md" >
-                            <div className="flex flex-wrap gap-x-4 gap-y-6 items-start justify-start mx-auto" ref={printAreaRef}>
-                                {/* Affichage du chargement */}
+
+                        <ScrollArea className="h-[400px] w-full rounded-md px-4">
+                            <div className="flex flex-col gap-6" ref={printAreaRef}>
                                 {loading ? (
                                     <p className="text-center text-gray-500">Chargement en cours...</p>
                                 ) : error ? (
                                     <p className="text-center text-red-500">⚠️ Erreur : {error}</p>
-                                ) : data.length > 0 && (
-                                    <div className="w-full " ref={printAreaRef}>
+                                ) : data.length > 0 ? (
+                                    Object.keys(groupedData).map((key) => {
+                                        const payment = groupedData[key];
+                                        const total = parseInt(payment.Montant_Redevance) + payment.categories.reduce((sum, cat) => sum + cat.Montant_categorie, 0);
 
+                                        return (
+                                            <div key={key} className="print-section">
+                                                {/* Partie client */}
+                                                {FactureContent(payment, total)}
 
-                                        <hr className="mt-4" />
-                                        <div className="w-full mt-4">
-                                            {/* Itérer sur les paiements */}
-                                            {Object.keys(groupedData).map((key) => {
-                                                const payment = groupedData[key];
-                                                const total = parseInt(payment.Montant_Redevance) + parseInt(payment.categories.reduce((sum, cat) => sum + cat.Montant_categorie, 0));
+                                                {/* Ligne de séparation */}
+                                                <div className="border-t border-dashed my-6"></div>
 
-                                                return (
-                                                    <div key={key} className="mb-4">
-                                                        <HeaderImprimary Reference={payment.Reference} />
-                                                        <div className="flex justify-between items-start mb-6 text-sm md:text-base mt-12 bg-red-600">
-                                                            {/* div gauche */}
-                                                            <div className="flex flex-col gap-3 text-gray-700 dark:text-gray-300 space-y-1 leading-tight w-[400px] pl-2 text-[6px] bg-blue-300">
-                                                                <p><strong>Boulevard de la République</strong></p>
-                                                                <p className="mt-1"><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</p>
-                                                                <p className="mt-1"><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></p>
-                                                                <p className="mt-1"><strong>Site web :</strong> <a href="http://www.laposte.dj" target="_blank" rel="noopener noreferrer" className="underline">www.laposte.dj</a></p>
-                                                            </div>
-
-                                                        </div>
-                                                        <hr className="mt-4 mb-3" />
-                                                        <h5 className="font-bold text-xl">Client : {payment.Nom}</h5>
-                                                        <table className="w-full border border-gray-300 mt-4">
-                                                            <thead className="bg-gray-100">
-                                                                <tr>
-                                                                    <th className="p-2 border">Redevance et Catégories</th>
-                                                                    <th className="p-2 border">Méthode de Paiement</th>
-                                                                    <th className="p-2 border">Montant</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td className="p-2 border font-semibold">{payment.Redevance}</td>
-                                                                    <td className="p-2 border text-center">{payment.Methode_de_paiement_anne}</td>
-                                                                    <td className="p-2 border">{payment.Montant_Redevance} FDJ</td>
-                                                                </tr>
-                                                                {payment.categories.map((category, index) => (
-                                                                    <tr key={index}>
-                                                                        <td className="p-2 border pl-6">↳ {category.Categorie}</td>
-                                                                        <td className="p-2 border text-center">{category.Methode_Paiement_Categorie}</td>
-                                                                        <td className="p-2 border">{category.Montant_categorie} FDJ</td>
-                                                                    </tr>
-                                                                ))}
-                                                                <tr>
-                                                                    <td colSpan={2} className="p-2 border text-right font-bold">Total</td>
-                                                                    <td className="p-2 border font-bold">{total} FDJ</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                );
-                                            })}
-
-                                        </div>
-
-                                    </div>
+                                                {/* Partie archive */}
+                                                {/* {FactureContent(payment, total)} */}
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <p className="text-center text-gray-400">Aucune donnée disponible</p>
                                 )}
                             </div>
                         </ScrollArea>
+
+                        <ModalFooter className="flex justify-center mt-4">
+                            <button
+                                onClick={handleImprimary}
+                                className="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-md"
+                            >
+                                Imprimer
+                            </button>
+                        </ModalFooter>
                     </ModalContent>
-                    <ModalFooter className="gap-4">
-                        <button className="bg-black text-white dark:bg-white dark:text-black text-sm px-2 py-1 rounded-md border border-black w-28" onClick={handleImprimary}>
-                            Imprimer
-                        </button>
-                    </ModalFooter>
                 </ModalBody>
             </Modal>
         </div>
