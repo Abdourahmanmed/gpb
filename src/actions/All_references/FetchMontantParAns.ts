@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchMontantParAns = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=getTotalParAnnee`;
+    const api = `http://192.168.0.12/gbp_backend/api.php?method=getTotalParAnnee`;
 
     try {
         const response = await fetch(api, {

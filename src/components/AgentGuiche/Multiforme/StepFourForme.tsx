@@ -26,6 +26,7 @@ import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { resetStep } from "@/Store/Slices/Multi-formSlice";
+import { Check, X } from "lucide-react";
 
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 
@@ -146,7 +147,7 @@ const StepFourForme = () => {
 
         try {
             const response = await fetch(
-                `http://192.168.0.15/gbp_backend/api.php?method=AddClientsAbonnment&id=${session?.user?.id}`,
+                `http://192.168.0.12/gbp_backend/api.php?method=AddClientsAbonnment&id=${session?.user?.id}`,
                 {
                     method: "POST",
                     body: formData, // Envoi des données au format multipart/form-data
@@ -189,7 +190,7 @@ const StepFourForme = () => {
     return (
         <div className="bg-gray-100 p-6 rounded-lg shadow-md max-w-7xl mx-auto">
             <Dialog open={isSucessOpen} onOpenChange={setisSucessOpen}>
-                <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
+                <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-[980px] mx-auto">
                     <ScrollArea className="max-h-[70vh] w-full">
                         <DialogHeader className="border-b-2 pb-4 mb-6">
                             <DialogTitle className="text-2xl font-bold text-gray-800">Imprimer</DialogTitle>
@@ -209,82 +210,74 @@ const StepFourForme = () => {
                         <div
                             id="print-area"
                             ref={printAreaRef}
-                            className="rounded-md border border-gray-300 p-4 flex flex-col items-center w-full mt-2"
+                            className="rounded-md p-4 flex flex-col items-center w-full mt-2"
                         >
-                            <HeaderImprimary />
+                            <HeaderImprimary Reference={recueNumber} />
+                            <div className="flex flex-col mt-4 mb-2 text-gray-700 dark:text-gray-300 w-full ">
+                                <strong className="text-[0.4rem]">Boulevard de la République</strong>
+                                <span className="text-[0.4rem] mt-2"><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</span>
+                                <span className="text-[0.4rem] mt-2"><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></span>
+                                <span className="text-[0.4rem] mt-2"><strong>Site web :</strong> <a href="http://www.laposte.dj" className="underline" target="_blank" rel="noopener noreferrer">www.laposte.dj</a></span>
+                            </div>
+                            <h5 className="font-bold text-xl mt-6 mb-4 w-full">Client : {donnees?.Nom}</h5>
                             {donnees && (
-                                <div className="p-6 space-y-6 w-full">
-                                    <div className="mt-4 text-xl py-4 font-semibold flex justify-between items-center border-b">
-                                        <div>
-                                            <span className="text-gray-600">Numéro de reçu :</span>
-                                            <span className="text-blue-700 font-medium ml-2">
-                                                {recueNumber}
-                                            </span>
-                                        </div>
-                                    </div>
+                                <div className="h-max w-full p-4">
+                                    <table className="w-full border border-gray-200 text-sm">
+                                        <thead>
+                                            <tr className="bg-gray-100">
+                                                <th className="p-2 border" rowSpan={2}>Redevance</th>
+                                                <th className="p-2 border" rowSpan={2}>Type</th>
+                                                <th className="p-2 border" colSpan={3}>Service additionnel</th>
+                                                <th className="p-2 border" colSpan={4}>Méthode de Paiement</th>
+                                                <th className="p-2 border" rowSpan={2}>Montant</th>
+                                            </tr>
+                                            <tr className="bg-gray-100">
+                                                <th className="p-2 border">SC</th>
+                                                <th className="p-2 border">Ldc</th>
+                                                <th className="p-2 border">Coll</th>
+                                                <th className="p-2 border">Rd</th>
+                                                <th className="p-2 border">SC</th>
+                                                <th className="p-2 border">Ld</th>
+                                                <th className="p-2 border">Coll</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td className="p-2 border text-center">{new Date().getFullYear()}</td>
+                                                <td className="p-2 border text-center">{donnees?.Role}</td>
 
-                                    {/* Tableau pour afficher les données */}
-                                    <div className="">
-                                        {/* <h1 className="text-primary text-3xl font-bold mb-3">
-                                            {donnees.Reference_Rdv}
-                                        </h1> */}
-                                        <table className="min-w-full border-collapse border border-gray-300 rounded-md">
-                                            <thead className="bg-blue-50">
-                                                <tr>
-                                                    <th className="text-left px-4 py-2 font-semibold text-gray-700 border-b border-gray-300">
-                                                        Champ
-                                                    </th>
-                                                    <th className="text-left px-4 py-2 font-semibold text-gray-700 border-b border-gray-300">
-                                                        Valeur
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>Nom</td>
-                                                    <td>{donnees.Nom}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Methode de paiement</td>
-                                                    <td>{donnees.Methode_de_paiement}</td>
-                                                </tr>
-                                                {donnees.Methode_de_paiement === "cheque" && (
-                                                    <>
-                                                        <tr>
-                                                            <td>Numero cheque</td>
-                                                            <td>{donnees.Numero_cheque}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Nom</td>
-                                                            <td>{donnees.Nom_Banque}</td>
-                                                        </tr>
-                                                    </>
-                                                )}
-                                                {donnees.Methode_de_paiement === "wallet" && (
-                                                    <>
-                                                        <tr>
-                                                            <td>Type wallet </td>
-                                                            <td>{donnees.wallet}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Numero telephone</td>
-                                                            <td>{donnees.Numero_wallet}</td>
-                                                        </tr>
-                                                    </>
-                                                )}
-                                                {/* Ajout des montants et de la somme totale */}
-                                                <tr className="bg-gray-100">
-                                                    <td className="capitalize px-4 py-2 border-b border-gray-300 text-gray-800 font-bold">
-                                                        Somme Totale
-                                                    </td>
-                                                    <td className="px-4 py-2 border-b border-gray-300 text-gray-600 font-bold">
-                                                        {totalMontant}
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                {/* Service additionnel */}
+                                                <td className="p-2 border text-center">
+                                                    {donnees?.sousCouvertures?.length > 0 ? <Check /> : <X />}
+                                                </td>
+                                                <td className="p-2 border text-center">
+                                                    {donnees?.Adresse_Livraison_Domicile ? <Check /> : <X />}
+                                                </td>
+                                                <td className="p-2 border text-center">
+                                                    {donnees?.Adresse_collection ? <Check /> : <X />}
+                                                </td>
+
+                                                {/* Méthode de paiement */}
+                                                <td colSpan={4} className="p-2 border text-center">{donnees?.Methode_de_paiement}</td>
+
+                                                {/* Montant */}
+                                                <td className="p-2 border text-center">
+                                                    <div className="text-center">{donnees?.montantRd}</div>
+                                                    <div className="text-center">{donnees?.montantSC}</div>
+                                                    <div className="text-center">{donnees?.montantLd}</div>
+                                                    <div className="text-center">{donnees?.montantCll}</div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colSpan={9} className="text-right pr-3 font-semibold">Montant Total :</td>
+                                                <td className="text-center font-semibold">{totalMontant} Djf</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
                                 </div>
+
                             )}
                         </div>
                     </ScrollArea>
@@ -302,7 +295,7 @@ const StepFourForme = () => {
             <div
                 className="rounded-md border border-gray-300 p-4 flex flex-col items-center w-full"
             >
-                <HeaderImprimary />
+                <HeaderImprimary Reference={recueNumber} />
                 {donnees && (
                     <div className="p-6 space-y-6 w-full">
                         <div className="mt-4 text-xl py-4 font-semibold flex justify-between items-center border-b">

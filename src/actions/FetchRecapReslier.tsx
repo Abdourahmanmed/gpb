@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchRecapResilier = async (id:string | undefined) => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=RecaputilationsResilier&id=${id}`;
+    const api = `http://192.168.0.12/gbp_backend/api.php?method=RecaputilationsResilier&id=${id}`;
 
     try {
         // Effectuer la requête fetch

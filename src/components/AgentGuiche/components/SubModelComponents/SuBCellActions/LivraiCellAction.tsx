@@ -22,7 +22,7 @@ const LVDCellAction: React.FC<ModelProps> = ({ Nbr, Clients, Nom }) => {
     // console.log(Clients)
 
     const FetchSousCouvert = async (): Promise<void> => {
-        const api = `http://192.168.0.15/gbp_backend/api.php?method=GetLDVInfo&ClientId=${Clients}`;
+        const api = `http://192.168.0.12/gbp_backend/api.php?method=GetLDVInfo&ClientId=${Clients}`;
 
         SetLoading(true);
         SetError(null);

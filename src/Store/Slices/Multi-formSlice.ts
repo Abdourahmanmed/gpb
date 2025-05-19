@@ -33,6 +33,7 @@ interface MultiFormState {
   montantLd: number,
   montantCll: number,
   montantSC: number,
+  Timbre: string,
   reference_Sc: string,
   TypeBp: "Grand" | "Moyen" | "Petite" | undefined,
   reference_Ld: string,
@@ -75,6 +76,7 @@ const initialState: MultiFormState = {
   montantSC: 0,
   reference_Sc: "",
   reference_Ld: "",
+  Timbre: "0",
   reference_collection: "",
   Reference_Rdv: ""
 };

@@ -9,7 +9,7 @@ const RecapAjoutRedv = () => {
   const [recapRdv, SetRecapRdv] = useState<Rdv[]>([]);
 
   const FetchRecap = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetToDayActivityById&IdRecpUser=${session?.user?.id}`;
+    const api = `http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivityById&IdRecpUser=${session?.user?.id}`;
     try {
       const responses = await fetch(api, {
         method: 'GET',

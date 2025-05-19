@@ -18,12 +18,12 @@ const Activiter_du_jour: React.FC = () => {
 
   const fetchActivities = async () => {
     const urls = [
-      "http://localhost/gbp_backend/api.php?method=GetToDayActivity",
-      "http://localhost/gbp_backend/api.php?method=GetToDayActivitySousCouverte",
-      "http://localhost/gbp_backend/api.php?method=GetToDayActivityLD",
-      "http://localhost/gbp_backend/api.php?method=GetToDayActivityAchatCle",
-      "http://localhost/gbp_backend/api.php?method=GetToDayActivityCollections",
-      "http://localhost/gbp_backend/api.php?method=GetToDayActivityChagementName",
+      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivity",
+      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivitySousCouverte",
+      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivityLD",
+      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivityAchatCle",
+      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivityCollections",
+      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivityChagementName",
     ];
 
     try {

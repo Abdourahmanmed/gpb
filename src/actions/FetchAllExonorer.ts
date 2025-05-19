@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchAllExonorer = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=AllClientExonorer`;
+    const api = `http://192.168.0.12/gbp_backend/api.php?method=AllClientExonorer`;
 
     try {
         // Effectuer la requête fetch

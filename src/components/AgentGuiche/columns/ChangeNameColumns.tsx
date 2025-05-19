@@ -24,7 +24,7 @@ export type Changename = {
   updated_by: number;
   abonnement_status: string;
   abonnement_penalite: string;
-  Annee_abonnement: number;
+  annee_abonnement: number;
   boite_postal_numero: string;
   nombre_sous_couverte: number;
   Adresse_Livraison: number;
@@ -92,7 +92,7 @@ export const ChangenameColumns: ColumnDef<Changename>[] = [
     header: "N° Boîte Postale",
   },
   {
-    accessorKey: "Annee_abonnement",
+    accessorKey: "annee_abonnement",
     header: "Année Abonnement",
   },
   {
@@ -130,7 +130,12 @@ export const ChangenameColumns: ColumnDef<Changename>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const ClientId = row?.original?.id;
-      return <ChangeNameColAction ClientId={ClientId} />;
+      const dataClient = {
+        Redevance: row?.original?.annee_abonnement,
+        Nom: row?.original?.Nom,
+        TypeClient: row?.original?.TypeClient
+      }
+      return <ChangeNameColAction ClientId={ClientId} dataClient={dataClient} />;
     },
   },
 ];

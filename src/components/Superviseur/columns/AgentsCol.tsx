@@ -115,7 +115,7 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
             });
             // Fonction pour éditer les informations du compagne
             const onEditSubmit = async (values: z.infer<typeof EditAgentSchema>) => {
-                const api = `http://192.168.0.15/gbp_backend/api.php?method=UpdateAgentByResponsable&id=${user?.id}`;
+                const api = `http://192.168.0.12/gbp_backend/api.php?method=UpdateAgentByResponsable&id=${user?.id}`;
                 console.log(values)
                 try {
                     const response = await fetch(api, {
@@ -149,7 +149,7 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
 
             //fonction pour recupere les information d'un compagne par son id 
             const fetchUser = async (id: string) => {
-                const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=GetUsersById&id=${id}`;
+                const apiUrl = `http://192.168.0.12/gbp_backend/api.php?method=GetUsersById&id=${id}`;
                 try {
                     const response = await fetch(apiUrl, {
                         method: "GET",

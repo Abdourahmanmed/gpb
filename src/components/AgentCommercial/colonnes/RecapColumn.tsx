@@ -1,15 +1,8 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import Detail from "@/components/Detail"
-import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction"
-import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction"
-import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction"
-import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction"
+import { FilterByDateResilier } from "@/lib/FiltracheAvance";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -97,6 +90,7 @@ export const RecapReslierCol: ColumnDef<Recaputilation>[] = [
     {
         accessorKey: "Date_resilier",
         header: "Date de Résiliation",
+        filterFn: FilterByDateResilier,
     },
 
 ];

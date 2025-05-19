@@ -133,10 +133,11 @@ export function NoFilterDataTable<TData, TValue>({
     },
   });
 
+
   //fonction pour ajouter les informations d'un agents
   const onEditSubmit = async (values: z.infer<typeof EditUserSchema>) => {
 
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=CreateAgentsByResponsable`;
+    const api = `http://192.168.0.12/gbp_backend/api.php?method=CreateAgentsByResponsable`;
     try {
       const response = await fetch(api, {
         method: "POST",
@@ -204,7 +205,7 @@ export function NoFilterDataTable<TData, TValue>({
     if (selectedRowIds.length === 0) return;
 
     const clientId = selectedRowIds[0]; // on prend le premier client sélectionné
-    const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=AfficherDocument&Id=${clientId}`;
+    const apiUrl = `http://192.168.0.12/gbp_backend/api.php?method=AfficherDocument&Id=${clientId}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -417,15 +418,52 @@ export function NoFilterDataTable<TData, TValue>({
               className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
             />
             <Input
-              placeholder="filtre par Date"
-              value={
-                (table.getColumn("Date_resilier")?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn("Date_resilier")?.setFilterValue(event.target.value)
+              placeholder="Filtrer par jour (YYYY-MM-DD)"
+              onChange={(e) =>
+                table.getColumn("Date_resilier")?.setFilterValue({
+                  type: "day",
+                  value: e.target.value,
+                })
               }
               className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
             />
+            <Select onValueChange={(val) =>
+              table.getColumn("Date_resilier")?.setFilterValue({
+                type: "month",
+                value: val,
+              })
+            }>
+              <SelectTrigger className="w-[150px]">
+                <SelectValue placeholder="Mois" />
+              </SelectTrigger>
+              <SelectContent>
+                {["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
+                  .map((mois, index) => (
+                    <SelectItem key={index} value={String(index + 1).padStart(2, "0")}>
+                      {mois}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+
+            <Select onValueChange={(val) =>
+              table.getColumn("Date_resilier")?.setFilterValue({
+                type: "year",
+                value: val,
+              })
+            }>
+              <SelectTrigger className="w-[120px]">
+                <SelectValue placeholder="Année" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                  <SelectItem key={year} value={String(year)}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <Button className="bg-primary" onClick={exportToExcel}>Exportation en excel</Button>
           </>
         )}

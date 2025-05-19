@@ -24,7 +24,7 @@ export type Collection = {
   updated_by: number;
   abonnement_status: string;
   abonnement_penalite: string;
-  Annee_abonnement: number;
+  annee_abonnement: number;
   boite_postal_numero: string;
   nombre_sous_couverte: number;
   Adresse_Livraison: number;
@@ -90,7 +90,7 @@ export const CollectionCoulmns: ColumnDef<Collection>[] = [
     header: "N° Boîte Postale",
   },
   {
-    accessorKey: "Annee_abonnement",
+    accessorKey: "annee_abonnement",
     header: "Année Abonnement",
   },
   {
@@ -128,9 +128,14 @@ export const CollectionCoulmns: ColumnDef<Collection>[] = [
       const ClientId = row?.original?.id;
       const Nbp = row?.original?.boite_postal_numero;
       const TypeClient = row?.original?.TypeClient;
+      const dataClient = {
+        Redevance: row?.original?.annee_abonnement,
+        Nom: row?.original?.Nom,
+        TypeClient : row?.original?.TypeClient,
+      }
 
-      if(TypeClient=="Entreprise"){
-        return <CollectionColAction ClientId={ClientId} Nbp={Nbp} />;
+      if (TypeClient == "Entreprise") {
+        return <CollectionColAction ClientId={ClientId} Nbp={Nbp} dataClient={dataClient} />;
       }
     },
   },

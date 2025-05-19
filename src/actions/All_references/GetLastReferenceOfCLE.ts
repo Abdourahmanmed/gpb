@@ -1,6 +1,6 @@
 "use server"
 export const GetLastReferenceOfCLE = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=getLastReferenceOfkey`;
+    const api = `http://192.168.0.12/gbp_backend/api.php?method=getLastReferenceOfkey`;
 
     try {
         // Effectuer la requête fetch

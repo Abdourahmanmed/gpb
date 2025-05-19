@@ -37,12 +37,18 @@ import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-
 import { CollectionPaiement } from "@/actions/paiement/CollectionPaiement";
 import { useSession } from "next-auth/react";
 import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
-
+import { Check } from "lucide-react";
+interface DataClient {
+  Redevance: number,
+  Nom: string,
+  TypeClient: string
+}
 interface ChangeNameFormProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   ClientId: string;
   Nbp: string;
+  dataClient: DataClient;
 }
 // Typages
 type MethodePaiement = "cheque" | "cash" | "wallet";
@@ -59,6 +65,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
   setIsOpen,
   ClientId,
   Nbp,
+  dataClient
 }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     MethodePaiement | undefined
@@ -189,7 +196,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
     }
 
     try {
-      const enregistrement = await CollectionPaiement(ClientId,session?.user?.id, donnees);
+      const enregistrement = await CollectionPaiement(ClientId, session?.user?.id, donnees);
       console.log(ClientId);
 
       if (enregistrement?.success) {
@@ -402,7 +409,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
       </Dialog>
 
       <Dialog open={isSucessOpen} onOpenChange={setisSucessOpen}>
-        <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
+        <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-[980px] mx-auto">
           <DialogHeader className="border-b-2 pb-4 mb-6">
             <DialogTitle className="text-2xl font-bold text-gray-800">Imprimer</DialogTitle>
           </DialogHeader>
@@ -421,13 +428,65 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
             ref={printAreaRef}
             className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full"
           >
-            <HeaderImprimary />
+            <HeaderImprimary Reference={recueNumber} />
+            <div className="flex flex-col mt-4 mb-2 text-gray-700 dark:text-gray-300 w-full ">
+              <strong className="text-[0.4rem]">Boulevard de la République</strong>
+              <span className="text-[0.4rem] mt-2"><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</span>
+              <span className="text-[0.4rem] mt-2"><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></span>
+              <span className="text-[0.4rem] mt-2"><strong>Site web :</strong> <a href="http://www.laposte.dj" className="underline" target="_blank" rel="noopener noreferrer">www.laposte.dj</a></span>
+            </div>
+            <h5 className="font-bold text-xl mt-6 mb-4 w-full">Client : {dataClient?.Nom}</h5>
             {donnees && (
-              <Imprimery
-                donnees={donnees}
-                recueNumber={recueNumber}
-                NomRecue="Collection"
-              />
+              <div className="h-max w-full p-4">
+                <table className="w-full border border-gray-200 text-sm">
+                  <thead>
+                    <tr>
+                      <th>Redevance</th>
+                      <th>Type Client</th>
+                      <th>Collect</th>
+                      <th>Méthode de paiement</th>
+                      <th>Montant</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="text-center">{dataClient?.Redevance}</td>
+                      <td className="text-center">{dataClient?.TypeClient}</td>
+                      <td className="text-center"><Check /></td>
+                      <td className="flex gap-2 items-center text-center">
+                        <div className="mb-2 text-center"> {donnees.Methode_de_paiement}</div>
+                        {donnees.Wallet ? (
+                          <div className="flex justify-between items-center  gap-4 p-4 bg-gray-50 rounded-md shadow-md">
+                            <div className="text-sm text-gray-800">
+                              <strong>Wallet :</strong> {donnees.Wallet}
+                            </div>
+                            <div className="text-sm text-gray-800">
+                              <strong>Téléphone :</strong> {donnees.Numero_wallet}
+                            </div>
+                          </div>
+                        ) : (
+                          donnees?.Methode_de_paiement === "cheque" && (
+                            <div className="flex justify-between items-center gap-4 p-4 bg-gray-50 rounded-md shadow-md">
+                              <div className="text-sm text-gray-800">
+                                <strong>Chèque :</strong> {donnees.Numero_cheque}
+                              </div>
+                              <div className="text-sm text-gray-800">
+                                <strong>Banque :</strong> {donnees.Nom_Banque}
+                              </div>
+                            </div>
+                          )
+                        )}
+                      </td>
+                      <td className="text-center">{donnees.Montant} Djf</td>
+                    </tr>
+                    <tr>
+                      <td colSpan={4} className="text-right pr-3">Montant Total :</td>
+                      <td className="text-center" >{donnees.Montant} Djf</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
             )}
           </div>
           <div className="flex justify-end space-y-2">
@@ -438,7 +497,7 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
 
       {/*  formulaire d'enregistrement */}
       <Dialog open={isSummaryOpen} onOpenChange={setIsSummaryOpen}>
-        <DialogContent className="p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
+        <DialogContent className="p-8 bg-white rounded-xl shadow-lg max-w-[980px] mx-auto">
           <ScrollArea className="max-h-[70vh] w-full">
             <ToastContainer />
             <DialogHeader className="border-b-2 pb-4 mb-6">
@@ -452,13 +511,65 @@ export const CollectForm: React.FC<ChangeNameFormProps> = ({
 
               className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full"
             >
-              <HeaderImprimary />
+              <HeaderImprimary Reference={recueNumber} />
+              <div className="flex flex-col mt-4 mb-2 text-gray-700 dark:text-gray-300 w-full ">
+                <strong className="text-[0.4rem]">Boulevard de la République</strong>
+                <span className="text-[0.4rem] mt-2"><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</span>
+                <span className="text-[0.4rem] mt-2"><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></span>
+                <span className="text-[0.4rem] mt-2"><strong>Site web :</strong> <a href="http://www.laposte.dj" className="underline" target="_blank" rel="noopener noreferrer">www.laposte.dj</a></span>
+              </div>
+              <h5 className="font-bold text-xl mt-6 mb-4 w-full">Client : {dataClient?.Nom}</h5>
               {donnees && (
-                <Imprimery
-                  donnees={donnees}
-                  recueNumber={recueNumber}
-                  NomRecue="Collection"
-                />
+                <div className="h-max w-full p-4">
+                  <table className="w-full border border-gray-200 text-sm">
+                    <thead>
+                      <tr>
+                        <th>Redevance</th>
+                        <th>Type Client</th>
+                        <th>Collect</th>
+                        <th>Méthode de paiement</th>
+                        <th>Montant</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="text-center">{dataClient?.Redevance}</td>
+                        <td className="text-center">{dataClient?.TypeClient}</td>
+                        <td className="text-center"><Check /></td>
+                        <td className="flex gap-2 items-center text-center">
+                          <div className="mb-2 text-center"> {donnees.Methode_de_paiement}</div>
+                          {donnees.Wallet ? (
+                            <div className="flex justify-between items-center  gap-4 p-4 bg-gray-50 rounded-md shadow-md">
+                              <div className="text-sm text-gray-800">
+                                <strong>Wallet :</strong> {donnees.Wallet}
+                              </div>
+                              <div className="text-sm text-gray-800">
+                                <strong>Téléphone :</strong> {donnees.Numero_wallet}
+                              </div>
+                            </div>
+                          ) : (
+                            donnees?.Methode_de_paiement === "cheque" && (
+                              <div className="flex justify-between items-center gap-4 p-4 bg-gray-50 rounded-md shadow-md">
+                                <div className="text-sm text-gray-800">
+                                  <strong>Chèque :</strong> {donnees.Numero_cheque}
+                                </div>
+                                <div className="text-sm text-gray-800">
+                                  <strong>Banque :</strong> {donnees.Nom_Banque}
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </td>
+                        <td className="text-center">{donnees.Montant} Djf</td>
+                      </tr>
+                      <tr>
+                        <td colSpan={4} className="text-right pr-3">Montant Total :</td>
+                        <td className="text-center" >{donnees.Montant} Djf</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
               )}
             </div>
 

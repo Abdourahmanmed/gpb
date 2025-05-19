@@ -38,14 +38,15 @@ const StepOneForm = () => {
         defaultValues: {
             ...multiFormState,
             montantRd: 25000,
-            Reference_Rdv: ""
+            Reference_Rdv: "",
+            Timbre: "0"
         } // Charger les valeurs initiales depuis Redux
     });
 
     // Fonction pour récupérer les numéros depuis l'API
     const FetchLesNumero = async (): Promise<void> => {
         setIsLoading(true);
-        const api = "http://localhost/gbp_backend/api.php?method=GetNextBoitePostal";
+        const api = "http://192.168.0.12/gbp_backend/api.php?method=GetNextBoitePostal";
 
         try {
             const response = await fetch(api);
@@ -53,8 +54,14 @@ const StepOneForm = () => {
                 throw new Error(`Erreur HTTP: ${response.status}`);
             }
 
-            const data: ApiResponse = await response.json();
-            setLesNumerosBp(data.numeros_disponibles || []);
+            const data = await response.json();
+
+            if (data.numeros_resilies && Array.isArray(data.numeros_resilies)) {
+                setLesNumerosBp(data.numeros_resilies);
+            } else {
+                setLesNumerosBp([]);
+            }
+
         } catch (error) {
             console.error("Erreur de serveur:", error);
             setLesNumerosBp([]); // En cas d'erreur, tableau vide
@@ -62,6 +69,7 @@ const StepOneForm = () => {
             setIsLoading(false);
         }
     };
+
 
     useEffect(() => {
         FetchLesNumero();
@@ -296,6 +304,20 @@ const StepOneForm = () => {
                                             <SelectItem value="entreprise">Entreprise</SelectItem>
                                         </SelectContent>
                                     </Select>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    {/* Timbre */}
+                    <FormField
+                        control={form.control}
+                        name="Timbre"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Timbre :</FormLabel>
+                                <FormControl>
+                                    <Input {...field} placeholder="Timbre" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

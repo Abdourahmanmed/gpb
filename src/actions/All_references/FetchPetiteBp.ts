@@ -1,7 +1,7 @@
 "use server";
 
 export const FetchPetiteBp = async () => {
-    const api = `http://192.168.0.15/gbp_backend/api.php?method=GetCountOfBpPetiteType`;
+    const api = `http://192.168.0.12/gbp_backend/api.php?method=GetCountOfBpPetiteType`;
 
     try {
         // Effectuer la requête fetch

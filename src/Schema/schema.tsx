@@ -82,6 +82,7 @@ export const NouveauClientSchemaStepOne = z.object({
   Adresse: z.string().min(1, { message: "L'adresse est obligatoire." }),
   Role: z.string().min(1, { message: "Choisir un type de client." }),
   montantRd: z.number().optional(),
+  Timbre: z.string().optional(),
   Reference_Rdv: z.string().optional(),
 });
 

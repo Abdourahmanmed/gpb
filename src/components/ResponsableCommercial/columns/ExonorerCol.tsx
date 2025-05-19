@@ -147,7 +147,7 @@ export const ExonorerColumns: ColumnDef<Exonored>[] = [
             const { data: session } = useSession();
             const handleExonorer = async (e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault(); // Correction de la faute de frappe
-                const apiUrl = `http://192.168.0.15/gbp_backend/api.php?method=ExonorerClients&idClient=${client?.id}&iduser=${session?.user?.id}`;
+                const apiUrl = `http://192.168.0.12/gbp_backend/api.php?method=ExonorerClients&idClient=${client?.id}&iduser=${session?.user?.id}`;
                 try {
                     const response = await fetch(apiUrl, {
                         method: "POST",

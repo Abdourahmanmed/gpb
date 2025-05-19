@@ -6,8 +6,6 @@ import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import LivraisonDColAction from "@/components/ActionCellColumns/LivraisonDColAction";
-import { Badge } from "@/components/ui/badge";
-import Detail from "@/components/Detail";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -24,7 +22,7 @@ export type LivraisonDomicil = {
   updated_by: number;
   abonnement_status: string;
   abonnement_penalite: string;
-  Annee_abonnement: number;
+  annee_abonnement: number;
   boite_postal_numero: string;
   nombre_sous_couverte: number;
   Adresse_Livraison: number;
@@ -91,7 +89,7 @@ export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
     header: "N° Boîte Postale",
   },
   {
-    accessorKey: "Annee_abonnement",
+    accessorKey: "annee_abonnement",
     header: "Année Abonnement",
   },
   {
@@ -130,9 +128,14 @@ export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
       const ClientId = row?.original?.id;
       const Np = row?.original?.boite_postal_numero;
       const TypeClient = row?.original?.TypeClient;
+      const dataClient = {
+        Redevance: row?.original?.annee_abonnement,
+        Nom: row?.original?.Nom,
+        TypeClient: row?.original?.TypeClient,
+      }
 
       if (TypeClient == "Entreprise") {
-        return <LivraisonDColAction ClientId={ClientId} Np={Np} />;
+        return <LivraisonDColAction ClientId={ClientId} Np={Np} dataClient={dataClient} />;
       }
     },
   },
