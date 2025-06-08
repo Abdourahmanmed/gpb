@@ -11,6 +11,7 @@ import ClientsCellAction from "../components/SubModelComponents/SuBCellActions/C
 import LVDCellAction from "../components/SubModelComponents/SuBCellActions/LivraiCellAction";
 import ColectionCellAction from "../components/SubModelComponents/SuBCellActions/CollectionCelleAction";
 import FactureCelleAction from "../components/SubModelComponents/SuBCellActions/FactureCellAction";
+import UnpaidInvoice from "@/components/UnpaidInvoice";
 
 export type Les_abonnes = {
   id: number;
@@ -135,6 +136,13 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
   },
   {
     header: "Facture",
+    cell: ({ row }) => (
+      <UnpaidInvoice
+        Name="Facture"
+        Clients={row.original?.id}
+        Nom={row.original?.Nom}
+      />
+    ),
   },
   {
     header: "Reçue",

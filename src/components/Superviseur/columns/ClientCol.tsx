@@ -9,6 +9,7 @@ import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComp
 import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction";
 import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction";
 import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction";
+import UnpaidInvoice from "@/components/UnpaidInvoice";
 
 export type ClientType = {
     id: number;
@@ -129,6 +130,13 @@ export const ClientColumns: ColumnDef<ClientType>[] = [
     },
     {
         header: "Facture",
+        cell: ({ row }) => (
+            <UnpaidInvoice
+                Name="Facture"
+                Clients={row.original?.id}
+                Nom={row.original?.Nom}
+            />
+        ),
     },
     {
         header: "Reçue",

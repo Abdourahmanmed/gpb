@@ -3,6 +3,18 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { FilterByDateResilier } from "@/lib/FiltracheAvance";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button";
+import AttestationResiliation from "@/components/AttestationResiliation";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -92,6 +104,24 @@ export const RecapReslierCol: ColumnDef<Recaputilation>[] = [
         header: "Date de Résiliation",
         filterFn: FilterByDateResilier,
     },
+    {
+        header: "Action",
+        cell: ({ row }) => {
+            return (
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button className="bg-primary">Attestation</Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-[985px]">
+                        <DialogHeader>
+                            <DialogTitle>Attestation</DialogTitle>
+                            <AttestationResiliation nom={row?.original?.Nom} numeroBoite={row?.original?.Numero} dateResiliation={row?.original?.Date_resilier} />
+                        </DialogHeader>
+                    </DialogContent>
+                </Dialog>
+            )
+        }
+    }
 
 ];
 

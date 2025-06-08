@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Suffix: "des agents Guichet"
             }
         },
-        
+
         // {
         //     title: "Depot de resiliation",
         //     url: "/Superviseur/Depot_de_resiliation",
@@ -58,6 +58,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Prefix: "Superviseur",
                 Suffix: ""
             }
+        },
+        {
+            title: "Rapports",
+            url: "",
+            icon: "UserRoundCog",
+            submenu: [
+                { title: "Recap redevance", url: "/Superviseur/Recaputilations/Redevance" },
+                { title: "Recap Modification Nom", url: "/Superviseur/Recaputilations/Changer_nom" },
+                { title: "Recap Achat cle ", url: "/Superviseur/Recaputilations/Achat_cle" },
+                { title: "Recap  sous couvert", url: "/Superviseur/Recaputilations/Sous_couverte" },
+                { title: "Recap livraison à domocile", url: "/Superviseur/Recaputilations/Livraison" },
+                { title: "Recap collecte", url: "/Superviseur/Recaputilations/Collection" },
+            ],
+            RoleName: {
+                Prefix: "",
+                Suffix: "",
+            },
         },
     ]
     return (

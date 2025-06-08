@@ -110,7 +110,7 @@ const DashbordBoxFetch = () => {
 
     return (
         <div className="flex justify-around flex-wrap gap-10">
-            <BoxInfo titre="Boite Postal : Petit" Nombre={BpG} color="" />
+            <BoxInfo titre="Boite Postal : Grand" Nombre={BpG} color="" />
             <BoxInfo
                 titre="Boite Postal : Moyen"
                 Nombre={BpM}
@@ -122,7 +122,7 @@ const DashbordBoxFetch = () => {
                 color="text-primary-8"
             />
             <BoxInfo
-                titre="Boite Postal : Grand"
+                titre="Boite Postal : Petit"
                 Nombre={BpP}
                 color="text-primary-3"
             />

@@ -6,6 +6,7 @@ import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction";
+import UnpaidInvoice from "@/components/UnpaidInvoice";
 
 
 export type RSousCouverte = {
@@ -21,11 +22,12 @@ export type RSousCouverte = {
     updated_by: number;
     abonnement_status: string;
     abonnement_penalite: number;
-    Annee_abonnement: number;
+    annee_abonnement: number;
     boite_postal_numero: string;
     nombre_sous_couverte: number;
     Adresse_Livraison: number;
     Adresse_Collection: number;
+    Date_payement: string;
 };
 
 export const RecapSccols: ColumnDef<RSousCouverte>[] = [
@@ -123,11 +125,18 @@ export const RecapSccols: ColumnDef<RSousCouverte>[] = [
         header: "Pénalités",
     },
     {
-        accessorKey: "Date_abonnement",
-        header: "Date Abonnement",
+        accessorKey: "Date_payement",
+        header: "Date de payement",
     },
     {
         header: "Facture",
+        cell: ({ row }) => (
+            <UnpaidInvoice
+                Name="Facture"
+                Clients={row.original?.id}
+                Nom={row.original?.Nom}
+            />
+        ),
     },
     {
         header: "Reçue",

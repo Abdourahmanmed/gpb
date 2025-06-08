@@ -9,6 +9,7 @@ import ClientsCellAction from "@/components/AgentGuiche/components/SubModelCompo
 import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction";
 import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction";
 import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction";
+import UnpaidInvoice from "@/components/UnpaidInvoice";
 
 
 export type Rdv = {
@@ -24,11 +25,12 @@ export type Rdv = {
     updated_by: number;
     abonnement_status: string;
     abonnement_penalite: number;
-    Annee_abonnement: number;
+    annee_abonnement: number;
     boite_postal_numero: string;
     nombre_sous_couverte: number;
     Adresse_Livraison: number;
     Adresse_Collection: number;
+    Date_payement: string;
 };
 
 export const RecapRvcols: ColumnDef<Rdv>[] = [
@@ -90,9 +92,10 @@ export const RecapRvcols: ColumnDef<Rdv>[] = [
         header: "N° Boîte Postale",
     },
     {
-        accessorKey: "Annee_abonnement",
+        accessorKey: "annee_abonnement",
         header: "Année Abonnement",
     },
+
     {
         accessorKey: "abonnement_status",
         header: "État Abonnement",
@@ -129,11 +132,18 @@ export const RecapRvcols: ColumnDef<Rdv>[] = [
         header: "Pénalités",
     },
     {
-        accessorKey: "Date_abonnement",
-        header: "Date Abonnement",
+        accessorKey: "Date_payement",
+        header: "Date de payement",
     },
     {
         header: "Facture",
+        cell: ({ row }) => (
+            <UnpaidInvoice
+                Name="Facture"
+                Clients={row.original?.id}
+                Nom={row.original?.Nom}
+            />
+        ),
     },
     {
         header: "Reçue",

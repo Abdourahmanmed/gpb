@@ -9,6 +9,7 @@ import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponent
 import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction"
 import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction"
 import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction"
+import UnpaidInvoice from "@/components/UnpaidInvoice"
 
 export type Les_abonnesCommerce = {
   id: number;
@@ -239,6 +240,13 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
   },
   {
     header: "Facture",
+    cell: ({ row }) => (
+      <UnpaidInvoice
+        Name="Facture"
+        Clients={row.original?.id}
+        Nom={row.original?.Nom}
+      />
+    ),
   },
   {
     header: "Reçue",

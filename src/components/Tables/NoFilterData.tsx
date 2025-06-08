@@ -391,6 +391,62 @@ export function NoFilterDataTable<TData, TValue>({
                 }
                 className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
               />
+              <Input
+                placeholder="filtre par nom"
+                value={
+                  (table.getColumn(typeName)?.getFilterValue() as string) ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn(typeName)?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par jour (YYYY-MM-DD)"
+                onChange={(e) =>
+                  table.getColumn("Date_payement")?.setFilterValue({
+                    type: "day",
+                    value: e.target.value,
+                  })
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Select onValueChange={(val) =>
+                table.getColumn("Date_payement")?.setFilterValue({
+                  type: "month",
+                  value: val,
+                })
+              }>
+                <SelectTrigger className="w-[150px]">
+                  <SelectValue placeholder="Mois" />
+                </SelectTrigger>
+                <SelectContent>
+                  {["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
+                    .map((mois, index) => (
+                      <SelectItem key={index} value={String(index + 1).padStart(2, "0")}>
+                        {mois}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+
+              <Select onValueChange={(val) =>
+                table.getColumn("Date_payement")?.setFilterValue({
+                  type: "year",
+                  value: val,
+                })
+              }>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="Année" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                    <SelectItem key={year} value={String(year)}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
               <Button className="bg-primary" onClick={exportToExcel}>Exportation en excel</Button>
             </>

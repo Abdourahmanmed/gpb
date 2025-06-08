@@ -50,6 +50,12 @@ export const SuperviseurRoutes = [
     "/Superviseur/Les_Agents",
     "/Superviseur/Liste_Boite_Postal",
     "/Superviseur/Notifications",
+    "/Superviseur/Recaputilations/Redevance",
+    "/Superviseur/Recaputilations/Changer_nom",
+    "/Superviseur/Recaputilations/Achat_cle",
+    "/Superviseur/Recaputilations/Sous_couverte",
+    "/Superviseur/Recaputilations/Livraison",
+    "/Superviseur/Recaputilations/Collection",
 ];
 
 /**

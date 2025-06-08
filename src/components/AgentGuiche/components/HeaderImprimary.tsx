@@ -1,9 +1,11 @@
+import { Span } from 'next/dist/trace';
 import Image from 'next/image'
 import React from 'react'
 interface ReferencePropos {
-    Reference: string;
+    Reference: string | undefined;
+    NameOfFacture?: string; // propriété optionnelle
 }
-const HeaderImprimary = ({ Reference }: ReferencePropos) => {
+const HeaderImprimary = ({ Reference, NameOfFacture }: ReferencePropos) => {
     return (
         <div className="w-full">
             {/* Texte principal */}
@@ -44,7 +46,7 @@ const HeaderImprimary = ({ Reference }: ReferencePropos) => {
                 {/* Colonne de droite : Date et numéro de reçu */}
                 <div className="text-left text-gray-700 dark:text-gray-300 space-y-2 w-[300px] mt-24">
                     <p className="italic">Djibouti, le {new Date().toLocaleDateString()}</p>
-                    <p className="font-semibold text-lg">N° Reçu : <span className="text-primary text-[0.8rem]">{Reference}</span></p>
+                    <p className="font-semibold text-lg">N° {NameOfFacture ? (<span>{NameOfFacture}</span>) : "Reçue"} : <span className="text-primary text-[0.8rem]">{Reference}</span></p>
                 </div>
             </div>
         </div>
