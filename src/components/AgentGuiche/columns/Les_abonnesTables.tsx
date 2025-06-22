@@ -26,7 +26,7 @@ export type Les_abonnes = {
   updated_by: number;
   abonnement_status: string;
   abonnement_penalite: number;
-  Annee_abonnement: number;
+  annee_abonnement: number;
   boite_postal_numero: string;
   nombre_sous_couverte: number;
   Adresse_Livraison: number;
@@ -92,7 +92,7 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
     header: "N° Boîte Postale",
   },
   {
-    accessorKey: "Annee_abonnement",
+    accessorKey: "annee_abonnement",
     header: "Année Abonnement",
   },
   {

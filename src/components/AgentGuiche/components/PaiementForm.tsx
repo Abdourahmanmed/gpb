@@ -62,7 +62,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, dat
     const [Apayer, SetApayer] = useState(0);
 
     const FetApayer = async () => {
-        const api = `http://192.168.0.15/gbp_backend/api.php?method=SelectionsLesMontantsImaper&ClientId=${dataClient?.ClientId}`;
+        const api = `http://192.168.0.12/gbp_backend/api.php?method=SelectionsLesMontantsImaper&ClientId=${dataClient?.ClientId}`;
         try {
             const response = await fetch(api);
             const data = await response.json();

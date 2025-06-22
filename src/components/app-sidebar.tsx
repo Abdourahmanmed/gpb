@@ -94,7 +94,7 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
     };
 
     return (
-        <Sidebar variant="floating" {...props} className="text-white">
+        <Sidebar variant="floating" {...props} className="text-white" collapsible="icon">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>

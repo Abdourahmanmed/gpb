@@ -5,6 +5,15 @@ import Header from "@/components/Header"
 export default function Layout({ children }: { children: React.ReactNode }) {
     const data = [
         {
+            title: "Dashbord",
+            url: "/Agent_commercial/Dashbord",
+            icon: "LayoutDashboard",
+            RoleName: {
+                Prefix: "Agent",
+                Suffix: "Commercial"
+            }
+        },
+        {
             title: "Les abonnes",
             url: "/Agent_commercial/Les_abonnes",
             icon: "Clipboard",
