@@ -85,7 +85,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         Suffix: "",
       },
     },
-
+    {
+      title: "Aide",
+      url: "/Responsable_commerciale/help",
+      icon: "HelpCircle",
+      RoleName: {
+        Prefix: "Agent",
+        Suffix: "Commercial"
+      }
+    },
 
   ];
   return (

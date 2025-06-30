@@ -8,15 +8,15 @@ export type ActiveClient = {
     Nom: string;
     Email: string;
     Adresse: string;
-    TypeClient: string;
+    TypeClient: "Particulier" | "Entreprise"; // Enum possible
     Telephone: string;
     Id_boite_postale: number;
-    Date_abonnement: string;
+    Date_abonnement: string; // ISO string, à parser si besoin
     id_user: number;
-    updated_by: number;
-    abonnement_status: string;
-    Agent: string;
-    abonnement_penalite: string;
+    updated_by: number | null;
+    abonnement_status: "paye" | "impaye" | string; // adapte selon les cas possibles
+    Agent: string | null;
+    abonnement_penalite: string; // Si tu veux le manipuler en nombre => change en number
     annee_abonnement: number;
     boite_postal_numero: string;
     nombre_sous_couverte: number;

@@ -38,6 +38,7 @@ import {
     ListFilter,
     ListX,
     Power,
+    HelpCircle,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -62,6 +63,7 @@ const iconMapper: { [key: string]: React.FC<React.SVGProps<SVGSVGElement>> } = {
     ListX,
     ListFilter,
     ListCheck,
+    HelpCircle,
 };
 
 interface SubmenuItem {

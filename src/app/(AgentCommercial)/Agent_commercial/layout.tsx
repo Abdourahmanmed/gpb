@@ -58,6 +58,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Suffix: "Commercial"
             }
         },
+        {
+            title: "Aide",
+            url: "/Agent_commercial/help",
+            icon: "HelpCircle",
+            RoleName: {
+                Prefix: "Agent",
+                Suffix: "Commercial"
+            }
+        },
     ]
     return (
         <SidebarProvider style={

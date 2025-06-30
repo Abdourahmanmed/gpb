@@ -129,6 +129,7 @@ export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
         TypeClient : row?.original?.TypeClient,
         Redevance : row?.original?.annee_abonnement,
         Nom : row?.original?.Nom,
+        Penaliter : row?.original?.abonnement_penalite,
       }
       const abonnement_status = row?.original?.abonnement_status;
 

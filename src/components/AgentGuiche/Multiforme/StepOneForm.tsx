@@ -37,7 +37,7 @@ const StepOneForm = () => {
         resolver: zodResolver(NouveauClientSchemaStepOne),
         defaultValues: {
             ...multiFormState,
-            montantRd: 25000,
+            montantRd: 20000,
             Reference_Rdv: "",
             Timbre: "0"
         } // Charger les valeurs initiales depuis Redux
@@ -124,7 +124,7 @@ const StepOneForm = () => {
         if (values?.Role == "particulier") {
             finaldata = {
                 ...values,
-                montantRd: 15000,
+                montantRd: 10000,
                 Reference_Rdv: recueNumber
             }
         } else {
@@ -293,6 +293,8 @@ const StepOneForm = () => {
                                         onValueChange={(value) => {
                                             field.onChange(value);
                                             dispatch(setTypeClient(value === "entreprise"));
+                                            // mettre à jour le champ montantRd
+                                            form.setValue("montantRd", value === "entreprise" ? 20000 : 10000);
                                         }}
                                         value={field.value}
                                     >
@@ -325,7 +327,7 @@ const StepOneForm = () => {
                     />
                     {/* montant du inscriptions  */}
                     <div className="flex justify-end mr-10 col-span-2">
-                        <Badge variant="outline">Montant:{form.getValues('montantRd')} fdj </Badge>
+                        <Badge variant="outline">Montant:{form.getValues('montantRd')?.toLocaleString()} fdj </Badge>
                     </div>
                     {/* Bouton */}
                     <div className="col-span-2">

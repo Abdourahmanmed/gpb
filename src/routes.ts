@@ -50,6 +50,7 @@ export const SuperviseurRoutes = [
     "/Superviseur/Les_Agents",
     "/Superviseur/Liste_Boite_Postal",
     "/Superviseur/Notifications",
+    "/Superviseur/help",
     "/Superviseur/Recaputilations/Redevance",
     "/Superviseur/Recaputilations/Changer_nom",
     "/Superviseur/Recaputilations/Achat_cle",
@@ -69,6 +70,7 @@ export const AgentRsponsableRoutes = [
     "/Responsable_commerciale/Les_Abonnes",
     "/Responsable_commerciale/Enleve_les_penalites",
     "/Responsable_commerciale/Exonorer",
+    "/Responsable_commerciale/help",
     "/Responsable_commerciale/Compte_Resilier",
     "/Responsable_commerciale/Compte_Exonorer",
     "/Responsable_commerciale/Recaputilations/Redevance",
@@ -90,6 +92,7 @@ export const AgentCommercialRoutes = [
     "/Agent_commercial/Les_abonnes",
     "/Agent_commercial/Voir_les_depots",
     "/Agent_commercial/Resiliation",
+    "/Agent_commercial/help",
     "/Agent_commercial/Recaputilation/Rapport/Resilier",
     "/Agent_commercial/Recaputilation/Rapport/Redevance",
     "/Agent_commercial/Recaputilation/Rapport/Changer_nom",
@@ -97,7 +100,7 @@ export const AgentCommercialRoutes = [
     "/Agent_commercial/Recaputilation/Rapport/Sous_couverte",
     "/Agent_commercial/Recaputilation/Rapport/Livraison",
     "/Agent_commercial/Recaputilation/Rapport/Collection",
-   
+
 ];
 /**
  * An array of routes used for authenticated users with the role "Agent Guichet".
@@ -107,6 +110,7 @@ export const AgentCommercialRoutes = [
 export const AgentGuichetRoutes = [
     "/Agent_guiche/Rechercher",
     "/Agent_guiche/Paiement",
+    "/Agent_guiche/help",
     "/Agent_guiche/Nouveau_client/Multi-Form",
     "/Agent_guiche/Changer_nom",
     "/Agent_guiche/Achat_cle",

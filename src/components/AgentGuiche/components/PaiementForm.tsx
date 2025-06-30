@@ -35,6 +35,7 @@ interface DataClient {
     ClientId: string,
     TypeClient: string,
     Nom: string,
+    Penaliter: string,
     Redevance: number
 }
 interface PaymentFormProps {
@@ -459,6 +460,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, dat
                                             <th>Redevance</th>
                                             <th>Type Client</th>
                                             <th>Méthode de paiement</th>
+                                            <th>Penaliter</th>
                                             <th>Montant</th>
                                         </tr>
                                     </thead>
@@ -490,10 +492,11 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ isOpen, setIsOpen, dat
                                                     )
                                                 )}
                                             </td>
+                                            <td className="text-center">{dataClient.Penaliter} Djf</td>
                                             <td className="text-center">{donnees.Montant} Djf</td>
                                         </tr>
                                         <tr>
-                                            <td colSpan={3} className="text-right pr-3">Montant Total :</td>
+                                            <td colSpan={4} className="text-right pr-3">Montant Total :</td>
                                             <td className="text-center" >{donnees.Montant} Djf</td>
                                         </tr>
                                     </tbody>

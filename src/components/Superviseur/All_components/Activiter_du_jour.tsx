@@ -8,6 +8,8 @@ import { CllClientColumns, Collection } from "../columns/ActivityCols/Collection
 import { ChangeName, ChangeNameClientColumns } from "../columns/ActivityCols/Changement_Nom_cols";
 import { AchatCle, CleClientColumns } from "../columns/ActivityCols/Achat_Cle_cols";
 
+const API_BASE = "http://192.168.0.12/gbp_backend/api.php?method=";
+
 const Activiter_du_jour: React.FC = () => {
   const [ActivityRedevance, setActivityRedevance] = useState<ActiveClient[]>([]);
   const [ActivitySousCouvert, setActivitySousCouvert] = useState<Sous_couvert[]>([]);
@@ -16,40 +18,74 @@ const Activiter_du_jour: React.FC = () => {
   const [ActivityChangeName, setActivityChangeName] = useState<ChangeName[]>([]);
   const [ActivityAchatCle, setActivityAchatCle] = useState<AchatCle[]>([]);
 
-  const fetchActivities = async () => {
-    const urls = [
-      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivity",
-      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivitySousCouverte",
-      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivityLD",
-      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivityAchatCle",
-      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivityCollections",
-      "http://192.168.0.12/gbp_backend/api.php?method=GetToDayActivityChagementName",
-    ];
+  useEffect(() => {
+    fetchRedevance();
+    fetchSousCouvert();
+    fetchLD();
+    fetchCollection();
+    fetchChangeName();
+    fetchAchatCle();
+  }, []);
 
+  const fetchRedevance = async () => {
     try {
-      const responses = await Promise.all(urls.map((url) => fetch(url)));
-      const data = await Promise.all(responses.map(async (res) => {
-        if (!res.ok) {
-          console.error("Erreur de réseau", res.statusText);
-          return [];
-        }
-        return res.json();
-      }));
-
-      setActivityRedevance(data[0] || []);
-      setActivitySousCouvert(data[1] || []);
-      setActivityLd(data[2] || []);
-      setActivityAchatCle(data[3] || []);
-      setActivityCollection(data[4] || []);
-      setActivityChangeName(data[5] || []);
+      const res = await fetch(`${API_BASE}GetToDayActivity`);
+      const json = await res.json();
+      setActivityRedevance(json || []);
     } catch (error) {
-      console.log("Erreur lors de la récupération des données :", error);
+      console.error("Erreur redevance :", error);
     }
   };
 
-  useEffect(() => {
-    fetchActivities();
-  }, []);
+  const fetchSousCouvert = async () => {
+    try {
+      const res = await fetch(`${API_BASE}GetToDayActivitySousCouverte`);
+      const json = await res.json();
+      setActivitySousCouvert(json || []);
+    } catch (error) {
+      console.error("Erreur sous-couvert :", error);
+    }
+  };
+
+  const fetchLD = async () => {
+    try {
+      const res = await fetch(`${API_BASE}GetToDayActivityLD`);
+      const json = await res.json();
+      setActivityLd(json || []);
+    } catch (error) {
+      console.error("Erreur livraison domicile :", error);
+    }
+  };
+
+  const fetchCollection = async () => {
+    try {
+      const res = await fetch(`${API_BASE}GetToDayActivityCollections`);
+      const json = await res.json();
+      setActivityCollection(json || []);
+    } catch (error) {
+      console.error("Erreur collection :", error);
+    }
+  };
+
+  const fetchChangeName = async () => {
+    try {
+      const res = await fetch(`${API_BASE}GetToDayActivityChagementName`);
+      const json = await res.json();
+      setActivityChangeName(json || []);
+    } catch (error) {
+      console.error("Erreur changement de nom :", error);
+    }
+  };
+
+  const fetchAchatCle = async () => {
+    try {
+      const res = await fetch(`${API_BASE}GetToDayActivityAchatCle`);
+      const json = await res.json();
+      setActivityAchatCle(json || []);
+    } catch (error) {
+      console.error("Erreur achat clé :", error);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -72,7 +108,7 @@ const Activiter_du_jour: React.FC = () => {
             <NoFilterDataTable
               data={data}
               columns={cols}
-              typeName={Nom}  // Assuming "Nom" refers to the field to filter or show in the table
+              typeName={Nom}
             />
           </div>
         ))}
