@@ -73,7 +73,7 @@ const FactureCelleAction: React.FC<ModelProps> = ({ Name, Clients, Nom }) => {
             }
         } catch (error: any) {
             setError(error.message || "Une erreur inconnue s'est produite.");
-            console.error("Erreur lors du chargement des factures :", error);
+            // console.error("Erreur lors du chargement des factures :", error);
         } finally {
             setLoading(false);
         }

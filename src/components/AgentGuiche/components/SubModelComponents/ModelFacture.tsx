@@ -4,7 +4,6 @@ import HeaderImprimary from "../HeaderImprimary";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from "./animated-modal";
 import { useEffect, useRef, useState } from "react";
 import { Check, X } from "lucide-react";
-import css from "styled-jsx/css";
 
 // Types
 interface Category {
@@ -65,7 +64,6 @@ export function ModelFacture({ Name, Nom, data, loading, error, Titre }: ModelPr
                 printable: printAreaRef.current,
                 type: "html",
                 targetStyles: ["*"],
-                // css: ["https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css"]
             });
         }
     };
@@ -90,9 +88,8 @@ export function ModelFacture({ Name, Nom, data, loading, error, Titre }: ModelPr
     const FactureContent = (payment: Payment, total: number) => (
         <div className="p-4 rounded-md shadow-sm bg-white dark:bg-neutral-900 w-full">
             <HeaderImprimary Reference={payment.Reference} />
-
-            <div className="flex flex-col mt-4 mb-2 text-gray-700 dark:text-gray-300">
-                <strong  className="text-[0.4rem]">Boulevard de la République</strong>
+            <div className="flex flex-col mb-2 text-gray-700 dark:text-gray-300">
+                <strong className="text-[0.4rem]">Boulevard de la République</strong>
                 <span className="text-[0.4rem]"><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</span>
                 <span className="text-[0.4rem]"><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></span>
                 <span className="text-[0.4rem]"><strong>Site web :</strong> <a href="http://www.laposte.dj" className="underline" target="_blank" rel="noopener noreferrer">www.laposte.dj</a></span>
@@ -180,7 +177,7 @@ export function ModelFacture({ Name, Nom, data, loading, error, Titre }: ModelPr
                         </h4>
 
                         <ScrollArea className="h-[400px] w-full rounded-md px-4">
-                            <div className="flex flex-col gap-6" ref={printAreaRef}>
+                            <div className="flex flex-col gap-6 print-container" ref={printAreaRef}>
                                 {loading ? (
                                     <p className="text-center text-gray-500">Chargement en cours...</p>
                                 ) : error ? (
@@ -196,10 +193,10 @@ export function ModelFacture({ Name, Nom, data, loading, error, Titre }: ModelPr
                                                 {FactureContent(payment, total)}
 
                                                 {/* Ligne de séparation */}
-                                                <div className="border-t border-dashed my-6"></div>
+                                                <div className="border-t-2 border-dashed my-6"></div>
 
                                                 {/* Partie archive */}
-                                                {/* {FactureContent(payment, total)} */}
+                                                {FactureContent(payment, total)}
                                             </div>
                                         );
                                     })
@@ -220,6 +217,27 @@ export function ModelFacture({ Name, Nom, data, loading, error, Titre }: ModelPr
                     </ModalContent>
                 </ModalBody>
             </Modal>
+
+            {/* 🔹 Style Impression */}
+            <style jsx global>{`
+                @media print {
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-size: 10pt;
+                    }
+                    .print-container {
+                        page-break-after: always;
+                    }
+                    .print-section {
+                        page-break-inside: avoid;
+                        margin-bottom: 20px;
+                    }
+                    table {
+                        font-size: 9pt;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

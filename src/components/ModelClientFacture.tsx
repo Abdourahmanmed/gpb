@@ -69,7 +69,7 @@ export function ModelClientFacture({ Name, Nom, data, loading, error, Titre }: M
                                 <div className="p-4 rounded-md shadow-sm bg-white dark:bg-neutral-900 w-full">
                                     <HeaderImprimary Reference={data?.nouveau_nfacture} NameOfFacture="Facture" />
 
-                                    <div className="flex flex-col mt-4 mb-2 text-gray-700 dark:text-gray-300 text-[0.4rem]">
+                                    <div className="flex flex-col mb-2 text-gray-700 dark:text-gray-300 text-[0.4rem]">
                                         <strong>Boulevard de la République</strong>
                                         <span><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</span>
                                         <span><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></span>

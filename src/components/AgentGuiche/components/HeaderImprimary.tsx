@@ -25,8 +25,8 @@ const HeaderImprimary = ({ Reference, NameOfFacture }: ReferencePropos) => {
                         <Image
                             src="/logoposte.png"
                             alt="Logo"
-                            width={70} // Largeur de 64px
-                            height={70} // Hauteur de 64px
+                            width={100} // Largeur de 64px
+                            height={100} // Hauteur de 64px
                             className="object-cover"
                         />
                     </div>

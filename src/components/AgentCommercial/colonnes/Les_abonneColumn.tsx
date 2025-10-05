@@ -1,15 +1,16 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
-import { Checkbox } from "@/components/ui/checkbox"
-import Detail from "@/components/Detail"
-import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction"
-import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction"
-import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction"
-import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction"
-import UnpaidInvoice from "@/components/UnpaidInvoice"
+import { Checkbox } from "@/components/ui/checkbox";
+import Detail from "@/components/Detail";
+import LVDCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/LivraiCellAction";
+import ColectionCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/CollectionCelleAction";
+import FactureCelleAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/FactureCellAction";
+import ClientsCellAction from "@/components/AgentGuiche/components/SubModelComponents/SuBCellActions/ClientsCellAction";
+import UnpaidInvoice from "@/components/UnpaidInvoice";
+import DetailsBp from "@/components/ActiviteBp";
 
 export type Les_abonnesCommerce = {
   id: number;
@@ -41,14 +42,14 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Tout sélectionner"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label="Sélectionner la ligne"
       />
     ),
     enableSorting: false,
@@ -77,7 +78,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Email <ArrowUpDown className="h-4 w-4" />
+        E-mail <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
   },
@@ -99,7 +100,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Client <ArrowUpDown className="h-4 w-4" />
+        Type de client <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
   },
@@ -110,7 +111,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Telephone <ArrowUpDown className="h-4 w-4" />
+        Téléphone <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
   },
@@ -121,7 +122,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        N° Boîte Postale <ArrowUpDown className="h-4 w-4" />
+        N° de boîte postale <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
     cell: ({ row }) => (
@@ -137,7 +138,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Année Abonnement <ArrowUpDown className="h-4 w-4" />
+        Année d’abonnement <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
     cell: ({ row }) => (
@@ -153,7 +154,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        État Abonnement <ArrowUpDown className="h-4 w-4" />
+        Statut de paiement <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
     cell: ({ row }) => (
@@ -169,7 +170,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Nombre sous couverte <ArrowUpDown className="h-4 w-4" />
+        Nombre sous couverture <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
     cell: ({ row }) => (
@@ -187,7 +188,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Nombre Adresse livraison <ArrowUpDown className="h-4 w-4" />
+        Nombre d’adresses de livraison <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
     cell: ({ row }) => (
@@ -205,7 +206,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Nombre Adresse Collections <ArrowUpDown className="h-4 w-4" />
+        Nombre d’adresses de collecte <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
     cell: ({ row }) => (
@@ -234,28 +235,37 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Date Abonnement <ArrowUpDown className="h-4 w-4" />
+        Date d’abonnement <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
   },
   {
-    header: "Facture",
+    header: "Activité de cette boîte",
     cell: ({ row }) => (
-      <UnpaidInvoice
-        Name="Facture"
-        Clients={row.original?.id}
-        Nom={row.original?.Nom}
+      <DetailsBp
+        Name="Détails"
+        numero={row.original?.boite_postal_numero}
       />
     ),
   },
+  // {
+  //   header: "Facture",
+  //   cell: ({ row }) => (
+  //     <UnpaidInvoice
+  //       Name="Facture"
+  //       Clients={row.original?.id}
+  //       Nom={row.original?.Nom}
+  //     />
+  //   ),
+  // },
   {
-    header: "Reçue",
+    header: "Reçu",
     cell: ({ row }) => (
       <FactureCelleAction
-        Name="Reçue"
+        Name="Reçu"
         Clients={row.original?.id}
         Nom={row.original?.Nom}
       />
     ),
   },
-]
+];

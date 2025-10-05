@@ -100,7 +100,7 @@ export const SubscribedColumns: ColumnDef<Subscribed>[] = [
   },
   {
     accessorKey: "abonnement_status",
-    header: "État Abonnement",
+    header: "Status de paiement",
     cell: ({ row }) => (
       <p>
         {row.original.abonnement_status}

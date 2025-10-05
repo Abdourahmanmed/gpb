@@ -65,6 +65,8 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Store/store";
 import { addUserSuccess } from "@/Store/Slices/CrudUserManagement";
 import * as XLSX from "xlsx"; // Importer la librairie SheetJS
+import jsPDF from "jspdf";
+import autoTable, { RowInput } from "jspdf-autotable";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -84,7 +86,6 @@ interface DocumentData {
   Patent_Quitance: string;
 }
 
-
 export function NoFilterDataTable<TData, TValue>({
   columns,
   data,
@@ -94,7 +95,8 @@ export function NoFilterDataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(10); // Nombre de lignes par page
+  const [pageIndex, setPageIndex] = useState(0); // Ajout de pageIndex dans l'état
 
   const table = useReactTable({
     data,
@@ -112,6 +114,10 @@ export function NoFilterDataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination: {
+        pageSize,
+        pageIndex, // Utilisation de pageIndex depuis l'état
+      },
     },
   });
 
@@ -133,10 +139,8 @@ export function NoFilterDataTable<TData, TValue>({
     },
   });
 
-
   //fonction pour ajouter les informations d'un agents
   const onEditSubmit = async (values: z.infer<typeof EditUserSchema>) => {
-
     const api = `http://192.168.0.12/gbp_backend/api.php?method=CreateAgentsByResponsable`;
     try {
       const response = await fetch(api, {
@@ -181,22 +185,90 @@ export function NoFilterDataTable<TData, TValue>({
   const exportToExcel = () => {
     const exportData = table.getRowModel().rows.map((row) =>
       row.getVisibleCells().reduce((acc, cell) => {
-        acc[cell.column.id] = cell.getContext().getValue()
-        return acc
+        acc[cell.column.id] = cell.getContext().getValue();
+        return acc;
       }, {} as { [key: string]: any })
-    )
+    );
 
-    const wb = XLSX.utils.book_new()
-    const ws = XLSX.utils.json_to_sheet(exportData)
-    XLSX.utils.book_append_sheet(wb, ws, "Raport")
-    XLSX.writeFile(wb, "Raport.xlsx")
-  }
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    XLSX.utils.book_append_sheet(wb, ws, "Raport");
+    XLSX.writeFile(wb, "Raport.xlsx");
+  };
+  // Fonction d'exportation des données en PDF
+  // Fonction d'exportation des données en PDF
+  // Fonction d'exportation des données en PDF
+  const exportToPDF = () => {
+    // Récupérer uniquement les colonnes visibles et valides
+    const visibleColumns = table.getAllColumns().filter(
+      (col) =>
+        col.getIsVisible() &&
+        col.id !== "select" &&
+        col.id.toLowerCase() !== "facture" &&
+        col.id.toLowerCase() !== "reçue" // ou "recu" selon ton id exact
+    );
 
+    // Construire les headers
+    const headers = visibleColumns.map((col) =>
+      typeof col.columnDef.header === "string" ? col.columnDef.header : col.id
+    );
+
+    // Construire les lignes
+    const rows = table.getRowModel().rows.map((row: any) =>
+      visibleColumns.map((col) => {
+        const cell = row.getAllCells().find((c: any) => c.column.id === col.id);
+        return cell ? String(cell.getValue() ?? "") : "";
+      })
+    );
+
+    // Création du document en mode paysage
+    const doc = new jsPDF({
+      orientation: "landscape",
+      unit: "pt",
+      format: "a4",
+    });
+
+    // Titre
+    doc.setFontSize(16);
+    doc.text("Rapport des données", 40, 40);
+
+    // Génération du tableau
+    autoTable(doc, {
+      head: [headers],
+      body: rows,
+      startY: 60,
+      theme: "grid",
+      tableWidth: "auto",
+      headStyles: {
+        fillColor: [22, 160, 133],
+        halign: "center",
+      },
+      styles: {
+        fontSize: 8,
+        cellPadding: 4,
+        overflow: "linebreak",
+      },
+      didDrawPage: (data: any) => {
+        const pageNumber = doc.internal.getNumberOfPages?.() || 1;
+        doc.setFontSize(8);
+        doc.text(
+          `Page ${pageNumber}`,
+          data.settings.margin.left,
+          doc.internal.pageSize.height - 10
+        );
+      },
+    });
+
+    doc.save("Rapport.pdf");
+  };
 
   // Fonction pour récupérer l'ID des lignes sélectionnées
   const getSelectedRowIds = (): number[] => {
-    return table.getRowModel().rows
-      .filter((row, index) => rowSelection[index as keyof typeof rowSelection])
+    return table
+      .getRowModel()
+      .rows.filter(
+        (row, index) => rowSelection[index as keyof typeof rowSelection]
+      )
       .map((row) => (row.original as RowData).id);
   };
 
@@ -341,16 +413,16 @@ export function NoFilterDataTable<TData, TValue>({
             </>
           )}
 
-        {path && [
-          "/Agent_commercial/Recaputilation/Rapport/Redevance",
-          "/Agent_commercial/Recaputilation/Rapport/Changer_nom",
-          "/Agent_commercial/Recaputilation/Rapport/Achat_cle",
-          "/Agent_commercial/Recaputilation/Rapport/Sous_couverte",
-          "/Agent_commercial/Recaputilation/Rapport/Livraison",
-          "/Agent_commercial/Recaputilation/Rapport/Collection",
-        ].includes(path) && (
+        {path &&
+          [
+            "/Agent_commercial/Recaputilation/Rapport/Redevance",
+            "/Agent_commercial/Recaputilation/Rapport/Changer_nom",
+            "/Agent_commercial/Recaputilation/Rapport/Achat_cle",
+            "/Agent_commercial/Recaputilation/Rapport/Sous_couverte",
+            "/Agent_commercial/Recaputilation/Rapport/Livraison",
+            "/Agent_commercial/Recaputilation/Rapport/Collection",
+          ].includes(path) && (
             <>
-
               <Input
                 placeholder="Filtrer par N. Boîte postale"
                 value={
@@ -411,36 +483,58 @@ export function NoFilterDataTable<TData, TValue>({
                 }
                 className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
               />
-              <Select onValueChange={(val) =>
-                table.getColumn("Date_payement")?.setFilterValue({
-                  type: "month",
-                  value: val,
-                })
-              }>
+              <Select
+                onValueChange={(val) =>
+                  table.getColumn("Date_payement")?.setFilterValue({
+                    type: "month",
+                    value: val,
+                  })
+                }
+              >
                 <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="Mois" />
                 </SelectTrigger>
                 <SelectContent>
-                  {["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
-                    .map((mois, index) => (
-                      <SelectItem key={index} value={String(index + 1).padStart(2, "0")}>
-                        {mois}
-                      </SelectItem>
-                    ))}
+                  {[
+                    "Janvier",
+                    "Février",
+                    "Mars",
+                    "Avril",
+                    "Mai",
+                    "Juin",
+                    "Juillet",
+                    "Août",
+                    "Septembre",
+                    "Octobre",
+                    "Novembre",
+                    "Décembre",
+                  ].map((mois, index) => (
+                    <SelectItem
+                      key={index}
+                      value={String(index + 1).padStart(2, "0")}
+                    >
+                      {mois}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
-              <Select onValueChange={(val) =>
-                table.getColumn("Date_payement")?.setFilterValue({
-                  type: "year",
-                  value: val,
-                })
-              }>
+              <Select
+                onValueChange={(val) =>
+                  table.getColumn("Date_payement")?.setFilterValue({
+                    type: "year",
+                    value: val,
+                  })
+                }
+              >
                 <SelectTrigger className="w-[120px]">
                   <SelectValue placeholder="Année" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                  {Array.from(
+                    { length: 10 },
+                    (_, i) => new Date().getFullYear() - i
+                  ).map((year) => (
                     <SelectItem key={year} value={String(year)}>
                       {year}
                     </SelectItem>
@@ -448,81 +542,114 @@ export function NoFilterDataTable<TData, TValue>({
                 </SelectContent>
               </Select>
 
-              <Button className="bg-primary" onClick={exportToExcel}>Exportation en excel</Button>
+              <Button className="bg-primary" onClick={exportToExcel}>
+                Exportation en excel
+              </Button>
+              <Button className="bg-primary" onClick={exportToPDF}>
+                Exportation en pdf
+              </Button>
             </>
           )}
-        {path && path === "/Agent_commercial/Recaputilation/Rapport/Resilier" && (
-          <>
-            <Input
-              placeholder="filtre par numero boite postale"
-              value={
-                (table.getColumn("Numero")?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn("Numero")?.setFilterValue(event.target.value)
-              }
-              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-            />
-            <Input
-              placeholder="filtre par nom"
-              value={
-                (table.getColumn(typeName)?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn(typeName)?.setFilterValue(event.target.value)
-              }
-              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-            />
-            <Input
-              placeholder="Filtrer par jour (YYYY-MM-DD)"
-              onChange={(e) =>
-                table.getColumn("Date_resilier")?.setFilterValue({
-                  type: "day",
-                  value: e.target.value,
-                })
-              }
-              className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-            />
-            <Select onValueChange={(val) =>
-              table.getColumn("Date_resilier")?.setFilterValue({
-                type: "month",
-                value: val,
-              })
-            }>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Mois" />
-              </SelectTrigger>
-              <SelectContent>
-                {["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
-                  .map((mois, index) => (
-                    <SelectItem key={index} value={String(index + 1).padStart(2, "0")}>
+        {path &&
+          path === "/Agent_commercial/Recaputilation/Rapport/Resilier" && (
+            <>
+              <Input
+                placeholder="filtre par numero boite postale"
+                value={
+                  (table.getColumn("Numero")?.getFilterValue() as string) ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn("Numero")?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="filtre par nom"
+                value={
+                  (table.getColumn(typeName)?.getFilterValue() as string) ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn(typeName)?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par jour (YYYY-MM-DD)"
+                onChange={(e) =>
+                  table.getColumn("Date_resilier")?.setFilterValue({
+                    type: "day",
+                    value: e.target.value,
+                  })
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Select
+                onValueChange={(val) =>
+                  table.getColumn("Date_resilier")?.setFilterValue({
+                    type: "month",
+                    value: val,
+                  })
+                }
+              >
+                <SelectTrigger className="w-[150px]">
+                  <SelectValue placeholder="Mois" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[
+                    "Janvier",
+                    "Février",
+                    "Mars",
+                    "Avril",
+                    "Mai",
+                    "Juin",
+                    "Juillet",
+                    "Août",
+                    "Septembre",
+                    "Octobre",
+                    "Novembre",
+                    "Décembre",
+                  ].map((mois, index) => (
+                    <SelectItem
+                      key={index}
+                      value={String(index + 1).padStart(2, "0")}
+                    >
                       {mois}
                     </SelectItem>
                   ))}
-              </SelectContent>
-            </Select>
+                </SelectContent>
+              </Select>
 
-            <Select onValueChange={(val) =>
-              table.getColumn("Date_resilier")?.setFilterValue({
-                type: "year",
-                value: val,
-              })
-            }>
-              <SelectTrigger className="w-[120px]">
-                <SelectValue placeholder="Année" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
-                  <SelectItem key={year} value={String(year)}>
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <Select
+                onValueChange={(val) =>
+                  table.getColumn("Date_resilier")?.setFilterValue({
+                    type: "year",
+                    value: val,
+                  })
+                }
+              >
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="Année" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from(
+                    { length: 10 },
+                    (_, i) => new Date().getFullYear() - i
+                  ).map((year) => (
+                    <SelectItem key={year} value={String(year)}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            <Button className="bg-primary" onClick={exportToExcel}>Exportation en excel</Button>
-          </>
-        )}
+              <Button className="bg-primary" onClick={exportToExcel}>
+                Exportation en excel
+              </Button>
+              <Button className="bg-primary" onClick={exportToPDF}>
+                Exportation en pdf
+              </Button>
+            </>
+          )}
 
         {/* c'est uniquement la page superviseur du gestion agent */}
         {path && path === "/Superviseur/Les_Agents" && (
@@ -627,7 +754,10 @@ export function NoFilterDataTable<TData, TValue>({
                     {[
                       { label: "Abonnement", file: documents.Abonnement },
                       { label: "Identité", file: documents.Identite },
-                      { label: "Patente / Quittance", file: documents.Patent_Quitance },
+                      {
+                        label: "Patente / Quittance",
+                        file: documents.Patent_Quitance,
+                      },
                     ].map(({ label, file }, index) => {
                       const fileUrl = `http://192.168.0.15/gbp_backend/${file}`;
                       const isPDF = file.toLowerCase().endsWith(".pdf");
@@ -653,25 +783,41 @@ export function NoFilterDataTable<TData, TValue>({
                     })}
                   </div>
                 ) : (
-                  <p className="text-center">Chargement ou aucun document trouvé.</p>
+                  <p className="text-center">
+                    Chargement ou aucun document trouvé.
+                  </p>
                 )}
               </DialogContent>
             </Dialog>
-
           </>
         )}
-        {path && path === "/Superviseur/Liste_Boite_Postal" && (
-          <Input
-            placeholder="filtre par Numero"
-            value={
-              (table.getColumn(typeName)?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn(typeName)?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
-          />
-        )}
+        {path &&
+          (path === "/Superviseur/Liste_Boite_Postal" ||
+            path === "/Agent_commercial/Liste_Boite_postal") && (
+            <>
+              <Input
+                placeholder="filtre par Numero"
+                value={
+                  (table.getColumn(typeName)?.getFilterValue() as string) ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn(typeName)?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="filtre par type"
+                value={
+                  (table.getColumn("Type")?.getFilterValue() as string) ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn("Type")?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+            </>
+          )}
+
         {path && path === "/Superviseur/Notifications" && (
           <>
             <Input
@@ -925,7 +1071,12 @@ export function NoFilterDataTable<TData, TValue>({
                 className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
               />
 
-              <Button className="bg-primary" onClick={exportToExcel}>Exportation en excel</Button>
+              <Button className="bg-primary" onClick={exportToExcel}>
+                Exportation en excel
+              </Button>
+              <Button className="bg-primary" onClick={exportToPDF}>
+                Exportation en pdf
+              </Button>
               <button
                 className="w-full bg-blue-700 text-white hover:bg-blue-500 duration-500 rounded-lg p-1"
                 onClick={() => {
@@ -935,7 +1086,10 @@ export function NoFilterDataTable<TData, TValue>({
                 Voir les documents
               </button>
               {/* Document dialog */}
-              <Dialog open={isDocsDialogOpen} onOpenChange={setIsDocsDialogOpen}>
+              <Dialog
+                open={isDocsDialogOpen}
+                onOpenChange={setIsDocsDialogOpen}
+              >
                 <DialogContent className="bg-white max-h-[90vh] overflow-y-auto">
                   <ToastContainer />
                   <DialogHeader>
@@ -950,7 +1104,10 @@ export function NoFilterDataTable<TData, TValue>({
                       {[
                         { label: "Abonnement", file: documents.Abonnement },
                         { label: "Identité", file: documents.Identite },
-                        { label: "Patente / Quittance", file: documents.Patent_Quitance },
+                        {
+                          label: "Patente / Quittance",
+                          file: documents.Patent_Quitance,
+                        },
                       ].map(({ label, file }, index) => {
                         const fileUrl = `http://192.168.0.15/gbp_backend/${file}`;
                         const isPDF = file.toLowerCase().endsWith(".pdf");
@@ -976,7 +1133,9 @@ export function NoFilterDataTable<TData, TValue>({
                       })}
                     </div>
                   ) : (
-                    <p className="text-center">Chargement ou aucun document trouvé.</p>
+                    <p className="text-center">
+                      Chargement ou aucun document trouvé.
+                    </p>
                   )}
                 </DialogContent>
               </Dialog>
@@ -986,7 +1145,7 @@ export function NoFilterDataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="ml-auto bg-primary text-white hover:bg-blue-600 duration-500">
-              Columns
+              Triage
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -1022,9 +1181,9 @@ export function NoFilterDataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -1061,45 +1220,52 @@ export function NoFilterDataTable<TData, TValue>({
           </TableBody>
         </Table>
         {/* paginations */}
-        <div className="flex items-center justify-end space-x-2 py-4 px-4">
-          {/* rows per page selector */}
+        <div className="flex items-center justify-end space-x-2 py-4">
+          {/* Sélecteur de lignes par page */}
           <div className="flex items-center space-x-2">
             <label htmlFor="rows-per-page" className="text-sm">
-              Rows per page:
+              Lignes par page :
             </label>
             <select
               id="rows-per-page"
               value={pageSize}
               onChange={(e) => setPageSize(Number(e.target.value))}
-              className="border rounded-md p-1"
+              className="border rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {[10, 20, 30, 40, 50, 100, 500, 1000].map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
+              {[10, 20, 30, 40, 50, 100, 500, 1000, 2000, 6000, 10000].map(
+                (size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                )
+              )}
             </select>
           </div>
-          {/* show selected row  */}
+
+          {/* Nombre de lignes sélectionnées */}
           <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            {table.getFilteredSelectedRowModel().rows.length} sur{" "}
+            {table.getFilteredRowModel().rows.length} ligne(s) sélectionnée(s).
           </div>
+
+          {/* Pagination */}
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            aria-label="Page précédente"
           >
-            Previous
+            Précédent
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            aria-label="Page suivante"
           >
-            Next
+            Suivant
           </Button>
         </div>
       </div>

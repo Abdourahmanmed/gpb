@@ -91,7 +91,7 @@ export const ClientColumns: ColumnDef<ClientType>[] = [
     },
     {
         accessorKey: "abonnement_status",
-        header: "État Abonnement",
+        header: "Status de paiement",
         cell: ({ row }) => (
             <p>
                 {row.original.abonnement_status}
@@ -128,16 +128,16 @@ export const ClientColumns: ColumnDef<ClientType>[] = [
         accessorKey: "Date_abonnement",
         header: "Date Abonnement",
     },
-    {
-        header: "Facture",
-        cell: ({ row }) => (
-            <UnpaidInvoice
-                Name="Facture"
-                Clients={row.original?.id}
-                Nom={row.original?.Nom}
-            />
-        ),
-    },
+    // {
+    //     header: "Facture",
+    //     cell: ({ row }) => (
+    //         <UnpaidInvoice
+    //             Name="Facture"
+    //             Clients={row.original?.id}
+    //             Nom={row.original?.Nom}
+    //         />
+    //     ),
+    // },
     {
         header: "Reçue",
         cell: ({ row }) => (
