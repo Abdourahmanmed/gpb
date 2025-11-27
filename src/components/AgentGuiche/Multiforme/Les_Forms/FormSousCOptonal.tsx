@@ -38,7 +38,7 @@ const FormSousCOptonal = () => {
     const [recueNumber, setRecueNumber] = useState('');
 
     useEffect(() => {
-        if (multiFormState?.Role == "particulier") {
+        if (multiFormState?.Role == "IND") {
             setMontantBaseSc(3500);
         } else {
             setMontantBaseLd(60000);
@@ -366,7 +366,7 @@ const FormSousCOptonal = () => {
                             </div>
                         )}
                     </div>
-                    {multiFormState?.Role == "entreprise" ? (
+                    {multiFormState?.Role !== "IND" ? (
                         <>
                             {/* Livraison */}
                             <div className="space-y-4">

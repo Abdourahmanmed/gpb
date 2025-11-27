@@ -14,19 +14,22 @@ import FactureCelleAction from "../components/SubModelComponents/SuBCellActions/
 import UnpaidInvoice from "@/components/UnpaidInvoice";
 
 export type Les_abonnes = {
-  id: number;
+  id: number; // ton backend renvoie 3982, donc number
   Nom: string;
   Email: string;
-  Adresse: string;
+  Adresse: string | null;
   TypeClient: string;
   Telephone: string;
   Id_boite_postale: number;
   Date_abonnement: string;
+  boite_postal_type: string;
+  etat_actuel: string;
   id_user: number;
-  updated_by: number;
+  updated_by: number | null;
   abonnement_status: string;
-  abonnement_penalite: number;
-  annee_abonnement: number;
+  abonnement_penalite: string; // c'est une string "0.00"
+  derniere_annee_payee: number;
+  derniere_annee_abonnement: number;
   boite_postal_numero: string;
   nombre_sous_couverte: number;
   Adresse_Livraison: number;
@@ -67,14 +70,14 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
       </Button>
     ),
   },
-  {
-    accessorKey: "Email",
-    header: "Email",
-  },
-  {
-    accessorKey: "Adresse",
-    header: "Adresse",
-  },
+  // {
+  //   accessorKey: "Email",
+  //   header: "Email",
+  // },
+  // {
+  //   accessorKey: "Adresse",
+  //   header: "Adresse",
+  // },
   {
     accessorKey: "TypeClient",
     header: "Client",
@@ -84,46 +87,59 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
     header: "Téléphone",
   },
   {
-    accessorKey: "Id_boite_postale",
-    header: "ID Boîte Postale",
-  },
-  {
     accessorKey: "boite_postal_numero",
     header: "N° Boîte Postale",
   },
   {
-    accessorKey: "annee_abonnement",
+    accessorKey: "boite_postal_type",
+    header: "Type de boite",
+  },
+  {
+    accessorKey: "derniere_annee_payee",
     header: "Année Abonnement",
   },
   {
     accessorKey: "abonnement_status",
     header: "État Abonnement",
-    cell: ({ row }) => (
-      <p>
-        {row.original.abonnement_status}
-      </p>
-    ),
+    cell: ({ row }) => <p>{row.original.abonnement_status}</p>,
   },
   {
     accessorKey: "nombre_sous_couverte",
-    header: "Nombre Sous Couvert",
+    header: "Sous Couvert",
     cell: ({ row }) => {
-
-      return <ClientsCellAction Nbr={row.original?.nombre_sous_couverte} Clients={row.original?.id} Nom={row.original?.Nom} />
+      return (
+        <ClientsCellAction
+          Nbr={row.original?.nombre_sous_couverte}
+          Clients={row.original?.id}
+          Nom={row.original?.Nom}
+        />
+      );
     },
   },
   {
     accessorKey: "Adresse_Livraison",
-    header: "Nombre Adresse livraison",
+    header: "livraison",
     cell: ({ row }) => {
-      return <LVDCellAction Nbr={row.original?.Adresse_Livraison} Clients={row.original?.id} Nom={row.original?.Nom} />
+      return (
+        <LVDCellAction
+          Nbr={row.original?.Adresse_Livraison}
+          Clients={row.original?.id}
+          Nom={row.original?.Nom}
+        />
+      );
     },
   },
   {
     accessorKey: "Adresse_Collection",
-    header: "Nombre Adresse Collections",
+    header: "Collect",
     cell: ({ row }) => {
-      return <ColectionCellAction Nbr={row.original?.Adresse_Collection} Clients={row.original?.id} Nom={row.original?.Nom} />
+      return (
+        <ColectionCellAction
+          Nbr={row.original?.Adresse_Collection}
+          Clients={row.original?.id}
+          Nom={row.original?.Nom}
+        />
+      );
     },
   },
   {
@@ -134,16 +150,16 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
     accessorKey: "Date_abonnement",
     header: "Date Abonnement",
   },
-  {
-    header: "Facture",
-    cell: ({ row }) => (
-      <UnpaidInvoice
-        Name="Facture"
-        Clients={row.original?.id}
-        Nom={row.original?.Nom}
-      />
-    ),
-  },
+  // {
+  //   header: "Facture",
+  //   cell: ({ row }) => (
+  //     <UnpaidInvoice
+  //       Name="Facture"
+  //       Clients={row.original?.id}
+  //       Nom={row.original?.Nom}
+  //     />
+  //   ),
+  // },
   {
     header: "Reçue",
     cell: ({ row }) => (
@@ -151,8 +167,9 @@ export const Les_abonneColumns: ColumnDef<Les_abonnes>[] = [
         Name="Reçue"
         Clients={row.original?.id}
         Nom={row.original?.Nom}
+        NBP={row.original?.boite_postal_numero}
+        TypeBP={row.original?.boite_postal_type}
       />
     ),
   },
-
 ];

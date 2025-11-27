@@ -5,7 +5,8 @@ import { CollectForm } from '../AgentGuiche/components/CollectionForm';
 interface DataClient {
     Redevance: number,
     Nom: string,
-    TypeClient: string
+    TypeClient: string,
+    Type: string,
 }
 interface collectiopropos {
     ClientId: string;

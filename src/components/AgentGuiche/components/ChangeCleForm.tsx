@@ -28,19 +28,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  AchatCleSchema,
-  MontantSaiasiSchema,
-} from "@/Schema/schema";
+import { AchatCleSchema, MontantSaiasiSchema } from "@/Schema/schema";
 import HeaderImprimary from "./HeaderImprimary";
 import Imprimery from "./Imprimery";
 import { GetLastReferenceOfCLE } from "@/actions/All_references/GetLastReferenceOfCLE";
 import { ChangementClePaiement } from "@/actions/paiement/ClePaiement";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css'; // Importer les styles de react-toastify
+import "react-toastify/dist/ReactToastify.css"; // Importer les styles de react-toastify
 import { useSession } from "next-auth/react";
 import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 import { Check } from "lucide-react";
+import RecuImpression from "../RecuImpression";
 
 // Typages
 type MethodePaiement = "credit" | "cheque" | "cash" | "wallet";
@@ -55,8 +53,10 @@ type WalletOptions =
 type PaiementFormValues = z.infer<typeof AchatCleSchema>;
 type MontantSaisi = z.infer<typeof MontantSaiasiSchema>;
 interface DataClient {
-  Redevance: number,
-  Nom: string,
+  Redevance: number;
+  Nom: string;
+  NBP: string;
+  Type: string;
 }
 interface PaymentFormProps {
   isOpen: boolean;
@@ -71,7 +71,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
   setIsOpen,
   ClientId,
   TypeClient,
-  dataClient
+  dataClient,
 }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     MethodePaiement | undefined
@@ -87,7 +87,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
   const { data: session } = useSession();
   const confettiRef = useRef<ConfettiRef>(null);
   const [isSucessOpen, setisSucessOpen] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [Amount, setAmount] = useState(0);
 
   useEffect(() => {
@@ -166,13 +166,13 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
   });
 
   useEffect(() => {
-    //verification de client 
-    if (TypeClient == "Particulier") {
+    //verification de client
+    if (TypeClient == "IND") {
       setAmount(1500);
     } else {
       setAmount(3000);
     }
-  }, [TypeClient])
+  }, [TypeClient]);
 
   const onSubmit = (values: PaiementFormValues) => {
     try {
@@ -182,8 +182,8 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
         console.error("La référence n'est pas générée.");
         return;
       }
-      //verification de client 
-      if (TypeClient == "Particulier") {
+      //verification de client
+      if (TypeClient == "IND") {
         FinalAmount = 1500;
       } else {
         FinalAmount = 3000;
@@ -212,12 +212,18 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
 
   const handlePayer = async (value: MontantSaisi) => {
     if (parseInt(value.montantSaisi) !== donnees?.Montant) {
-      toast.error(`Le montant saisi doit être exactement ${donnees?.Montant} DJF.`);
+      toast.error(
+        `Le montant saisi doit être exactement ${donnees?.Montant} DJF.`
+      );
       return;
     }
 
     try {
-      const enregistrement = await ChangementClePaiement(ClientId, session?.user?.id, donnees);
+      const enregistrement = await ChangementClePaiement(
+        ClientId,
+        session?.user?.id,
+        donnees
+      );
 
       if (enregistrement?.success) {
         setMessage(enregistrement?.success);
@@ -425,10 +431,14 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
       <Dialog open={isSucessOpen} onOpenChange={setisSucessOpen}>
         <DialogContent className=" p-8 bg-white rounded-xl shadow-lg max-w-[980px] mx-auto">
           <DialogHeader className="border-b-2 pb-4 mb-6">
-            <DialogTitle className="text-2xl font-bold text-gray-800">Imprimer</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-gray-800">
+              Imprimer
+            </DialogTitle>
           </DialogHeader>
           <div className="relative">
-            <h1 className="text-2xl text-green-600 font-semibold bg-green-100 p-2 rounded-md">Felicitation {message}</h1>
+            <h1 className="text-2xl text-green-600 font-semibold bg-green-100 p-2 rounded-md">
+              Felicitation {message}
+            </h1>
             <Confetti
               ref={confettiRef}
               className="absolute left-0 top-0 z-0 size-full"
@@ -442,76 +452,36 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
             ref={printAreaRef}
             className="rounded-md  p-4 flex flex-col items-center w-[900px]"
           >
-            <HeaderImprimary Reference={recueNumber} />
-            <div className="flex flex-col mt-4 mb-2 text-gray-700 dark:text-gray-300 w-full ">
-              <strong className="text-[0.4rem]">Boulevard de la République</strong>
-              <span className="text-[0.4rem] mt-2"><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</span>
-              <span className="text-[0.4rem] mt-2"><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></span>
-              <span className="text-[0.4rem] mt-2"><strong>Site web :</strong> <a href="http://www.laposte.dj" className="underline" target="_blank" rel="noopener noreferrer">www.laposte.dj</a></span>
-            </div>
-            <h5 className="font-bold text-xl mt-6 mb-4 w-full">Client : {dataClient?.Nom}</h5>
-            {donnees && (
-              <div className="h-max w-full p-4">
-                <table className="w-full border border-gray-200 text-sm">
-                  <thead>
-                    <tr>
-                      <th>Redevance</th>
-                      <th>Type Client</th>
-                      <th>Achat cle</th>
-                      <th>Méthode de paiement</th>
-                      <th>Montant</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="text-center">{dataClient?.Redevance}</td>
-                      <td className="text-center">{TypeClient}</td>
-                      <td className="text-center"><Check /></td>
-                      <td className="flex gap-2 items-center text-center">
-                        <div className="mb-2 text-center"> {donnees.Methode_de_paiement}</div>
-                        {donnees.Wallet ? (
-                          <div className="flex justify-between items-center  gap-4 p-4 bg-gray-50 rounded-md shadow-md">
-                            <div className="text-sm text-gray-800">
-                              <strong>Wallet :</strong> {donnees.Wallet}
-                            </div>
-                            <div className="text-sm text-gray-800">
-                              <strong>Téléphone :</strong> {donnees.Numero_wallet}
-                            </div>
-                          </div>
-                        ) : (
-                          donnees?.Methode_de_paiement === "cheque" && (
-                            <div className="flex justify-between items-center gap-4 p-4 bg-gray-50 rounded-md shadow-md">
-                              <div className="text-sm text-gray-800">
-                                <strong>Chèque :</strong> {donnees.Numero_cheque}
-                              </div>
-                              <div className="text-sm text-gray-800">
-                                <strong>Banque :</strong> {donnees.Nom_Banque}
-                              </div>
-                            </div>
-                          )
-                        )}
-                      </td>
-                      <td className="text-center">{donnees.Montant} Djf</td>
-                    </tr>
-                    <tr>
-                      <td colSpan={4} className="text-right pr-3">Montant Total :</td>
-                      <td className="text-center" >{donnees.Montant} Djf</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            {/* Première copie */}
+            <RecuImpression
+              recueNumber={recueNumber}
+              dataClient={dataClient}
+              donnees={donnees}
+              TypeClient={TypeClient}
+            />
 
-            )}
+            {/* Séparateur */}
+            <hr className="my-8 border-t-2 border-dashed border-gray-300 w-full" />
+
+            {/* Deuxième copie */}
+            <RecuImpression
+              recueNumber={recueNumber}
+              dataClient={dataClient}
+              donnees={donnees}
+              TypeClient={TypeClient}
+            />
           </div>
           <div className="flex justify-end space-y-2">
-            <Button onClick={handleImprimary} type="submit">Imprimer</Button>
+            <Button onClick={handleImprimary} type="submit">
+              Imprimer
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
 
       {/* formulaire d'enregistrement et facture  */}
       <Dialog open={isSummaryOpen} onOpenChange={setIsSummaryOpen}>
-        <DialogContent className="p-8 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
+        <DialogContent className="p-8 bg-white rounded-xl shadow-lg max-w-[980px] mx-auto">
           <ScrollArea className="max-h-[70vh] w-full">
             <ToastContainer />
             <DialogHeader className="border-b-2 pb-4 mb-6">
@@ -521,70 +491,12 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
             </DialogHeader>
 
             {/* Section à imprimer */}
-            <div
-              className="rounded-md border  border-gray-300 p-4 flex flex-col items-center w-full"
-            >
-              <HeaderImprimary Reference={recueNumber} />
-              <div className="flex flex-col mt-4 mb-2 text-gray-700 dark:text-gray-300 w-full ">
-                <strong className="text-[0.4rem]">Boulevard de la République</strong>
-                <span className="text-[0.4rem] mt-2"><strong>Tél :</strong> +253 21 35 48 02 / +253 21 25 03 12</span>
-                <span className="text-[0.4rem] mt-2"><strong>Email :</strong> <a href="mailto:contact@laposte.dj" className="underline">contact@laposte.dj</a></span>
-                <span className="text-[0.4rem] mt-2"><strong>Site web :</strong> <a href="http://www.laposte.dj" className="underline" target="_blank" rel="noopener noreferrer">www.laposte.dj</a></span>
-              </div>
-              <h5 className="font-bold text-xl mt-6 mb-4 w-full">Client : {dataClient?.Nom}</h5>
-              {donnees && (
-                <div className="h-max w-full p-4">
-                  <table className="w-full border border-gray-200 text-sm">
-                    <thead>
-                      <tr>
-                        <th>Redevance</th>
-                        <th>Type Client</th>
-                        <th>Achat cle</th>
-                        <th>Méthode de paiement</th>
-                        <th>Montant</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="text-center">{dataClient?.Redevance}</td>
-                        <td className="text-center">{TypeClient}</td>
-                        <td className="text-center"><Check /></td>
-                        <td className="flex gap-2 items-center text-center">
-                          <div className="mb-2"> {donnees.Methode_de_paiement}</div>
-                          {donnees.Wallet ? (
-                            <div className="flex justify-between items-center  gap-4 p-4 bg-gray-50 rounded-md shadow-md">
-                              <div className="text-sm text-gray-800">
-                                <strong>Wallet :</strong> {donnees.Wallet}
-                              </div>
-                              <div className="text-sm text-gray-800">
-                                <strong>Téléphone :</strong> {donnees.Numero_wallet}
-                              </div>
-                            </div>
-                          ) : (
-                            donnees?.Methode_de_paiement === "cheque" && (
-                              <div className="flex justify-between items-center gap-4 p-4 bg-gray-50 rounded-md shadow-md">
-                                <div className="text-sm text-gray-800">
-                                  <strong>Chèque :</strong> {donnees.Numero_cheque}
-                                </div>
-                                <div className="text-sm text-gray-800">
-                                  <strong>Banque :</strong> {donnees.Nom_Banque}
-                                </div>
-                              </div>
-                            )
-                          )}
-                        </td>
-                        <td className="text-center">{donnees.Montant} Djf</td>
-                      </tr>
-                      <tr>
-                        <td colSpan={4} className="text-right pr-3">Montant Total :</td>
-                        <td className="text-center" >{donnees.Montant} Djf</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-              )}
-            </div>
+            <RecuImpression
+              recueNumber={recueNumber}
+              dataClient={dataClient}
+              donnees={donnees}
+              TypeClient={TypeClient}
+            />
 
             {/* Formulaire de Paiement */}
             <Form {...formMontantSaisi}>

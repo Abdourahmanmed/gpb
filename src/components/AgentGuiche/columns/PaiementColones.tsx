@@ -9,20 +9,23 @@ import Detail from "@/components/Detail";
 
 // Définir le type de Le_Paiement
 export type Le_Paiement = {
-  id: string;
+  id: number; // ton backend renvoie 3982, donc number
   Nom: string;
   Email: string;
-  Adresse: string;
+  Adresse: string | null;
   TypeClient: string;
   Telephone: string;
   Id_boite_postale: number;
   Date_abonnement: string;
+  etat_actuel: string;
   id_user: number;
-  updated_by: number;
+  updated_by: number | null;
   abonnement_status: string;
-  abonnement_penalite: string;
-  annee_abonnement: number;
+  abonnement_penalite: string; // c'est une string "0.00"
+  derniere_annee_payee: number;
+  derniere_annee_abonnement: number;
   boite_postal_numero: string;
+  boite_postal_type: string;
   nombre_sous_couverte: number;
   Adresse_Livraison: number;
   Adresse_Collection: number;
@@ -62,14 +65,14 @@ export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
       </Button>
     ),
   },
-  {
-    accessorKey: "Email",
-    header: "Email",
-  },
-  {
-    accessorKey: "Adresse",
-    header: "Adresse",
-  },
+  // {
+  //   accessorKey: "Email",
+  //   header: "Email",
+  // },
+  // {
+  //   accessorKey: "Adresse",
+  //   header: "Adresse",
+  // },
   {
     accessorKey: "TypeClient",
     header: "Client",
@@ -79,37 +82,33 @@ export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
     header: "Téléphone",
   },
   {
-    accessorKey: "Id_boite_postale",
-    header: "ID Boîte Postale",
-  },
-  {
     accessorKey: "boite_postal_numero",
     header: "N° Boîte Postale",
   },
   {
-    accessorKey: "annee_abonnement",
+    accessorKey: "boite_postal_type",
+    header: "Type de boite",
+  },
+  {
+    accessorKey: "derniere_annee_abonnement",
     header: "Année Abonnement",
   },
   {
     accessorKey: "abonnement_status",
     header: "État Abonnement",
-    cell: ({ row }) => (
-      <p>
-        {row.original.abonnement_status}
-      </p>
-    ),
+    cell: ({ row }) => <p>{row.original.etat_actuel}</p>,
   },
   {
     accessorKey: "nombre_sous_couverte",
-    header: "Nombre Sous Couvert",
+    header: "Sous Couvert",
   },
   {
     accessorKey: "Adresse_Livraison",
-    header: "Nombre Adresse livraison",
+    header: "livraison",
   },
   {
     accessorKey: "Adresse_Collection",
-    header: "Nombre Adresse Collections",
+    header: "Collect",
   },
   {
     accessorKey: "abonnement_penalite",
@@ -125,18 +124,23 @@ export const Le_PaiementColumns: ColumnDef<Le_Paiement>[] = [
     cell: ({ row }) => {
       const [isDialogOpen, setIsDialogOpen] = useState(false);
       const dataClient = {
-        ClientId : row?.original?.id,
-        TypeClient : row?.original?.TypeClient,
-        Redevance : row?.original?.annee_abonnement,
-        Nom : row?.original?.Nom,
-        Penaliter : row?.original?.abonnement_penalite,
-      }
-      const abonnement_status = row?.original?.abonnement_status;
+        ClientId: row?.original?.id,
+        TypeClient: row?.original?.TypeClient,
+        NBP: row?.original?.boite_postal_numero,
+        TypeBp: row?.original?.boite_postal_type,
+        Redevance: row?.original?.derniere_annee_abonnement,
+        Nom: row?.original?.Nom,
+        Penaliter: row?.original?.abonnement_penalite,
+      };
+      const Status = row?.original?.etat_actuel;
 
-      if (abonnement_status == "impayé") {
+      if (Status == "impayé") {
         return (
           <div>
-            <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
+            <Button
+              className="bg-primary"
+              onClick={() => setIsDialogOpen(true)}
+            >
               Paiement
             </Button>
             <PaymentForm

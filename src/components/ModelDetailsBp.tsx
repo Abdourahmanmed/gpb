@@ -31,7 +31,7 @@ interface ModelProps {
   Id_bp: string;
   data: HistoriqueBoite[] | null;
   loading: boolean;
-  error: string | undefined;
+  error: string | null;
 }
 
 export function ModelDetailsBp({

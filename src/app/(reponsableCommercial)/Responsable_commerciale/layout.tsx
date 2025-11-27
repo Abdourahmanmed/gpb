@@ -5,17 +5,17 @@ import Header from "@/components/Header";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const data = [
     {
-      title: "Dashbord",
+      title: "Tableau de bord",
       url: "/Responsable_commerciale/Dashbord",
       icon: "LayoutDashboard",
       RoleName: {
-        Prefix: "Responsable",
-        Suffix: "Commercial",
+        Prefix: "",
+        Suffix: "Responsable",
       },
     },
 
     {
-      title: "Creation des utilisateur",
+      title: "Création des utilisateurs",
       url: "/Responsable_commerciale/Creation_des_utilisateur",
       icon: "UserRoundCog",
       RoleName: {
@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       },
     },
     {
-      title: "Les Abonnes",
+      title: "Les abonnés",
       url: "/Responsable_commerciale/Les_Abonnes",
       icon: "Users",
       RoleName: {
@@ -33,7 +33,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       },
     },
     {
-      title: "Enlever le penalite",
+      title: "Enlever les pénalités",
       url: "/Responsable_commerciale/Enleve_les_penalites",
       icon: "ListX",
       RoleName: {
@@ -42,7 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       },
     },
     {
-      title: "Exonorer un abonné",
+      title: "Exonérer un abonné",
       url: "/Responsable_commerciale/Exonorer",
       icon: "ListX",
       RoleName: {
@@ -51,7 +51,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       },
     },
     {
-      title: "Compte Resilier",
+      title: "Comptes résiliés",
       url: "/Responsable_commerciale/Compte_Resilier",
       icon: "Users",
       RoleName: {
@@ -60,7 +60,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       },
     },
     {
-      title: "Compte Exonorer",
+      title: "Comptes exonérés",
       url: "/Responsable_commerciale/Compte_Exonorer",
       icon: "Users",
       RoleName: {
@@ -70,16 +70,34 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
     {
       title: "Rapports",
-      url: "/Responsable_commerciale/Tous_les_resiliations",
+      url: "/Responsable_commerciale/Rapport",
       icon: "UserRoundCog",
-      submenu: [
-        { title: "Recap redevance", url: "/Responsable_commerciale/Recaputilations/Redevance" },
-        { title: "Recap Modification Nom", url: "/Responsable_commerciale/Recaputilations/Changer_nom" },
-        { title: "Recap Achat cle ", url: "/Responsable_commerciale/Recaputilations/Achat_cle" },
-        { title: "Recap  sous couvert", url: "/Responsable_commerciale/Recaputilations/Sous_couverte" },
-        { title: "Recap livraison à domocile", url: "/Responsable_commerciale/Recaputilations/Livraison" },
-        { title: "Recap collecte", url: "/Responsable_commerciale/Recaputilations/Collection" },
-      ],
+      // submenu: [
+      //   {
+      //     title: "Récapitulatif journalier",
+      //     url: "/Responsable_commerciale/Recaputilations/Journalier",
+      //   },
+      //   {
+      //     title: "Récapitulatif mensuel",
+      //     url: "/Responsable_commerciale/Recaputilations/Mensuel",
+      //   },
+      //   {
+      //     title: "Récapitulatif annuel",
+      //     url: "/Responsable_commerciale/Recaputilations/Annuel",
+      //   },
+      //   // {
+      //   //   title: "Récap sous couvert",
+      //   //   url: "/Responsable_commerciale/Recaputilations/Sous_couverte",
+      //   // },
+      //   // {
+      //   //   title: "Récap livraisons à domicile",
+      //   //   url: "/Responsable_commerciale/Recaputilations/Livraison",
+      //   // },
+      //   // {
+      //   //   title: "Récap collectes",
+      //   //   url: "/Responsable_commerciale/Recaputilations/Collection",
+      //   // },
+      // ],
       RoleName: {
         Prefix: "",
         Suffix: "",
@@ -91,11 +109,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       icon: "HelpCircle",
       RoleName: {
         Prefix: "Agent",
-        Suffix: "Commercial"
-      }
+        Suffix: "Commercial",
+      },
     },
-
   ];
+
   return (
     <SidebarProvider
       style={

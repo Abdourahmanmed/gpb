@@ -21,55 +21,55 @@ interface HistoriqueBoite {
 interface ApiResponse {
   success: boolean;
   data?: HistoriqueBoite[];
-  message?: string;
+  error?: string;
 }
 
 interface ModelProps {
-  numero: string; // 🧩 On remplace Id_bp par numero, car ton API attend ?numero=...
+  numero: string;
   Name?: string;
 }
 
 const DetailsBp: React.FC<ModelProps> = ({ numero, Name }) => {
   const [data, setData] = useState<HistoriqueBoite[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | undefined>();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchHistoriqueBoite = async () => {
       const apiUrl = `http://192.168.0.12/gbp_backend/api.php?method=GetHistoriqueBoite&numero=${numero}`;
       setLoading(true);
-      setError("");
+      setError(null);
 
       try {
-        const response = await fetch(apiUrl, { method: "GET" });
+        const response = await fetch(apiUrl);
 
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP ${response.status}`);
+        const text = await response.text(); // 🧩 Lire la réponse brute
+
+        // 🪵 Logger intelligent : seulement en dev
+        if (process.env.NODE_ENV === "development") {
+          console.log("%c[API RESPONSE RAW]", "color: #22d3ee; font-weight: bold;", text);
         }
 
-        const data = await response.json();
+        try {
+          const json: ApiResponse = JSON.parse(text);
 
-        if (data.error) {
-          throw new Error(data.error);
-        }
+          if (json.error) {
+            throw new Error(json.error || "Erreur inconnue côté serveur");
+          }
 
-        // Vérifier si data est un tableau avant de l'affecter
-        if ((data.data)) {
-          setData(data.data);
-        } else {
-          throw new Error("Données invalides reçues de l'API.");
+          setData(json.data || []);
+        } catch (jsonError) {
+          console.error("⚠️ Erreur de parsing JSON :", jsonError);
+          throw new Error("Réponse invalide du serveur (non-JSON). Vérifie la console pour le texte brut.");
         }
-      } catch (error: any) {
-        setError(error.message || "Une erreur inconnue s'est produite.");
-        // console.error("Erreur lors du chargement des factures :", error);
+      } catch (err: any) {
+        setError(err.message || "Erreur inconnue.");
       } finally {
         setLoading(false);
       }
     };
 
-    if (numero) {
-      fetchHistoriqueBoite();
-    }
+    if (numero) fetchHistoriqueBoite();
   }, [numero]);
 
   if (loading)
@@ -77,11 +77,6 @@ const DetailsBp: React.FC<ModelProps> = ({ numero, Name }) => {
 
   if (error)
     return <p className="text-center text-red-500 font-medium">⚠️ {error}</p>;
-
-  //   if (!data || data.length === 0)
-  //     return (
-  //       <p className="text-center text-gray-400">Aucune donnée disponible. </p>
-  //     );
 
   return (
     <ModelDetailsBp

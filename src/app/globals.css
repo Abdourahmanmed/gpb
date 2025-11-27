@@ -31,34 +31,32 @@ body {
   }
 }
 
-
 .bg-primary {
-  background-color: #002B5B;
+  background-color: #002b5b;
 }
 
 .bg-gris {
-  background-color: #D1D5DB;
+  background-color: #d1d5db;
 }
 
-
 .text-primary {
-  color: #002B5B;
+  color: #002b5b;
 }
 
 .text-primary-2 {
-  color: #17C10E;
+  color: #17c10e;
 }
 
 .text-primary-3 {
-  color: #6D0B0B;
+  color: #6d0b0b;
 }
 
 .text-primary-4 {
-  color: #024C54;
+  color: #024c54;
 }
 
 .text-primary-5 {
-  color: #A95705;
+  color: #a95705;
 }
 
 .text-primary-6 {
@@ -66,7 +64,7 @@ body {
 }
 
 .text-primary-7 {
-  color: #B9B305;
+  color: #b9b305;
 }
 
 .text-primary-8 {
@@ -77,10 +75,30 @@ body {
   box-shadow: 0 4px 6px rgba(0, 43, 91, 0.5), 0 1px 3px rgba(0, 43, 91, 0.1);
 }
 
-
-
 .bg-sidebar {
-  background-color: #002B5B !important;
+  background-color: #002b5b !important;
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #print-area {
+    width: 210mm;
+    height: 297mm;
+    padding: 10mm;
+  }
+
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
 }
 
 @media print {
@@ -91,7 +109,56 @@ body {
     /* Désactive le défilement */
   }
 }
+@media print {
+  /* Supprime tout overflow */
+  .print-clean {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
 
+  /* Évite les scrollbars */
+  .print-clean::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+@media print {
+  table {
+    page-break-inside: avoid !important;
+  }
+
+  tr,
+  td,
+  th {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 10mm !important;
+  }
+}
+
+@layer utilities {
+  .print-only {
+    display: none;
+  }
+  .no-print {
+    display: block;
+  }
+}
+
+/* IMPORTANT : le media print doit être hors du @layer */
+@media print {
+  .print-only {
+    display: block !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
 
 @media print {
   table {

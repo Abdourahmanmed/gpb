@@ -4,6 +4,8 @@ import { ChangeNameForm } from '../AgentGuiche/components/ChangeNameForùe';
 interface DataClient {
     Redevance: number,
     Nom: string,
+    NBP: string,
+    Type: string,
     TypeClient: string
 }
 interface Changenamepropos {

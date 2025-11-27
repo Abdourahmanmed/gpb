@@ -30,7 +30,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   Dialog,
@@ -50,7 +50,9 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
@@ -67,6 +69,7 @@ import { addUserSuccess } from "@/Store/Slices/CrudUserManagement";
 import * as XLSX from "xlsx"; // Importer la librairie SheetJS
 import jsPDF from "jspdf";
 import autoTable, { RowInput } from "jspdf-autotable";
+import { Loader2 } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -97,6 +100,9 @@ export function NoFilterDataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = useState({});
   const [pageSize, setPageSize] = useState(10); // Nombre de lignes par page
   const [pageIndex, setPageIndex] = useState(0); // Ajout de pageIndex dans l'état
+  const [type, setType] = useState("");
+  // état du spinner
+  const [isLoadingRows, setIsLoadingRows] = useState(false);
 
   const table = useReactTable({
     data,
@@ -305,6 +311,23 @@ export function NoFilterDataTable<TData, TValue>({
     }
   };
 
+  const handleTypeChange = (value: string) => {
+    console.log("Type sélectionné :", value);
+    setType(value);
+  };
+
+  // déclenché à chaque changement de pageSize ou de filtre
+  // useEffect(() => {
+  //   setIsLoadingRows(true);
+
+  //   // demande au navigateur de rendre le tableau puis désactive le spinner
+  //   const id = requestAnimationFrame(() => {
+  //     setIsLoadingRows(false);
+  //   });
+
+  //   return () => cancelAnimationFrame(id);
+  // }, [pageSize, table.getFilteredRowModel().rows.length]);
+
   return (
     <ScrollArea className="h-full w-[98%] rounded">
       <div className="flex items-center gap-8 bg-white w-full h-max rounded-lg shadow-blue p-2">
@@ -396,6 +419,21 @@ export function NoFilterDataTable<TData, TValue>({
                 onChange={(event) =>
                   table
                     .getColumn("abonnement_status")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
+              />
+              <Input
+                placeholder="Filtrer par année"
+                value={
+                  table
+                    .getColumn("annee_abonnement")
+                    ?.getFilterValue()
+                    ?.toString() ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn("annee_abonnement")
                     ?.setFilterValue(event.target.value)
                 }
                 className="max-w-sm focus:ring-2 focus:ring-blue text-blue"
@@ -541,7 +579,26 @@ export function NoFilterDataTable<TData, TValue>({
                   ))}
                 </SelectContent>
               </Select>
-
+              <Select onValueChange={handleTypeChange}>
+                <SelectTrigger className="w-[220px]">
+                  <SelectValue placeholder="Triage de boîte postale" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Type d’opération</SelectLabel>
+                    <SelectItem value="reseller">Reselier</SelectItem>
+                    <SelectItem value="achat-cle">Achat clé</SelectItem>
+                    <SelectItem value="changement-nom">
+                      Changement nom
+                    </SelectItem>
+                    <SelectItem value="sous-couvert">Sous couvert</SelectItem>
+                    <SelectItem value="livraison-domicile">
+                      Livraison à domicile
+                    </SelectItem>
+                    <SelectItem value="all">All</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
               <Button className="bg-primary" onClick={exportToExcel}>
                 Exportation en excel
               </Button>
@@ -1171,7 +1228,15 @@ export function NoFilterDataTable<TData, TValue>({
       </div>
 
       {/* Affichage du tableau uniquement si un filtre est appliqué */}
-      <div className="rounded-md bg-white w-full h-max shadow-blue mt-3">
+      <div className="relative rounded-md bg-white w-full h-max shadow-blue mt-3">
+        {/* {isLoadingRows && (
+          <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-50">
+            <Loader2 className="animate-spin text-blue-600 h-8 w-8" />
+            <span className="ml-2 text-blue-700 font-semibold">
+              Chargement...
+            </span>
+          </div>
+        )} */}
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

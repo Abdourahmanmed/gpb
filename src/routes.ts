@@ -57,6 +57,7 @@ export const SuperviseurRoutes = [
     "/Superviseur/Recaputilations/Sous_couverte",
     "/Superviseur/Recaputilations/Livraison",
     "/Superviseur/Recaputilations/Collection",
+    "/Superviseur/Rapport",
 ];
 
 /**
@@ -79,6 +80,7 @@ export const AgentRsponsableRoutes = [
     "/Responsable_commerciale/Recaputilations/Sous_couverte",
     "/Responsable_commerciale/Recaputilations/Livraison",
     "/Responsable_commerciale/Recaputilations/Collection",
+    "/Responsable_commerciale/Rapport",
 ];
 
 /**
@@ -93,13 +95,13 @@ export const AgentCommercialRoutes = [
     "/Agent_commercial/Voir_les_depots",
     "/Agent_commercial/Resiliation",
     "/Agent_commercial/help",
+    "/Agent_commercial/Recaputilation/Rapport/Journalier",
+    "/Agent_commercial/Recaputilation/Rapport/Mensuel",
+    "/Agent_commercial/Recaputilation/Rapport/Annuel",
     "/Agent_commercial/Recaputilation/Rapport/Resilier",
-    "/Agent_commercial/Recaputilation/Rapport/Redevance",
-    "/Agent_commercial/Recaputilation/Rapport/Changer_nom",
-    "/Agent_commercial/Recaputilation/Rapport/Achat_cle",
-    "/Agent_commercial/Recaputilation/Rapport/Sous_couverte",
-    "/Agent_commercial/Recaputilation/Rapport/Livraison",
-    "/Agent_commercial/Recaputilation/Rapport/Collection",
+    // "/Agent_commercial/Recaputilation/Rapport/Sous_couverte",
+    // "/Agent_commercial/Recaputilation/Rapport/Livraison",
+    // "/Agent_commercial/Recaputilation/Rapport/Collection",
 
 ];
 /**
@@ -117,10 +119,10 @@ export const AgentGuichetRoutes = [
     "/Agent_guiche/Ajout_sous_couverte",
     "/Agent_guiche/Ajout_livraison",
     "/Agent_guiche/Ajout_collection",
-    "/Agent_guiche/Recaputilations/Ajoute_client",
-    "/Agent_guiche/Recaputilations/Changer_nom",
-    "/Agent_guiche/Recaputilations/Achat_cle",
-    "/Agent_guiche/Recaputilations/Ajout_sous_couverte",
-    "/Agent_guiche/Recaputilations/Ajout_livraison",
-    "/Agent_guiche/Recaputilations/Ajout_collection",
+    "/Agent_guiche/Recaputilations/Journalier",
+    "/Agent_guiche/Recaputilations/Mensuel",
+    "/Agent_guiche/Recaputilations/Annuel",
+    // "/Agent_guiche/Recaputilations/Ajout_sous_couverte",
+    // "/Agent_guiche/Recaputilations/Ajout_livraison",
+    // "/Agent_guiche/Recaputilations/Ajout_collection",
 ];

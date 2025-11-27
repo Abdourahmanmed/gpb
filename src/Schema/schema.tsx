@@ -300,6 +300,7 @@ export const PaiementSchema = z.object({
   Numero_cheque: z.string().optional(),
   Nom_Banque: z.string().optional(),
   ReferenceId: z.string().optional(),
+  timbre: z.boolean().optional(), // <-- Nouveau champ
 });
 
 // Schéma de validation avec zod

@@ -292,9 +292,9 @@ const StepOneForm = () => {
                                     <Select
                                         onValueChange={(value) => {
                                             field.onChange(value);
-                                            dispatch(setTypeClient(value === "entreprise"));
+                                            dispatch(setTypeClient(value !== "IND"));
                                             // mettre à jour le champ montantRd
-                                            form.setValue("montantRd", value === "entreprise" ? 20000 : 10000);
+                                            form.setValue("montantRd", value !== "IND" ? 20000 : 10000);
                                         }}
                                         value={field.value}
                                     >
@@ -302,8 +302,18 @@ const StepOneForm = () => {
                                             <SelectValue placeholder="Choisir un type" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="particulier" >Particulier</SelectItem>
-                                            <SelectItem value="entreprise">Entreprise</SelectItem>
+                                            <SelectItem value="IND" >IND</SelectItem>
+                                            <SelectItem value="SPP">SPP</SelectItem>
+                                            <SelectItem value="SPR">SPR</SelectItem>
+                                            <SelectItem value="TRN">TRN</SelectItem>
+                                            <SelectItem value="PRP">PRP</SelectItem>
+                                            <SelectItem value="PHR">PHR</SelectItem>
+                                            <SelectItem value="ORG">ORG</SelectItem>
+                                            <SelectItem value="HTL">HTL</SelectItem>
+                                            <SelectItem value="CD">CD</SelectItem>
+                                            <SelectItem value="BNK">BNK</SelectItem>
+                                            <SelectItem value="ASS">ASS</SelectItem>
+                                            <SelectItem value="ADM">ADM</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </FormControl>

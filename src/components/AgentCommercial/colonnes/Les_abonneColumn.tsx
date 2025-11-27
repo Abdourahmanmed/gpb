@@ -25,7 +25,8 @@ export type Les_abonnesCommerce = {
   updated_by: number;
   abonnement_status: string;
   abonnement_penalite: number;
-  annee_abonnement: number;
+  derniere_annee_payee: number;
+  derniere_annee_abonnement: number;
   boite_postal_numero: string;
   nombre_sous_couverte: number;
   Adresse_Livraison: number;
@@ -143,7 +144,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
     ),
     cell: ({ row }) => (
       <p className="whitespace-normal break-words">
-        <strong>{row.original.annee_abonnement}</strong>
+        <strong>{row.original.derniere_annee_payee}</strong>
       </p>
     ),
   },
@@ -170,7 +171,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Nombre sous couverture <ArrowUpDown className="h-4 w-4" />
+        sous couverture <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
     cell: ({ row }) => (
@@ -188,7 +189,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Nombre d’adresses de livraison <ArrowUpDown className="h-4 w-4" />
+        Adresses de livraison <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
     cell: ({ row }) => (
@@ -206,7 +207,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer select-none text-primary font-bold flex items-center gap-2 flex-wrap"
       >
-        Nombre d’adresses de collecte <ArrowUpDown className="h-4 w-4" />
+        Adresses de collecte <ArrowUpDown className="h-4 w-4" />
       </span>
     ),
     cell: ({ row }) => (
@@ -242,10 +243,7 @@ export const Les_abonneCommerceColumns: ColumnDef<Les_abonnesCommerce>[] = [
   {
     header: "Activité de cette boîte",
     cell: ({ row }) => (
-      <DetailsBp
-        Name="Détails"
-        numero={row.original?.boite_postal_numero}
-      />
+      <DetailsBp Name="Détails" numero={row.original?.boite_postal_numero} />
     ),
   },
   // {

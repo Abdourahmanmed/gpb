@@ -10,25 +10,27 @@ import LivraisonDColAction from "@/components/ActionCellColumns/LivraisonDColAct
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type LivraisonDomicil = {
-  id: string;
+  id: string; // ton backend renvoie 3982, donc number
   Nom: string;
   Email: string;
-  Adresse: string;
+  Adresse: string | null;
   TypeClient: string;
   Telephone: string;
   Id_boite_postale: number;
   Date_abonnement: string;
+  etat_actuel: string;
   id_user: number;
-  updated_by: number;
+  updated_by: number | null;
   abonnement_status: string;
-  abonnement_penalite: string;
-  annee_abonnement: number;
+  abonnement_penalite: string; // c'est une string "0.00"
+  derniere_annee_payee: number;
+  derniere_annee_abonnement: number;
   boite_postal_numero: string;
+  boite_postal_type: string;
   nombre_sous_couverte: number;
   Adresse_Livraison: number;
   Adresse_Collection: number;
 };
-
 
 export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
   {
@@ -64,14 +66,14 @@ export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
       </Button>
     ),
   },
-  {
-    accessorKey: "Email",
-    header: "Email",
-  },
-  {
-    accessorKey: "Adresse",
-    header: "Adresse",
-  },
+  // {
+  //   accessorKey: "Email",
+  //   header: "Email",
+  // },
+  // {
+  //   accessorKey: "Adresse",
+  //   header: "Adresse",
+  // },
   {
     accessorKey: "TypeClient",
     header: "Client",
@@ -81,37 +83,33 @@ export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
     header: "Téléphone",
   },
   {
-    accessorKey: "Id_boite_postale",
-    header: "ID Boîte Postale",
-  },
-  {
     accessorKey: "boite_postal_numero",
     header: "N° Boîte Postale",
   },
   {
-    accessorKey: "annee_abonnement",
+    accessorKey: "boite_postal_type",
+    header: "Type de Boite",
+  },
+  {
+    accessorKey: "derniere_annee_payee",
     header: "Année Abonnement",
   },
   {
     accessorKey: "abonnement_status",
     header: "État Abonnement",
-    cell: ({ row }) => (
-      <p>
-        {row.original.abonnement_status}
-      </p>
-    ),
+    cell: ({ row }) => <p>{row.original.abonnement_status}</p>,
   },
   {
     accessorKey: "nombre_sous_couverte",
-    header: "Nombre Sous Couvert",
+    header: "Sous Couvert",
   },
   {
     accessorKey: "Adresse_Livraison",
-    header: "Nombre Adresse livraison",
+    header: "livraison",
   },
   {
     accessorKey: "Adresse_Collection",
-    header: "Nombre Adresse Collections",
+    header: "Collect",
   },
   {
     accessorKey: "abonnement_penalite",
@@ -129,13 +127,20 @@ export const LivraisonDomicilCoulmns: ColumnDef<LivraisonDomicil>[] = [
       const Np = row?.original?.boite_postal_numero;
       const TypeClient = row?.original?.TypeClient;
       const dataClient = {
-        Redevance: row?.original?.annee_abonnement,
+        Redevance: row?.original?.derniere_annee_payee,
         Nom: row?.original?.Nom,
         TypeClient: row?.original?.TypeClient,
-      }
+        Type: row?.original?.boite_postal_type,
+      };
 
-      if (TypeClient == "Entreprise") {
-        return <LivraisonDColAction ClientId={ClientId} Np={Np} dataClient={dataClient} />;
+      if (TypeClient !== "IND") {
+        return (
+          <LivraisonDColAction
+            ClientId={ClientId}
+            Np={Np}
+            dataClient={dataClient}
+          />
+        );
       }
     },
   },

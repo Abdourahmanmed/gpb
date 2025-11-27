@@ -1,29 +1,42 @@
-"use client"
-import React, { useState } from 'react'
-import { Button } from '../ui/button';
-import SousCouverteForm from '../AgentGuiche/components/SousCouverteForm';
+"use client";
+import React, { useState } from "react";
+import { Button } from "../ui/button";
+import SousCouverteForm from "../AgentGuiche/components/SousCouverteForm";
 interface DataClient {
-    Redevance: number,
-    Nom: string,
+  Redevance: number;
+  Nom: string;
+  Type: string;
 }
 interface SouscouvertPropos {
-    ClientId: string,
-    Nbp: string,
-    TypeClient: string,
-    dataClient: DataClient,
+  ClientId: string;
+  Nbp: string;
+  TypeClient: string;
+  dataClient: DataClient;
 }
 
-const SousCouvertColAction = ({ ClientId, Nbp, TypeClient, dataClient }: SouscouvertPropos) => {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+const SousCouvertColAction = ({
+  ClientId,
+  Nbp,
+  TypeClient,
+  dataClient,
+}: SouscouvertPropos) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    return (
-        <div>
-            <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
-                Ajouter un sous couverte
-            </Button>
-            <SousCouverteForm isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} IdClient={ClientId} Nbp={Nbp} TypeClient={TypeClient} dataClient={dataClient} />
-        </div>
-    );
-}
+  return (
+    <div>
+      <Button className="bg-primary" onClick={() => setIsDialogOpen(true)}>
+        Ajouter un sous couverte
+      </Button>
+      <SousCouverteForm
+        isOpen={isDialogOpen}
+        setIsOpen={setIsDialogOpen}
+        IdClient={ClientId}
+        Nbp={Nbp}
+        TypeClient={TypeClient}
+        dataClient={dataClient}
+      />
+    </div>
+  );
+};
 
-export default SousCouvertColAction
+export default SousCouvertColAction;
