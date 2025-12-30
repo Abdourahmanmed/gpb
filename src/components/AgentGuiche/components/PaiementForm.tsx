@@ -242,7 +242,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
         form.reset();
       } else if (enregistrement?.error) {
         // Gestion des erreurs retournées par l'API
-        toast.error(enregistrement.error || "Une erreur est survenue.");
+        toast.error(enregistrement.error  || "Une erreur est survenue.");
       }
     } catch (error) {
       // Gestion des erreurs inattendues

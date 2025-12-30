@@ -48,6 +48,7 @@ interface Facture {
   Nom_banque_categorie: string;
   Numero_banque_categorie: string;
   Montant_categorie: number;
+  Montant_timbre: number;
   categories: Category[];
 }
 
@@ -249,7 +250,8 @@ export function ModelFacture({
                     )}
                   </span>
                 );
-              })}
+              })}<br />
+              {payment.Montant_timbre} <br />
             </td>
           </tr>
 
@@ -404,11 +406,13 @@ export function ModelFacture({
                           Object.keys(groupedData).map((key) => {
                             const payment = groupedData[key];
                             const total =
-                              parseInt(payment.Montant_Redevance) +
+                              parseInt(payment.Montant_Redevance ?? 0) +
                               payment.categories.reduce(
-                                (sum, cat) => sum + cat.Montant_categorie,
+                                (sum, cat) =>
+                                  sum + (parseInt(cat.Montant_categorie) || 0),
                                 0
-                              );
+                              ) +
+                              parseInt(payment.Montant_timbre ?? 0);
 
                             return (
                               <div

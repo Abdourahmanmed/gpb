@@ -194,6 +194,7 @@ export const ChangeCleForm: React.FC<PaymentFormProps> = ({
         Montant: FinalAmount,
         ReferenceId: recueNumber, // Assurez-vous d'ajouter la valeur de recueNumber ici
         id_user: session?.user?.id,
+        Redevance: dataClient.Redevance,
       };
 
       // console.log(finalData);

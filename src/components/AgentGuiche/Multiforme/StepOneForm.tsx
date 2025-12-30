@@ -1,356 +1,424 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useState } from "react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 // import { useRouter } from 'next/navigation';
 
-
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '@/Store/store';
-import { updateField, nextStep, setTypeClient } from '@/Store/Slices/Multi-formSlice';
-import { NouveauClientSchemaStepOne } from '@/Schema/schema';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { GetLastReferenceOfRdv } from '@/actions/All_references/GetLastReferenceOfRdv';
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/Store/store";
+import {
+  updateField,
+  nextStep,
+  setTypeClient,
+} from "@/Store/Slices/Multi-formSlice";
+import { NouveauClientSchemaStepOne } from "@/Schema/schema";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { GetLastReferenceOfRdv } from "@/actions/All_references/GetLastReferenceOfRdv";
+import { toast } from "react-toastify";
 
 // Définition du type de la réponse API
 interface ApiResponse {
-    numeros_disponibles: number[];
+  numeros_disponibles: number[];
 }
 
 const StepOneForm = () => {
-    // const router = useRouter();
-    const dispatch = useDispatch<AppDispatch>();
-    const multiFormState = useSelector((state: RootState) => state.multiForm);
+  // const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const multiFormState = useSelector((state: RootState) => state.multiForm);
 
-    // État pour gérer l'incrément du numéro
-    const [currentNumber] = useState(1);
-    const [recueNumber, setRecueNumber] = useState('');
-    const [LesNumerosBp, setLesNumerosBp] = useState<number[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true); // État de chargement
+  // État pour gérer l'incrément du numéro
+  const [currentNumber] = useState(1);
+  const [recueNumber, setRecueNumber] = useState("");
+  const [LesNumerosBp, setLesNumerosBp] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // État de chargement
 
-    const form = useForm<z.infer<typeof NouveauClientSchemaStepOne>>({
-        resolver: zodResolver(NouveauClientSchemaStepOne),
-        defaultValues: {
-            ...multiFormState,
-            montantRd: 20000,
-            Reference_Rdv: "",
-            Timbre: "0"
-        } // Charger les valeurs initiales depuis Redux
-    });
+  const form = useForm<z.infer<typeof NouveauClientSchemaStepOne>>({
+    resolver: zodResolver(NouveauClientSchemaStepOne),
+    defaultValues: {
+      ...multiFormState,
+      montantRd: 25000,
+      Reference_Rdv: "",
+      Timbre: "0",
+    }, // Charger les valeurs initiales depuis Redux
+  });
 
-    // Fonction pour récupérer les numéros depuis l'API
-    const FetchLesNumero = async (): Promise<void> => {
-        setIsLoading(true);
-        const api = "http://192.168.0.12/gbp_backend/api.php?method=GetNextBoitePostal";
+  // Fonction pour récupérer les numéros selon le type sélectionné
+  const FetchLesNumero = async (type: string): Promise<void> => {
+    setIsLoading(true);
 
-        try {
-            const response = await fetch(api);
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP: ${response.status}`);
-            }
+    // Ajouter le type dans l'URL envoyée au backend
+    const api = `http://192.168.0.12/gbp_backend/api.php?method=GetNextBoitePostal&type=${type}`;
 
-            const data = await response.json();
+    try {
+      const response = await fetch(api);
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
 
-            if (data.numeros_resilies && Array.isArray(data.numeros_resilies)) {
-                setLesNumerosBp(data.numeros_resilies);
-            } else {
-                setLesNumerosBp([]);
-            }
+      const data = await response.json();
 
-        } catch (error) {
-            console.error("Erreur de serveur:", error);
-            setLesNumerosBp([]); // En cas d'erreur, tableau vide
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      if (data.numeros_resilies && Array.isArray(data.numeros_resilies)) {
+        setLesNumerosBp(data.numeros_resilies);
+      } else {
+        setLesNumerosBp([]);
+      }
+    } catch (error) {
+      console.error("Erreur de serveur:", error);
+      setLesNumerosBp([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    const fetchLastReference = async () => {
+      try {
+        // Récupérer la dernière référence depuis la base de données
+        const lastReference = await GetLastReferenceOfRdv();
 
-    useEffect(() => {
-        FetchLesNumero();
-    }, []);
+        // Générer la date actuelle
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split("T")[0]; // Format AAAA-MM-JJ
+        const anneeActuelle = currentDate.getFullYear();
 
-    useEffect(() => {
-        const fetchLastReference = async () => {
-            try {
-                // Récupérer la dernière référence depuis la base de données
-                const lastReference = await GetLastReferenceOfRdv();
-
-                // Générer la date actuelle
-                const currentDate = new Date();
-                const formattedDate = currentDate.toISOString().split('T')[0]; // Format AAAA-MM-JJ
-                const anneeActuelle = currentDate.getFullYear();
-
-                if (!lastReference) {
-                    // Si aucune référence n'existe, générer un nouveau numéro
-                    const paddedNumber = String(currentNumber).padStart(5, '0');
-                    const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
-                    setRecueNumber(newRecueNumber);
-                } else {
-                    // Si une référence existe, analyser les données
-                    const lastReferenceParts = lastReference.split("/");
-                    const lastReferenceDate = lastReferenceParts.pop();
-                    const lastReferenceYear = lastReferenceDate.split('-')[0];
-                    const middleNumber = lastReferenceParts[1];
-
-                    if (lastReferenceYear !== anneeActuelle.toString()) {
-                        // Si l'année est différente, recommencer avec le numéro initial
-                        const paddedNumber = String(currentNumber).padStart(5, '0');
-                        const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
-                        setRecueNumber(newRecueNumber);
-                    } else {
-                        // Si l'année est identique, incrémenter le numéro
-                        const incrementee = (parseInt(middleNumber, 10) + 1).toString().padStart(5, '0');
-                        const newRecueNumber = `RNBP/${incrementee}/${formattedDate}`;
-                        setRecueNumber(newRecueNumber);
-                    }
-                }
-            } catch (error) {
-                console.error('Erreur lors de la récupération de la référence :', error);
-            }
-        };
-
-        fetchLastReference();
-
-    }, [currentNumber]);
-
-    const onSubmit = (values: z.infer<typeof NouveauClientSchemaStepOne>) => {
-        let finaldata;
-        if (values?.Role == "particulier") {
-            finaldata = {
-                ...values,
-                montantRd: 10000,
-                Reference_Rdv: recueNumber
-            }
+        if (!lastReference) {
+          // Si aucune référence n'existe, générer un nouveau numéro
+          const paddedNumber = String(currentNumber).padStart(5, "0");
+          const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
+          setRecueNumber(newRecueNumber);
         } else {
-            finaldata = {
-                ...values,
-                Reference_Rdv: recueNumber
-            }
-        }
-        // Mise à jour des champs dans Redux
-        Object.entries(finaldata).forEach(([field, value]) => {
-            dispatch(updateField({ field, value }));
-        });
+          // Si une référence existe, analyser les données
+          const lastReferenceParts = lastReference.split("/");
+          const lastReferenceDate = lastReferenceParts.pop();
+          const lastReferenceYear = lastReferenceDate.split("-")[0];
+          const middleNumber = lastReferenceParts[1];
 
-        dispatch(nextStep()); // Passer à l'étape suivante
-        // router.push("/Agent_guiche/Nouveau_client/StepTwoForm"); // Naviguer vers la prochaine étape
+          if (lastReferenceYear !== anneeActuelle.toString()) {
+            // Si l'année est différente, recommencer avec le numéro initial
+            const paddedNumber = String(currentNumber).padStart(5, "0");
+            const newRecueNumber = `RNBP/${paddedNumber}/${formattedDate}`;
+            setRecueNumber(newRecueNumber);
+          } else {
+            // Si l'année est identique, incrémenter le numéro
+            const incrementee = (parseInt(middleNumber, 10) + 1)
+              .toString()
+              .padStart(5, "0");
+            const newRecueNumber = `RNBP/${incrementee}/${formattedDate}`;
+            setRecueNumber(newRecueNumber);
+          }
+        }
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération de la référence :",
+          error
+        );
+      }
     };
 
-    return (
-        <div className="bg-gray-100 p-6 rounded-lg shadow-md max-w-7xl mx-auto">
-            <h2 className="text-xl font-bold text-center text-blue-900 mb-6">
-                Enregistrement d&#39;un nouveau client
-            </h2>
+    fetchLastReference();
+  }, [currentNumber]);
 
-            {/*  formulaire pour ajouter  */}
-            <Form {...form}>
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="grid grid-cols-2 gap-4"
-                >
-                    {/* Boite Postale */}
-                    <FormField
-                        control={form.control}
-                        name="BoitePostale"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Le numéro boîte postale:</FormLabel>
-                                <FormControl>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder={isLoading ? "Chargement..." : "Choisir un n° BP..."} />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {isLoading ? (
-                                                <SelectItem disabled value="loading">
-                                                    Chargement...
-                                                </SelectItem>
-                                            ) : LesNumerosBp.length > 0 ? (
-                                                LesNumerosBp.map((num) => (
-                                                    <SelectItem key={num} value={num.toString()}>
-                                                        {num}
-                                                    </SelectItem>
-                                                ))
-                                            ) : (
-                                                <SelectItem disabled value="no-data">
-                                                    Aucun numéro disponible
-                                                </SelectItem>
-                                            )}
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="TypeBp"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Le Type boite postale:</FormLabel>
-                                <FormControl>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder={isLoading ? "Chargement..." : "Choisir un type BP..."} />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Grand">
-                                                Grand
-                                            </SelectItem>
-                                            <SelectItem value="Moyen">
-                                                Moyen
-                                            </SelectItem>
-                                            <SelectItem value="Petite">
-                                                Petite
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+  //fonction pour recupere l'argent selon le type
+  // Fonction pour récupérer le montant selon le code client + type boîte
+  const FetchMoneyByTypeClient = async (
+    code: string,
+    type: string
+  ): Promise<number> => {
+    setIsLoading(true);
 
-                    {/* Adresse */}
-                    <FormField
-                        control={form.control}
-                        name="Adresse"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Adresse :</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        placeholder="Choisir une adresse..."
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+    const api = `http://192.168.0.12/gbp_backend/api.php?method=GetTarif_Type&code=${code}&type=${type}`;
 
-                    {/* Nom */}
-                    <FormField
-                        control={form.control}
-                        name="Nom"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Le nom:</FormLabel>
-                                <FormControl>
-                                    <Input {...field} placeholder="Exemple : Fatouma" />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+    try {
+      const response = await fetch(api);
 
-                    {/* Téléphone */}
-                    <FormField
-                        control={form.control}
-                        name="Telephone"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Téléphone :</FormLabel>
-                                <FormControl>
-                                    <Input {...field} placeholder="Exemple : 77101010" />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
 
-                    {/* Email */}
-                    <FormField
-                        control={form.control}
-                        name="Email"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Email :</FormLabel>
-                                <FormControl>
-                                    <Input {...field} placeholder="fatouma@example.com" />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+      const data = await response.json();
+      // console.log("Tarif API:", data);
 
-                    {/* Rôle */}
-                    <FormField
-                        control={form.control}
-                        name="Role"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Type client :</FormLabel>
-                                <FormControl>
-                                    <Select
-                                        onValueChange={(value) => {
-                                            field.onChange(value);
-                                            dispatch(setTypeClient(value !== "IND"));
-                                            // mettre à jour le champ montantRd
-                                            form.setValue("montantRd", value !== "IND" ? 20000 : 10000);
-                                        }}
-                                        value={field.value}
-                                    >
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Choisir un type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="IND" >IND</SelectItem>
-                                            <SelectItem value="SPP">SPP</SelectItem>
-                                            <SelectItem value="SPR">SPR</SelectItem>
-                                            <SelectItem value="TRN">TRN</SelectItem>
-                                            <SelectItem value="PRP">PRP</SelectItem>
-                                            <SelectItem value="PHR">PHR</SelectItem>
-                                            <SelectItem value="ORG">ORG</SelectItem>
-                                            <SelectItem value="HTL">HTL</SelectItem>
-                                            <SelectItem value="CD">CD</SelectItem>
-                                            <SelectItem value="BNK">BNK</SelectItem>
-                                            <SelectItem value="ASS">ASS</SelectItem>
-                                            <SelectItem value="ADM">ADM</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    {/* Timbre */}
-                    <FormField
-                        control={form.control}
-                        name="Timbre"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Timbre :</FormLabel>
-                                <FormControl>
-                                    <Input {...field} placeholder="Timbre" />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    {/* montant du inscriptions  */}
-                    <div className="flex justify-end mr-10 col-span-2">
-                        <Badge variant="outline">Montant:{form.getValues('montantRd')?.toLocaleString()} fdj </Badge>
-                    </div>
-                    {/* Bouton */}
-                    <div className="col-span-2">
-                        <Button type="submit" className="w-full bg-blue-900 text-white">
-                            Continuer
-                        </Button>
-                    </div>
-                </form>
-            </Form>
+      // ❌ Erreur métier envoyée par le backend
+      if (!data.success) {
+        throw new Error(data.message || "Erreur de tarification");
+      }
 
+      // ❌ Montant invalide
+      if (!data.montant || data.montant <= 0) {
+        throw new Error("Montant invalide");
+      }
 
-        </div>
-    );
+      return data.montant; // ✅ OK
+    } catch (error: any) {
+      console.error("Erreur serveur:", error.message);
+      throw error; // ⬅️ on remonte l’erreur
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmit = async (
+    values: z.infer<typeof NouveauClientSchemaStepOne>
+  ) => {
+    try {
+      // Appel backend sécurisé
+      const Montant = await FetchMoneyByTypeClient(values.Role, values.TypeBp);
+
+      // Construction des données finales
+      const finaldata = {
+        ...values,
+        montantRd: Montant,
+        Reference_Rdv: recueNumber,
+      };
+      // Mise à jour Redux
+      Object.entries(finaldata).forEach(([field, value]) => {
+        dispatch(updateField({ field, value }));
+      });
+
+      // ✅ Seulement si tout est OK
+      dispatch(nextStep());
+    } catch (error: any) {
+      // ❌ BLOQUER LE PASSAGE À L'ÉTAPE SUIVANTE
+      alert(error.message || "Erreur lors du calcul du montant");
+    }
+  };
+
+  return (
+    <div className="bg-gray-100 p-6 rounded-lg shadow-md max-w-7xl mx-auto">
+      <h2 className="text-xl font-bold text-center text-blue-900 mb-6">
+        Enregistrement d&#39;un nouveau client
+      </h2>
+
+      {/*  formulaire pour ajouter  */}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-2 gap-4"
+        >
+          {/* Boite Postale */}
+          <FormField
+            control={form.control}
+            name="BoitePostale"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Le numéro boîte postale:</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder={
+                          isLoading ? "Chargement..." : "Choisir un n° BP..."
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {isLoading ? (
+                        <SelectItem disabled value="loading">
+                          Chargement...
+                        </SelectItem>
+                      ) : LesNumerosBp.length > 0 ? (
+                        LesNumerosBp.map((num) => (
+                          <SelectItem key={num} value={num.toString()}>
+                            {num}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem disabled value="no-data">
+                          Aucun numéro disponible
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="TypeBp"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Le Type boite postale:</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      FetchLesNumero(value); // ⬅️ Appel automatique avec le type choisi
+                      form.setValue("BoitePostale", ""); // reset n° BP
+                    }}
+                    value={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder={
+                          isLoading ? "Chargement..." : "Choisir un type BP..."
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Grand">Grand</SelectItem>
+                      <SelectItem value="Moyen">Moyen</SelectItem>
+                      <SelectItem value="Petite">Petite</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Adresse */}
+          <FormField
+            control={form.control}
+            name="Adresse"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Adresse :</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Choisir une adresse..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Nom */}
+          <FormField
+            control={form.control}
+            name="Nom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Le nom:</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Exemple : Fatouma" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Téléphone */}
+          <FormField
+            control={form.control}
+            name="Telephone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Téléphone :</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Exemple : 77101010" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Email */}
+          <FormField
+            control={form.control}
+            name="Email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email :</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="fatouma@example.com" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Rôle */}
+          <FormField
+            control={form.control}
+            name="Role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type client :</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      dispatch(setTypeClient(value !== "IND"));
+                      // mettre à jour le champ montantRd
+                      form.setValue(
+                        "montantRd",
+                        value !== "IND" ? 25000 : 10000
+                      );
+                    }}
+                    value={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choisir un type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="IND">IND</SelectItem>
+                      <SelectItem value="SPP">SPP</SelectItem>
+                      <SelectItem value="SPR">SPR</SelectItem>
+                      <SelectItem value="TRN">TRN</SelectItem>
+                      <SelectItem value="PRP">PRP</SelectItem>
+                      <SelectItem value="PHR">PHR</SelectItem>
+                      <SelectItem value="ORG">ORG</SelectItem>
+                      <SelectItem value="HTL">HTL</SelectItem>
+                      <SelectItem value="CD">CD</SelectItem>
+                      <SelectItem value="BNK">BNK</SelectItem>
+                      <SelectItem value="ASS">ASS</SelectItem>
+                      <SelectItem value="ADM">ADM</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Timbre */}
+          <FormField
+            control={form.control}
+            name="Timbre"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Timbre :</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Timbre" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* montant du inscriptions  */}
+          <div className="flex justify-end mr-10 col-span-2">
+            <Badge variant="outline">
+              Montant:{form.getValues("montantRd")?.toLocaleString()} fdj{" "}
+            </Badge>
+          </div>
+          {/* Bouton */}
+          <div className="col-span-2">
+            <Button type="submit" className="w-full bg-blue-900 text-white">
+              Continuer
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
 };
 
 export default StepOneForm;

@@ -93,282 +93,282 @@ export const AgentsColumns: ColumnDef<Agents>[] = [
         accessorKey: "Role",
         header: "Role",
     },
-    {
-        id: "actions",
-        header: "Actions",
-        cell: ({ row }) => {
-            const user = row.original;
-            const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-            // const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-            const dispatch = useDispatch<AppDispatch>();
-            const [isPending, setIsPending] = useState(false);
-            const form = useForm<z.infer<typeof EditAgentSchema>>({
-                resolver: zodResolver(EditAgentSchema),
-                defaultValues: {
-                    Nom: '',
-                    Email: '',
-                    password: '',
-                    Telephone: '',
-                    Adresse: '',
-                    Role: '',
-                },
-            });
-            // Fonction pour éditer les informations du compagne
-            const onEditSubmit = async (values: z.infer<typeof EditAgentSchema>) => {
-                const api = `http://192.168.0.12/gbp_backend/api.php?method=UpdateAgentByResponsable&id=${user?.id}`;
-                console.log(values)
-                try {
-                    const response = await fetch(api, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(values),
-                    });
-                    const data = await response.json();
+    // {
+    //     id: "actions",
+    //     header: "Actions",
+    //     cell: ({ row }) => {
+    //         const user = row.original;
+    //         const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    //         // const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    //         const dispatch = useDispatch<AppDispatch>();
+    //         const [isPending, setIsPending] = useState(false);
+    //         const form = useForm<z.infer<typeof EditAgentSchema>>({
+    //             resolver: zodResolver(EditAgentSchema),
+    //             defaultValues: {
+    //                 Nom: '',
+    //                 Email: '',
+    //                 password: '',
+    //                 Telephone: '',
+    //                 Adresse: '',
+    //                 Role: '',
+    //             },
+    //         });
+    //         // Fonction pour éditer les informations du compagne
+    //         const onEditSubmit = async (values: z.infer<typeof EditAgentSchema>) => {
+    //             const api = `http://192.168.0.12/gbp_backend/api.php?method=UpdateAgentByResponsable&id=${user?.id}`;
+    //             console.log(values)
+    //             try {
+    //                 const response = await fetch(api, {
+    //                     method: "PUT",
+    //                     headers: {
+    //                         "Content-Type": "application/json",
+    //                     },
+    //                     body: JSON.stringify(values),
+    //                 });
+    //                 const data = await response.json();
 
-                    if (!response.ok) {
-                        throw new Error(`Erreur lors de la mise à jour : ${response.statusText}`);
-                    }
+    //                 if (!response.ok) {
+    //                     throw new Error(`Erreur lors de la mise à jour : ${response.statusText}`);
+    //                 }
 
-                    if (data?.error) {
-                        toast.error(data?.error);
-                    }
-                    const agents = {
-                        ...values,
-                        id: user?.id
-                    }
-                    toast.success(data?.success);
-                    dispatch(updateAgent(agents))
-                    // Ajoute ici une logique pour mettre à jour l'UI après modification (ex: recharger les données)
-                } catch (error) {
-                    console.error("Erreur lors de la mise à jour :", error);
-                }
-            };
+    //                 if (data?.error) {
+    //                     toast.error(data?.error);
+    //                 }
+    //                 const agents = {
+    //                     ...values,
+    //                     id: user?.id
+    //                 }
+    //                 toast.success(data?.success);
+    //                 dispatch(updateAgent(agents))
+    //                 // Ajoute ici une logique pour mettre à jour l'UI après modification (ex: recharger les données)
+    //             } catch (error) {
+    //                 console.error("Erreur lors de la mise à jour :", error);
+    //             }
+    //         };
 
 
-            //fonction pour recupere les information d'un compagne par son id 
-            const fetchUser = async (id: string) => {
-                const apiUrl = `http://192.168.0.12/gbp_backend/api.php?method=GetUsersById&id=${id}`;
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: "GET",
-                    });
+    //         //fonction pour recupere les information d'un compagne par son id 
+    //         const fetchUser = async (id: string) => {
+    //             const apiUrl = `http://192.168.0.12/gbp_backend/api.php?method=GetUsersById&id=${id}`;
+    //             try {
+    //                 const response = await fetch(apiUrl, {
+    //                     method: "GET",
+    //                 });
 
-                    const responseData = await response.json();
+    //                 const responseData = await response.json();
 
-                    if (!response.ok || responseData.error) {
-                        toast.error(responseData.error || "Network error detected.");
-                    } else {
-                        // Set form default values with the fetched data
-                        form.setValue("Nom", responseData.Nom);
-                        form.setValue("Email", responseData.Email);
-                        form.setValue("password", responseData.password);
-                        form.setValue("Telephone", responseData.Telephone);
-                        form.setValue("Adresse", responseData.Adresse);
-                        form.setValue("Role", responseData.Role);
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
-            };
+    //                 if (!response.ok || responseData.error) {
+    //                     toast.error(responseData.error || "Network error detected.");
+    //                 } else {
+    //                     // Set form default values with the fetched data
+    //                     form.setValue("Nom", responseData.Nom);
+    //                     form.setValue("Email", responseData.Email);
+    //                     form.setValue("password", responseData.password);
+    //                     form.setValue("Telephone", responseData.Telephone);
+    //                     form.setValue("Adresse", responseData.Adresse);
+    //                     form.setValue("Role", responseData.Role);
+    //                 }
+    //             } catch (error) {
+    //                 console.log(error);
+    //             }
+    //         };
 
-            // const handleDeleteUser = async (e: React.FormEvent<HTMLFormElement>) => {
-            //     e.preventDefault(); // Correction de la faute de frappe
-            //     const apiUrl = `http://localhost/gbp_backend/api.php?method=DeleteUser&id=${user?.id}`;
-            //     console.log(user?.id)
-            //     try {
-            //         const response = await fetch(apiUrl, {
-            //             method: "DELETE",
-            //         });
+    //         // const handleDeleteUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    //         //     e.preventDefault(); // Correction de la faute de frappe
+    //         //     const apiUrl = `http://localhost/gbp_backend/api.php?method=DeleteUser&id=${user?.id}`;
+    //         //     console.log(user?.id)
+    //         //     try {
+    //         //         const response = await fetch(apiUrl, {
+    //         //             method: "DELETE",
+    //         //         });
 
-            //         const responseData = await response.json();
+    //         //         const responseData = await response.json();
 
-            //         if (!response.ok || responseData.error) {
-            //             toast.error(responseData.error || "Network error detected.");
-            //         }
+    //         //         if (!response.ok || responseData.error) {
+    //         //             toast.error(responseData.error || "Network error detected.");
+    //         //         }
 
-            //         toast.success(responseData?.success);
+    //         //         toast.success(responseData?.success);
 
-            //     } catch (error) {
-            //         console.error("Erreur lors de la suppression de l'utilisateur :", error);
-            //     }
-            // };
+    //         //     } catch (error) {
+    //         //         console.error("Erreur lors de la suppression de l'utilisateur :", error);
+    //         //     }
+    //         // };
 
-            //appeller la fonction fetchCompagne ici
-            useEffect(() => {
-                if (user.id) {
-                    fetchUser(user.id);
-                }
-            }, [user.id]); // Fetch data when the dialog is opened
+    //         //appeller la fonction fetchCompagne ici
+    //         useEffect(() => {
+    //             if (user.id) {
+    //                 fetchUser(user.id);
+    //             }
+    //         }, [user.id]); // Fetch data when the dialog is opened
 
-            return (
-                <div>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger>
-                            <Ellipsis className="" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuLabel>My Actions</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                                <button
-                                    className="w-full bg-blue-700 text-white hover:bg-blue-500 duration-500 rounded-lg p-1"
-                                    onClick={() => setIsEditDialogOpen(true)}
-                                >
-                                    Editer
-                                </button>
-                            </DropdownMenuItem>
-                            {/* <DropdownMenuItem>
-                                <button
-                                    className="w-full bg-red-500 text-blanc hover:bg-red-500/90 hover:text-blanc duration-500 rounded-lg p-1"
-                                    onClick={() => setIsDeleteDialogOpen(true)}
-                                >
-                                    Supprimer
-                                </button>
-                            </DropdownMenuItem> */}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+    //         return (
+    //             <div>
+    //                 <DropdownMenu>
+    //                     <DropdownMenuTrigger>
+    //                         <Ellipsis className="" />
+    //                     </DropdownMenuTrigger>
+    //                     <DropdownMenuContent>
+    //                         <DropdownMenuLabel>My Actions</DropdownMenuLabel>
+    //                         <DropdownMenuSeparator />
+    //                         <DropdownMenuItem>
+    //                             <button
+    //                                 className="w-full bg-blue-700 text-white hover:bg-blue-500 duration-500 rounded-lg p-1"
+    //                                 onClick={() => setIsEditDialogOpen(true)}
+    //                             >
+    //                                 Editer
+    //                             </button>
+    //                         </DropdownMenuItem>
+    //                         {/* <DropdownMenuItem>
+    //                             <button
+    //                                 className="w-full bg-red-500 text-blanc hover:bg-red-500/90 hover:text-blanc duration-500 rounded-lg p-1"
+    //                                 onClick={() => setIsDeleteDialogOpen(true)}
+    //                             >
+    //                                 Supprimer
+    //                             </button>
+    //                         </DropdownMenuItem> */}
+    //                     </DropdownMenuContent>
+    //                 </DropdownMenu>
 
-                    {/* Edit dialog */}
-                    <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                        <DialogContent className="bg-white">
-                            <ToastContainer />
-                            <DialogHeader>
-                                <DialogTitle className="text-blue text-2xl mb-1 ml-[15%]">Editer un utilisateur</DialogTitle>
-                                <DialogDescription >
-                                </DialogDescription>
-                            </DialogHeader>
-                            <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onEditSubmit)} className="w-full max-w-xs mx-auto">
-                                    <div className="space-y-2">
-                                        <FormField
-                                            control={form.control}
-                                            name="Nom"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-blue">Nom</FormLabel>
-                                                    <FormControl>
-                                                        <Input {...field} placeholder="example:fatouma" type="text" disabled={isPending} className="text-blue font-bold" />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="Email"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-blue">Email</FormLabel>
-                                                    <FormControl>
-                                                        <Input {...field} placeholder="fatouma@example.com" type="email" disabled={isPending} className="text-blue font-bold" />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="password"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-blue">password</FormLabel>
-                                                    <FormControl>
-                                                        <Input {...field} placeholder="***********" type="password" disabled={isPending} className="text-blue font-bold" />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="Telephone"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-blue">Telephone</FormLabel>
-                                                    <FormControl>
-                                                        <Input {...field} placeholder="example:77101010" type="text" disabled={isPending} className="text-blue font-bold" />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="Adresse"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-blue">Adresse</FormLabel>
-                                                    <FormControl>
-                                                        <Input {...field} placeholder="example:quartier 1" type="text" disabled={isPending} className="text-blue font-bold" />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="Role"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-blue">Adresse</FormLabel>
-                                                    <FormControl>
-                                                        <Select
-                                                            onValueChange={(value) => field.onChange(value)}
-                                                            value={field.value}
-                                                        >
-                                                            <SelectTrigger className="w-full">
-                                                                <SelectValue placeholder="Choisissez une méthode" />
-                                                            </SelectTrigger>
-                                                            <SelectContent>
-                                                                <SelectItem value="agent_commercial">agent commerciale</SelectItem>
-                                                                <SelectItem value="agent_guichet">agent guichets</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-                                    <Button type="submit" className="w-full mt-2 bg-blue-700 text-white" disabled={isPending}>Enregistrer</Button>
-                                </form>
+    //                 {/* Edit dialog */}
+    //                 <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+    //                     <DialogContent className="bg-white">
+    //                         <ToastContainer />
+    //                         <DialogHeader>
+    //                             <DialogTitle className="text-blue text-2xl mb-1 ml-[15%]">Editer un utilisateur</DialogTitle>
+    //                             <DialogDescription >
+    //                             </DialogDescription>
+    //                         </DialogHeader>
+    //                         <Form {...form}>
+    //                             <form onSubmit={form.handleSubmit(onEditSubmit)} className="w-full max-w-xs mx-auto">
+    //                                 <div className="space-y-2">
+    //                                     <FormField
+    //                                         control={form.control}
+    //                                         name="Nom"
+    //                                         render={({ field }) => (
+    //                                             <FormItem>
+    //                                                 <FormLabel className="text-blue">Nom</FormLabel>
+    //                                                 <FormControl>
+    //                                                     <Input {...field} placeholder="example:fatouma" type="text" disabled={isPending} className="text-blue font-bold" />
+    //                                                 </FormControl>
+    //                                                 <FormMessage />
+    //                                             </FormItem>
+    //                                         )}
+    //                                     />
+    //                                     <FormField
+    //                                         control={form.control}
+    //                                         name="Email"
+    //                                         render={({ field }) => (
+    //                                             <FormItem>
+    //                                                 <FormLabel className="text-blue">Email</FormLabel>
+    //                                                 <FormControl>
+    //                                                     <Input {...field} placeholder="fatouma@example.com" type="email" disabled={isPending} className="text-blue font-bold" />
+    //                                                 </FormControl>
+    //                                                 <FormMessage />
+    //                                             </FormItem>
+    //                                         )}
+    //                                     />
+    //                                     <FormField
+    //                                         control={form.control}
+    //                                         name="password"
+    //                                         render={({ field }) => (
+    //                                             <FormItem>
+    //                                                 <FormLabel className="text-blue">password</FormLabel>
+    //                                                 <FormControl>
+    //                                                     <Input {...field} placeholder="***********" type="password" disabled={isPending} className="text-blue font-bold" />
+    //                                                 </FormControl>
+    //                                                 <FormMessage />
+    //                                             </FormItem>
+    //                                         )}
+    //                                     />
+    //                                     <FormField
+    //                                         control={form.control}
+    //                                         name="Telephone"
+    //                                         render={({ field }) => (
+    //                                             <FormItem>
+    //                                                 <FormLabel className="text-blue">Telephone</FormLabel>
+    //                                                 <FormControl>
+    //                                                     <Input {...field} placeholder="example:77101010" type="text" disabled={isPending} className="text-blue font-bold" />
+    //                                                 </FormControl>
+    //                                                 <FormMessage />
+    //                                             </FormItem>
+    //                                         )}
+    //                                     />
+    //                                     <FormField
+    //                                         control={form.control}
+    //                                         name="Adresse"
+    //                                         render={({ field }) => (
+    //                                             <FormItem>
+    //                                                 <FormLabel className="text-blue">Adresse</FormLabel>
+    //                                                 <FormControl>
+    //                                                     <Input {...field} placeholder="example:quartier 1" type="text" disabled={isPending} className="text-blue font-bold" />
+    //                                                 </FormControl>
+    //                                                 <FormMessage />
+    //                                             </FormItem>
+    //                                         )}
+    //                                     />
+    //                                     <FormField
+    //                                         control={form.control}
+    //                                         name="Role"
+    //                                         render={({ field }) => (
+    //                                             <FormItem>
+    //                                                 <FormLabel className="text-blue">Adresse</FormLabel>
+    //                                                 <FormControl>
+    //                                                     <Select
+    //                                                         onValueChange={(value) => field.onChange(value)}
+    //                                                         value={field.value}
+    //                                                     >
+    //                                                         <SelectTrigger className="w-full">
+    //                                                             <SelectValue placeholder="Choisissez une méthode" />
+    //                                                         </SelectTrigger>
+    //                                                         <SelectContent>
+    //                                                             <SelectItem value="agent_commercial">agent commerciale</SelectItem>
+    //                                                             <SelectItem value="agent_guichet">agent guichets</SelectItem>
+    //                                                         </SelectContent>
+    //                                                     </Select>
+    //                                                 </FormControl>
+    //                                                 <FormMessage />
+    //                                             </FormItem>
+    //                                         )}
+    //                                     />
+    //                                 </div>
+    //                                 <Button type="submit" className="w-full mt-2 bg-blue-700 text-white" disabled={isPending}>Enregistrer</Button>
+    //                             </form>
 
-                            </Form>
-                        </DialogContent>
-                    </Dialog>
+    //                         </Form>
+    //                     </DialogContent>
+    //                 </Dialog>
 
-                    {/* Delete dialog */}
-                    {/* <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                        <DialogContent className="bg-white">
-                        <ToastContainer />
-                            <DialogHeader>
-                                <DialogTitle className="text-blue text-2xl mb-1 ml-[15%]">Supprimer un utilisateur</DialogTitle>
-                                <DialogDescription>
-                                </DialogDescription>
-                            </DialogHeader>
-                            <form
-                                className="w-full max-w-xs mx-auto"
-                                onSubmit={(e) => {
-                                    e.preventDefault(); // Empêche le rechargement de la page
-                                    handleDeleteUser(e); // Remplacez "123" par l'id réel
-                                }}
-                            >
-                                <h1>Voulez-vous vraiment supprimer ?</h1>
-                                <div className="flex items-center">
-                                    <button
-                                        className="bg-red-500 hover:bg-red-500/80 text-white font-bold py-2 px-4 rounded-[10px] w-full focus:outline-none focus:shadow-outline mt-4"
-                                        type="submit"
-                                    >
-                                        Supprimer
-                                    </button>
-                                </div>
-                            </form>
-                        </DialogContent>
-                    </Dialog> */}
-                </div>
-            );
-        },
-    },
+    //                 {/* Delete dialog */}
+    //                 {/* <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+    //                     <DialogContent className="bg-white">
+    //                     <ToastContainer />
+    //                         <DialogHeader>
+    //                             <DialogTitle className="text-blue text-2xl mb-1 ml-[15%]">Supprimer un utilisateur</DialogTitle>
+    //                             <DialogDescription>
+    //                             </DialogDescription>
+    //                         </DialogHeader>
+    //                         <form
+    //                             className="w-full max-w-xs mx-auto"
+    //                             onSubmit={(e) => {
+    //                                 e.preventDefault(); // Empêche le rechargement de la page
+    //                                 handleDeleteUser(e); // Remplacez "123" par l'id réel
+    //                             }}
+    //                         >
+    //                             <h1>Voulez-vous vraiment supprimer ?</h1>
+    //                             <div className="flex items-center">
+    //                                 <button
+    //                                     className="bg-red-500 hover:bg-red-500/80 text-white font-bold py-2 px-4 rounded-[10px] w-full focus:outline-none focus:shadow-outline mt-4"
+    //                                     type="submit"
+    //                                 >
+    //                                     Supprimer
+    //                                 </button>
+    //                             </div>
+    //                         </form>
+    //                     </DialogContent>
+    //                 </Dialog> */}
+    //             </div>
+    //         );
+    //     },
+    // },
 ]

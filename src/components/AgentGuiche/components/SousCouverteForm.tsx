@@ -210,13 +210,14 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
         id_user: session?.user?.id,
         NBp: Nbp,
         totalMontant: TotalMontant,
+        Redevance: dataClient.Redevance,
       };
 
-      console.log(finalData);
+      // console.log(finalData);
 
       // Logique d'enregistrement (par exemple, sauvegarde des données)
-      console.log("Données soumises :", finalData);
-      console.log(recueNumber, IdClient);
+      // console.log("Données soumises :", finalData);
+      // console.log(recueNumber, IdClient);
 
       // Met à jour les états nécessaires
       setDonnees(finalData); // Sauvegarde les valeurs dans un état
@@ -237,6 +238,7 @@ const SousCouverteForm: React.FC<SousCouverteFormProps> = ({
     }
 
     try {
+      // console.log(donnees);
       // Envoi des données pour enregistrement
       const enregistrement = await SousCouvertPaiement(
         IdClient,

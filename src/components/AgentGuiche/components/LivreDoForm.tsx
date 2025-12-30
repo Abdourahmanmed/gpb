@@ -173,6 +173,7 @@ export const LivreDoForm: React.FC<ChangeNameFormProps> = ({
         ReferenceId: recueNumber, // Assurez-vous d'ajouter la valeur de recueNumber ici
         NBp: Np,
         id_user: session?.user?.id,
+        Redevance: dataClient.Redevance,
       };
 
       // Logique d'enregistrement (par exemple, sauvegarde des données)

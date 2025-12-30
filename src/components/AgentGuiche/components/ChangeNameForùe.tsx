@@ -172,6 +172,7 @@ export const ChangeNameForm: React.FC<ChangeNameFormProps> = ({
         ...values,
         ReferenceId: recueNumber, // Assurez-vous d'ajouter la valeur de recueNumber ici
         id_user: session?.user?.id,
+        Redevance: dataClient.Redevance,
       };
 
       // Logique d'enregistrement (par exemple, sauvegarde des données)

@@ -78,7 +78,9 @@ export const NouveauClientSchemaStepOne = z.object({
   Nom: z.string().min(1, { message: "Le nom est obligatoire." }),
   Email: z.string().email({ message: "L'email est obligatoire." }),
   Telephone: z.string().min(1, { message: "Le téléphone est obligatoire." }),
-  TypeBp: z.string().min(1, { message: "Le type du boite postale est obligatoire." }),
+  TypeBp: z
+    .string()
+    .min(1, { message: "Le type du boite postale est obligatoire." }),
   Adresse: z.string().min(1, { message: "L'adresse est obligatoire." }),
   Role: z.string().min(1, { message: "Choisir un type de client." }),
   montantRd: z.number().optional(),
@@ -235,6 +237,7 @@ export const LivreDoSchema = z.object({
   Numero_cheque: z.string().optional(),
   Nom_Banque: z.string().optional(),
   ReferenceId: z.string().optional(),
+  Redevance: z.number().optional(),
 });
 
 //schema pour la collections
@@ -280,6 +283,7 @@ export const SousCouvertSchema = z.object({
   Numero_cheque: z.string().optional(),
   Nom_Banque: z.string().optional(),
   totalMontant: z.number(),
+  Redevance: z.number().optional(),
 });
 
 //schema pour verification le montant saisi et le montant gener
@@ -326,7 +330,7 @@ const DynamicSchemaCll = z.discriminatedUnion("Have_cll", [
       .string()
       .min(1, { message: "L'adresse est obligatoire." }),
     montantCll: z.number(),
-    reference_collection: z.string().optional()
+    reference_collection: z.string().optional(),
   }),
   z.object({
     Have_cll: z.literal(false),
@@ -341,7 +345,7 @@ const DynamicSchemaLd = z.discriminatedUnion("Have_ld", [
       .string()
       .min(1, { message: "L'adresse est obligatoire." }),
     montantLd: z.number(),
-    reference_Ld: z.string().optional()
+    reference_Ld: z.string().optional(),
   }),
   z.object({
     Have_ld: z.literal(false), // Discriminant avec la valeur `false`
@@ -370,7 +374,7 @@ export const DynamicSchema = z
           message: "Vous ne pouvez pas ajouter plus de 5 sous-couvertures.",
         }),
       montantSC: z.number(),
-      reference_Sc: z.string().optional()
+      reference_Sc: z.string().optional(),
     }),
     z.object({
       Have_sous_couvert_ld_cll: z.literal(false), // Discriminant avec la valeur `false`
@@ -397,13 +401,9 @@ export const MultiFormeSchema = z
   .and(DynamicSchema)
   .and(NouveauClientSchemaStepTwo);
 
-
-
-
 export const DemandeSchema = z.object({
-  lettreDemande: z
-    .instanceof(File, { message: "Veuillez sélectionner un fichier valide." }),
-  nomDemandeur: z
-    .string().optional()
+  lettreDemande: z.instanceof(File, {
+    message: "Veuillez sélectionner un fichier valide.",
+  }),
+  nomDemandeur: z.string().optional(),
 });
-

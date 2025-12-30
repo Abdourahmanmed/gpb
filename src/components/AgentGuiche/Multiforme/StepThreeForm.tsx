@@ -63,7 +63,7 @@ const StepThreeForm = () => {
     Object.entries(values).forEach(([field, value]) => {
       dispatch(updateField({ field, value }));
     });
-    console.log("Final submission data:", { ...values, files });
+    // console.log("Final submission data:", { ...values, files });
     dispatch(nextStep());
   };
 

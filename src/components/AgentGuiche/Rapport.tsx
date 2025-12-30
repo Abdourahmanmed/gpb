@@ -53,12 +53,14 @@ type PaiementRaw = {
   montant_redevance?: string | number | null;
   categorie_service?: string | null;
   montant_service?: string | number | null;
+  montant_timbre?: string | number | null;
   date_paiement?: string | null;
 };
 
 type ApiResponse = {
   paiements: PaiementRaw[];
   total_redevance?: number | string | null;
+  total_timbre?: number | string | null;
   total_services?: { Categories: string; total_par_categorie: number }[];
 };
 
@@ -69,9 +71,10 @@ type Row = {
   nom_client: string;
   numero_boite_postale: string;
   methode_paiement: string;
-  type: "redevance" | "service";
+  type: "redevance" | "service" | "timbre";
   categorie?: string | null;
   montant: number;
+  montant_timbre: number;
   date_paiement?: string | null;
 };
 
@@ -132,6 +135,7 @@ export default function ReportTable() {
 
   // Totaux provenant de l'API
   const [totalRedevance, setTotalRedevance] = useState<number>(0);
+  const [totalTimbre, setTotalTimbre] = useState<number>(0);
   const [totalServicesByCat, setTotalServicesByCat] = useState<
     { category: string; total: number }[]
   >([]);
@@ -160,6 +164,7 @@ export default function ReportTable() {
     setLoading(true);
     setRows([]);
     setTotalRedevance(0);
+    setTotalTimbre(0);
     setTotalServicesByCat([]);
 
     const url = buildUrl();
@@ -181,37 +186,45 @@ export default function ReportTable() {
             date_paiement: p.date_paiement ?? null,
           } as Partial<Row>;
 
-          // Redevance (si présente)
-          if (
-            p.montant_redevance !== null &&
-            p.montant_redevance !== undefined &&
-            p.montant_redevance !== ""
-          ) {
-            const montant = Number(p.montant_redevance) || 0;
+          // Redevance
+          const redevance = Number(p.montant_redevance);
+          if (!isNaN(redevance) && redevance > 0) {
             normalized.push({
               ...(base as Row),
               type: "redevance",
-              montant,
+              montant: redevance,
               categorie: null,
             } as Row);
           }
 
-          // Service additionnel (si présente)
-          if (
-            p.montant_service !== null &&
-            p.montant_service !== undefined &&
-            p.montant_service !== ""
-          ) {
-            const montant = Number(p.montant_service) || 0;
+          // Service additionnel
+          const service = Number(p.montant_service);
+          if (!isNaN(service) && service > 0) {
             normalized.push({
               ...(base as Row),
               type: "service",
-              montant,
+              montant: service,
               categorie: p.categorie_service ?? null,
+            } as Row);
+          }
+
+          // Timbre
+          const timbre = Number(p.montant_timbre);
+          if (!isNaN(timbre) && timbre > 0) {
+            normalized.push({
+              ...(base as Row),
+              type: "timbre",
+              montant: timbre,
+              categorie: null,
+              montant_timbre: timbre,
             } as Row);
           }
         });
       }
+
+      // Totaux (API peut renvoyer des types Timbre)
+      const totalT = Number(json.total_timbre ?? 0) || 0;
+      setTotalTimbre(totalT);
 
       // Totaux (API peut renvoyer des types différents)
       const totalR = Number(json.total_redevance ?? 0) || 0;
@@ -463,6 +476,7 @@ export default function ReportTable() {
                         maximumFractionDigits: 2,
                       })}
                     </td>
+
                     <td className="border p-2">
                       {r.date_paiement
                         ? new Date(r.date_paiement).toLocaleString()
@@ -473,10 +487,9 @@ export default function ReportTable() {
               )}
             </tbody>
           </table>
-
           {/* Bloc visible uniquement lors de l'impression */}
           {showPrintBlock && (
-            <div className="mt-10 p-4  flex flex-col">
+            <div className="mt-36 p-4  flex flex-col">
               {/* Tableau récapitulatif */}
               <div className="flex flex-col items-end">
                 <h2 className="text-xl font-semibold mb-3">
@@ -505,11 +518,20 @@ export default function ReportTable() {
                           .toLocaleString()}
                       </td>
                     </tr>
+                    <tr>
+                      <td className="border p-2">Total Timbre</td>
+                      <td className="border p-2 text-right">
+                        {totalTimbre !== null && totalTimbre !== 0
+                          ? totalTimbre.toLocaleString()
+                          : ""}
+                      </td>
+                    </tr>
                     <tr className="font-bold bg-gray-100">
                       <td className="border p-2">Total Général</td>
                       <td className="border p-2 text-right">
                         {(
                           totalRedevance +
+                          totalTimbre +
                           totalServicesByCat.reduce((a, b) => a + b.total, 0)
                         ).toLocaleString()}
                       </td>
