@@ -294,7 +294,7 @@ export const MontantSaiasiSchema = z.object({
 // Schéma de validation avec zod
 export const PaiementSchema = z.object({
   Montant: z.number(),
-  Methode_de_paiement: z.enum(["cheque", "cash", "wallet"], {
+  Methode_de_paiement: z.enum(["cheque", "cash", "wallet","VIREMENT_BANCAIRE"], {
     required_error: "Veuillez sélectionner une méthode de paiement.",
   }),
   Wallet: z

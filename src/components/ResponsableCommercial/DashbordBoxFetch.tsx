@@ -83,7 +83,7 @@ const DashbordBoxFetch = () => {
       </div>
 
       {/* Ligne 3 : Montants */}
-      <div className="grid grid-cols-3 gap-6">
+      {/* <div className="grid grid-cols-3 gap-6">
         <BoxInfo
           titre="Montant total journalier"
           Nombre={NbrMontantParJour}
@@ -99,7 +99,7 @@ const DashbordBoxFetch = () => {
           Nombre={NbrMontantParAns}
           color="text-primary-8"
         />
-      </div>
+      </div> */}
 
       {/* Ligne 4 : Comptes spéciaux */}
       <div className="grid grid-cols-2 gap-6">

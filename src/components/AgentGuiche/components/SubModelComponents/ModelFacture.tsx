@@ -30,6 +30,8 @@ interface Payment {
 
 interface Facture {
   Redevance: string;
+  Penalite: string;
+  Date_recue: string;
   Nom: string;
   NBP: string;
   TypeBP: string;
@@ -136,7 +138,10 @@ export function ModelFacture({
 
   const FactureContent = (payment: Facture, total: number) => (
     <div className="p-4 rounded-md shadow-sm bg-white dark:bg-neutral-900 w-full">
-      <HeaderImprimary Reference={payment.Reference} />
+      <HeaderImprimary
+        Reference={payment.Reference}
+        Date_recue={payment.Date_recue}
+      />
       <div className="flex flex-col mb-2 text-gray-700 dark:text-gray-300">
         <strong className="text-[0.4rem]">Boulevard de la République</strong>
         <span className="text-[0.4rem]">
@@ -228,7 +233,8 @@ export function ModelFacture({
 
             {/* Montant */}
             <td className="p-2 border font-bold text-center w-[300px]">
-              {payment.Montant_Redevance} <br />
+              {Number(payment.Montant_Redevance) + Number(payment.Penalite)}{" "}
+              <br />
               {[
                 "sous_couverte",
                 "livraison_a_domicile",
@@ -250,7 +256,8 @@ export function ModelFacture({
                     )}
                   </span>
                 );
-              })}<br />
+              })}
+              <br />
               {payment.Montant_timbre} <br />
             </td>
           </tr>
@@ -412,7 +419,8 @@ export function ModelFacture({
                                   sum + (parseInt(cat.Montant_categorie) || 0),
                                 0
                               ) +
-                              parseInt(payment.Montant_timbre ?? 0);
+                              parseInt(payment.Montant_timbre ?? 0) +
+                              Number(payment.Penalite);
 
                             return (
                               <div

@@ -59,7 +59,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           url: "/Agent_commercial/Recaputilation/Rapport/Resilier",
         },
         {
-          title: "Récapitulatif journalier",
+          title: "Rapport",
           url: "/Agent_commercial/Recaputilation/Rapport/Journalier",
         },
         // {

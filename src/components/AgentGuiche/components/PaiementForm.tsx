@@ -38,7 +38,7 @@ import { useSession } from "next-auth/react";
 import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
 import Receipt from "../Receipt";
 // Typages
-type MethodePaiement = "cheque" | "cash" | "wallet";
+type MethodePaiement = "cheque" | "cash" | "wallet" | "VIREMENT_BANCAIRE";
 type WalletOptions =
   | "cac_pay"
   | "waafi"
@@ -242,7 +242,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
         form.reset();
       } else if (enregistrement?.error) {
         // Gestion des erreurs retournées par l'API
-        toast.error(enregistrement.error  || "Une erreur est survenue.");
+        toast.error(enregistrement.error || "Une erreur est survenue.");
       }
     } catch (error) {
       // Gestion des erreurs inattendues
@@ -364,6 +364,9 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
                               <SelectItem value="cheque">Par Chèque</SelectItem>
                               <SelectItem value="cash">Par Cash</SelectItem>
                               <SelectItem value="wallet">Par Wallet</SelectItem>
+                              <SelectItem value="VIREMENT_BANCAIRE">
+                                VIREMENT BANCAIRE
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -461,6 +464,28 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
                       />
                     </>
                   )}
+
+                  {selectedPaymentMethod === "VIREMENT_BANCAIRE" && (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name="Nom_Banque"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Banque</FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="Nom de la banque"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
+
                   <div className="flex justify-end gap-3">
                     <Button
                       variant="outline"

@@ -4,8 +4,9 @@ import React from 'react'
 interface ReferencePropos {
     Reference: string | undefined;
     NameOfFacture?: string; // propriété optionnelle
+    Date_recue?:  string; // propriété optionnelle
 }
-const HeaderImprimary = ({ Reference, NameOfFacture }: ReferencePropos) => {
+const HeaderImprimary = ({ Reference, NameOfFacture,Date_recue }: ReferencePropos) => {
     return (
         <div className="w-full">
             {/* Texte principal */}
@@ -44,8 +45,9 @@ const HeaderImprimary = ({ Reference, NameOfFacture }: ReferencePropos) => {
 
 
                 {/* Colonne de droite : Date et numéro de reçu */}
-                <div className="text-left text-gray-700 dark:text-gray-300 space-y-2 w-[300px] mt-24">
-                    <p className="italic">Djibouti, le {new Date().toLocaleDateString()}</p>
+                <div className="text-left text-gray-700 dark:text-gray-300 space-y-2 w-[300px] mt-24"><br />
+                    <p className="italic">Date impression :Djibouti, le {new Date().toLocaleDateString()}</p>
+                    <p className="italic">Date reçue :Djibouti, le {Date_recue}</p> <br />
                     <p className="font-semibold text-lg">N° {NameOfFacture ? (<span>{NameOfFacture}</span>) : "Reçue"} : <span className="text-primary text-[0.8rem]">{Reference}</span></p>
                 </div>
             </div>

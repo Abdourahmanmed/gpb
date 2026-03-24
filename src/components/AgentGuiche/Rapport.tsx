@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { nanoid } from "nanoid";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,14 +12,6 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -40,7 +33,8 @@ import {
   Legend,
 } from "recharts";
 
-// Types correspondant à la réponse API
+// ================= TYPES =================
+
 type PaiementRaw = {
   numero_recu?: string;
   nom_client?: string;
@@ -51,6 +45,8 @@ type PaiementRaw = {
   Numero_cheque?: string | null;
   Nom_bank?: string | null;
   montant_redevance?: string | number | null;
+  Penalite?: string | number | null;
+  annee?: string | number | null;
   categorie_service?: string | null;
   montant_service?: string | number | null;
   montant_timbre?: string | number | null;
@@ -64,7 +60,6 @@ type ApiResponse = {
   total_services?: { Categories: string; total_par_categorie: number }[];
 };
 
-// Ligne normalisée pour le tableau (un row = soit une redevance soit un service)
 type Row = {
   id: string;
   numero_recu: string;
@@ -74,11 +69,13 @@ type Row = {
   type: "redevance" | "service" | "timbre";
   categorie?: string | null;
   montant: number;
-  montant_timbre: number;
+  montant_timbre?: number;
   date_paiement?: string | null;
 };
 
 const API_BASE = "http://192.168.0.12/gbp_backend/api.php?method=";
+
+// ================= COMPONENT =================
 
 export default function ReportTable() {
   const [filterType, setFilterType] = useState<
@@ -92,9 +89,10 @@ export default function ReportTable() {
   const [error, setError] = useState<string | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
 
-  //impression
+  // impression
   const printAreaRef = useRef<HTMLDivElement>(null);
   const [PrintJS, setPrintJS] = useState<any>(null);
+  const [showPrintBlock, setShowPrintBlock] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -105,10 +103,7 @@ export default function ReportTable() {
   const handleImprint = () => {
     if (!PrintJS || !printAreaRef.current) return;
 
-    // Affiche le bloc
     setShowPrintBlock(true);
-
-    // laisser React mettre le bloc dans le DOM
     setTimeout(() => {
       PrintJS({
         printable: printAreaRef.current,
@@ -116,14 +111,11 @@ export default function ReportTable() {
         targetStyles: ["*"],
       });
 
-      // Re-cacher après impression
-      setTimeout(() => {
-        setShowPrintBlock(false);
-      }, 300);
+      setTimeout(() => setShowPrintBlock(false), 300);
     }, 50);
   };
 
-  // Pagination & sorting & search
+  // Pagination / tri / recherche
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [sortKey, setSortKey] = useState<
@@ -131,11 +123,9 @@ export default function ReportTable() {
   >("date_paiement");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [search, setSearch] = useState("");
-  const [showPrintBlock, setShowPrintBlock] = useState(false);
 
-  // Totaux provenant de l'API
-  const [totalRedevance, setTotalRedevance] = useState<number>(0);
-  const [totalTimbre, setTotalTimbre] = useState<number>(0);
+  const [totalRedevance, setTotalRedevance] = useState(0);
+  const [totalTimbre, setTotalTimbre] = useState(0);
   const [totalServicesByCat, setTotalServicesByCat] = useState<
     { category: string; total: number }[]
   >([]);
@@ -167,139 +157,117 @@ export default function ReportTable() {
     setTotalTimbre(0);
     setTotalServicesByCat([]);
 
-    const url = buildUrl();
     try {
-      const res = await fetch(url!, { cache: "no-store" });
+      const res = await fetch(buildUrl()!, { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json: ApiResponse = await res.json();
 
-      // Normaliser les données en lignes
       const normalized: Row[] = [];
-      if (Array.isArray(json.paiements)) {
-        json.paiements.forEach((p, idx) => {
-          const base = {
-            id: `${p.numero_recu ?? "row"}-${idx}-${p.date_paiement ?? ""}`,
-            numero_recu: p.numero_recu ?? "-",
-            nom_client: p.nom_client ?? "-",
-            numero_boite_postale: p.numero_boite_postale ?? "-",
-            methode_paiement: p.Methode_paiement ?? "-",
-            date_paiement: p.date_paiement ?? null,
-          } as Partial<Row>;
 
-          // Redevance
-          const redevance = Number(p.montant_redevance);
-          if (!isNaN(redevance) && redevance > 0) {
-            normalized.push({
-              ...(base as Row),
-              type: "redevance",
-              montant: redevance,
-              categorie: null,
-            } as Row);
-          }
+      json.paiements?.forEach((p) => {
+        const base = {
+          numero_recu: p.numero_recu ?? "-",
+          nom_client: p.nom_client ?? "-",
+          numero_boite_postale: p.numero_boite_postale ?? "-",
+          methode_paiement: p.Methode_paiement ?? "-",
+          date_paiement: p.date_paiement ?? null,
+        };
 
-          // Service additionnel
-          const service = Number(p.montant_service);
-          if (!isNaN(service) && service > 0) {
-            normalized.push({
-              ...(base as Row),
-              type: "service",
-              montant: service,
-              categorie: p.categorie_service ?? null,
-            } as Row);
-          }
+        const montant = Number(p.montant_redevance ?? 0);
+        const penalite = Number(p.Penalite ?? 0);
+        const totalR = montant + penalite;
 
-          // Timbre
-          const timbre = Number(p.montant_timbre);
-          if (!isNaN(timbre) && timbre > 0) {
-            normalized.push({
-              ...(base as Row),
-              type: "timbre",
-              montant: timbre,
-              categorie: null,
-              montant_timbre: timbre,
-            } as Row);
-          }
-        });
-      }
+        if (totalR > 0) {
+          normalized.push({
+            id: nanoid(),
+            ...base,
+            type: "redevance",
+            montant: totalR,
+          });
+        }
 
-      // Totaux (API peut renvoyer des types Timbre)
-      const totalT = Number(json.total_timbre ?? 0) || 0;
-      setTotalTimbre(totalT);
+        const service = Number(p.montant_service ?? 0);
+        if (service > 0) {
+          normalized.push({
+            id: nanoid(),
+            ...base,
+            type: "service",
+            montant: service,
+            categorie: p.categorie_service ?? null,
+          });
+        }
 
-      // Totaux (API peut renvoyer des types différents)
-      const totalR = Number(json.total_redevance ?? 0) || 0;
-      setTotalRedevance(totalR);
+        const timbre = Number(p.montant_timbre ?? 0);
+        if (timbre > 0) {
+          normalized.push({
+            id: nanoid(),
+            ...base,
+            type: "timbre",
+            montant: timbre,
+            montant_timbre: timbre,
+          });
+        }
+      });
+
+      setRows(normalized);
+      setTotalRedevance(Number(json.total_redevance ?? 0) || 0);
+      setTotalTimbre(Number(json.total_timbre ?? 0) || 0);
 
       if (Array.isArray(json.total_services)) {
         setTotalServicesByCat(
-          json.total_services.map((s: any) => ({
-            category: s.Categories ?? s.category ?? "-",
-            total: Number(s.total_par_categorie ?? s.total ?? 0),
+          json.total_services.map((s) => ({
+            category: s.Categories ?? "-",
+            total: Number(s.total_par_categorie ?? 0),
           }))
         );
       }
 
-      setRows(normalized);
       setPage(1);
     } catch (err: any) {
-      console.error(err);
-      setError(err.message ?? String(err));
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   }
 
-  // Effet: charger automatiquement au montage et à chaque changement de filtre
   useEffect(() => {
-    // validations simples
     if (filterType === "single" && !singleDate) return;
     if (filterType === "range" && (!dateStart || !dateEnd)) return;
     fetchReport();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterType]);
 
-  // Table filtrée / triée / paginée
   const filtered = useMemo(() => {
-    const s = search.trim().toLowerCase();
-    let result = rows.filter((r) => {
-      if (!s) return true;
-      return (
-        r.numero_recu.toLowerCase().includes(s) ||
-        r.nom_client.toLowerCase().includes(s) ||
-        (r.categorie ?? "").toString().toLowerCase().includes(s) ||
-        r.methode_paiement.toLowerCase().includes(s)
-      );
-    });
+    const s = search.toLowerCase();
+    const sorted = rows
+      .filter(
+        (r) =>
+          !s ||
+          r.numero_recu.toLowerCase().includes(s) ||
+          r.nom_client.toLowerCase().includes(s) ||
+          (r.categorie ?? "").toLowerCase().includes(s)
+      )
+      .sort((a, b) => {
+        let v = 0;
+        if (sortKey === "date_paiement") {
+          v =
+            (new Date(a.date_paiement ?? 0).getTime() || 0) -
+            (new Date(b.date_paiement ?? 0).getTime() || 0);
+        } else if (sortKey === "montant") {
+          v = a.montant - b.montant;
+        } else {
+          v = a.nom_client.localeCompare(b.nom_client);
+        }
+        return sortOrder === "asc" ? v : -v;
+      });
 
-    result.sort((a, b) => {
-      let v = 0;
-      if (sortKey === "date_paiement") {
-        const da = a.date_paiement ? new Date(a.date_paiement).getTime() : 0;
-        const db = b.date_paiement ? new Date(b.date_paiement).getTime() : 0;
-        v = da - db;
-      } else if (sortKey === "montant") {
-        v = a.montant - b.montant;
-      } else if (sortKey === "nom_client") {
-        v = a.nom_client.localeCompare(b.nom_client);
-      }
-      return sortOrder === "asc" ? v : -v;
-    });
-
-    return result;
+    return sorted;
   }, [rows, search, sortKey, sortOrder]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
   const pageData = filtered.slice((page - 1) * pageSize, page * pageSize);
 
-  // Colors pour le pie chart
-  const COLORS = [
-    "#0088FE",
-    "#00C49F",
-    "#FFBB28",
-    "#FF8042",
-    "#A28BFE",
-    "#FF6B6B",
-  ];
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   return (
     <Card className="p-4">
@@ -415,6 +383,10 @@ export default function ReportTable() {
                 <SelectItem value="10">10</SelectItem>
                 <SelectItem value="25">25</SelectItem>
                 <SelectItem value="50">50</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+                <SelectItem value="500">500</SelectItem>
+                <SelectItem value="1000">1000</SelectItem>
+                <SelectItem value="10000">10000</SelectItem>
               </SelectContent>
             </Select>
           </div>

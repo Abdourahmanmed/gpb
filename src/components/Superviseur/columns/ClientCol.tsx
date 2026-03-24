@@ -161,6 +161,8 @@ export const ClientColumns: ColumnDef<ClientType>[] = [
         Name="Reçue"
         Clients={row.original?.id}
         Nom={row.original?.Nom}
+        NBP={row.original?.boite_postal_numero}
+        TypeBP={row.original?.boite_postal_type}
       />
     ),
   },
